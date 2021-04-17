@@ -1,0 +1,487 @@
+---
+title: "Regresion Poisson"
+author: "Jaime Isaac Peña Mejía"
+date: "27/2/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Regresión de Poisson
+
+## ¿Qué son los modelos de regresión de Poisson?
+
+Los modelos de *regresión de Poisson* se utilizan mejor para modelar eventos en los que se cuentan los resultados. O, más específicamente, contar datos: datos discretos con valores enteros no negativos que cuentan algo, como la cantidad de veces que ocurre un evento durante un período de tiempo determinado o la cantidad de personas en la fila en la tienda de comestibles.
+
+Los datos de recuento también se pueden expresar como datos de tasa, ya que el número de veces que ocurre un evento dentro de un período de tiempo se puede expresar como una cuenta sin procesar (es decir, "En un día, comemos tres comidas") o como una tasa ("Comemos a una tasa de 0,125 comidas por hora").
+
+**La regresión de Poisson** nos ayuda a analizar tanto los datos de recuento como los datos de tasa al permitirnos determinar qué variables explicativas (valores X) tienen un efecto en una variable de respuesta dada (valor Y, el recuento o una tasa). Por ejemplo, una tienda de comestibles podría aplicar la regresión de Poisson para comprender y predecir mejor la cantidad de personas en una línea.
+
+## ¿En qué se diferencia la distribución de Poisson de la distribución normal?
+
+La distribución de Poisson se usa más comúnmente para encontrar la probabilidad de que ocurran eventos dentro de un intervalo de tiempo dado. Dado que estamos hablando de un recuento, con la distribución de Poisson, el resultado debe ser 0 o superior; no es posible que un evento ocurra un número negativo de veces. Por otro lado, la distribución normal es una distribución continua para una variable continua y podría resultar en un valor positivo o negativo:
+
+| Distribución Poisson                                 | Distribución Normal                                                                 |
+|------------------------------------------------------|-------------------------------------------------------------------------------------|
+| Se utiliza para contar datos o tasa(razón) de datos. | Usada para variables contínuas                                                      |
+| Sesgada según los valores de lambda                  | Curva en forma de campana que es simétrica alrededor de la media                    |
+| Varianza igual que la media                          | La varianza y la media son parámetros diferentes; media, mediana y moda son iguales |
+|                                                      |                                                                                     |
+
+Podemos generar una distribución normal en R así:
+
+```{r}
+# create a sequence -3 to +3 with .05 increments
+xseq<-seq(-3, 3, .05) 
+# generate a Probability Density Function
+densities <- dnorm(xseq, 0, 1)
+# plot the graph
+plot(xseq, densities, col = "blue", xlab = "", ylab = "Density", type = "l", lwd = 2)
+
+# col: changes the color of line
+# 'xlab' and 'ylab' are labels for x and y axis respectively
+# type: defines the type of plot. 'l' gives a line graph
+# lwd: defines line width
+```
+
+En R, **dnorm (secuencia, media, std.dev)** se usa para trazar la función de densidad de probabilidad (PDF) de una distribución normal.
+
+Para comprender la distribución de Poisson, considere el siguiente problema del libro de texto Tutorial R de Chi Yau:
+
+**Si hay 12 automóviles que cruzan un puente por minuto en promedio, ¿cuál es la probabilidad de que diecisiete o más automóviles crucen el puente en un minuto dado?**
+
+Aquí, la cantidad promedio de automóviles que cruzan un puente por minuto es $\mu=12$.
+
+`ppois(q, u, lower.tail = TRUE)` es una función R que da la probabilidad de que una variable aleatoria sea menor o igual a un valor.
+
+Tenemos que encontrar la probabilidad de tener diecisiete o más autos, por lo que usaremos `lower.trail = FALSE` y estableceremos q en 16:
+
+```{r}
+ppois(16, 12, lower.tail = FALSE)
+# lower.tail = logical; if TRUE (default) then probabilities are P[X < = x], otherwise, P[X > x].
+```
+
+Para obtener un porcentaje, simplemente necesitamos multiplicar esta salida por 100. Ahora tenemos la respuesta a nuestra pregunta: hay una probabilidad del $10.1\%$ de tener 17 o más autos cruzando el puente en cualquier minuto en particular.
+
+## Modelos de regresión de Poisson y GLM(Generalized Linear MOdels)
+
+Los modelos lineales generalizados son modelos en los que las variables de respuesta siguen una distribución diferente a la distribución normal. Eso contrasta con los modelos de regresión lineal, en los que las variables de respuesta siguen una distribución normal. Esto se debe a que los modelos lineales generalizados tienen variables de respuesta que son categóricas, como Sí, No; o Grupo A, Grupo B y, por lo tanto, no van de $\infty$ a $\infty$. Por tanto, la relación entre la respuesta y las variables predictoras puede no ser lineal. En GLM
+
+$y_i=\alpha+\beta_1X_{1i}+\beta_2X_{2i}+\ldots+\beta_pX_{pi}+e_i$, \vspace{1cm}$i=1,2,\ldots,n$
+
+La variable de respuesta $y_i$ se modela mediante una función lineal de variables predictoras y algún término de error.
+
+Un **modelo de regresión de Poisson** es un modelo lineal generalizado (GLM) que se utiliza para modelar datos de recuento y tablas de contingencia. La salida $Y$ (recuento) es un valor que sigue la distribución de Poisson. Asume el logaritmo de los valores esperados (media) que pueden modelarse en forma lineal mediante algunos parámetros desconocidos.
+
+Para transformar la relación no lineal en forma lineal, se utiliza una función de enlace que es el logaritmo de la regresión de Poisson. Por esa razón, un modelo de regresión de Poisson también se denomina modelo log-lineal. La forma matemática general del modelo de regresión de Poisson es:
+
+$$log(y)=\alpha +\beta_1X_1+\beta_2X_2+\cdots+\beta_pX_p$$
+
+donde,
+
+-   $y$ es la variable respuesta
+
+-   $\alpha$ y $\beta$: son coeficientes numéricos, $\alpha$ es la intersección, a veces $\alpha$ también está representada por $\beta_0$, es lo mismo.
+
+-   x es la variable predictora/explicativa
+
+Los coeficientes se calculan utilizando métodos como la **Estimación de máxima verosimilitud (MLE)** o la cuasi-verosimilitud máxima.
+
+Considere una ecuación con una variable predictora y una variable de respuesta:
+
+$$log(y)=\alpha+\beta(x) $$
+
+Esto es equivalente a,
+
+$$y=e^{\alpha+\beta X} $$
+
+**Nota:** En los modelos de regresión de Poisson, las variables predictoras o explicativas pueden tener una combinación de valores numéricos o categóricos.
+
+Una de las características más importantes para la distribución de Poisson y la regresión de Poisson es la equidispersión, lo que significa que la media y la varianza de la distribución son iguales.
+
+La varianza mide la dispersión de los datos. Es el "promedio de las diferencias al cuadrado de la media". La varianza (Var) es igual a 0 si todos los valores son idénticos. Cuanto mayor sea la diferencia entre los valores, mayor será la varianza. La media es el promedio de valores de un conjunto de datos. El promedio es la suma de los valores dividida por el número de valores.
+
+Digamos que la media ($\mu$) se denota por $E(X)$
+
+$$E(X)=\mu$$ Para la regresión de Poisson, la media y la varianza se relacionan como:
+
+$$var(X)=\sigma^2E(X) $$ Donde $\sigma^2$ es el parámetro de Dispersión.
+
+Dado que $var(X)=E(X)$ (varianza = media) debe ser válida para que el modelo de Poisson se ajuste completamente, $\sigma^2$ debe ser igual a 1.
+
+Cuando la varianza es mayor que la media, eso se denomina sobredispersión y es mayor que 1. Si es menor que 1, se conoce como subdispersión.
+
+## Modelado de regresión de Poisson utilizando datos de recuento.
+
+En R, el comando `glm ()`se usa para modelar modelos lineales generalizados. Aquí está la estructura general de `glm ()`:
+
+    glm(formula, family = familytype(link = ""), data,...)
+
+**formula** La fórmula es una representación simbólica de cómo se modela para ajustar.
+
+**family** La familia indica la elección de las funciones de varianza y enlace. Hay varias opciones de familia, incluidas Poisson y Logistic.
+
+**datos** Los datos son el conjunto de datos que se utilizará.
+
+`glm()` ofrece ocho opciones para la familia con las siguientes funciones de enlace predeterminadas:
+
++------------------+--------------------------------------------+
+| **Family**       | **Default Link Function**                  |
++==================+============================================+
+| binomial         | (link = "logit")                           |
++------------------+--------------------------------------------+
+| gaussian         | (link = "identity")                        |
++------------------+--------------------------------------------+
+| Gamma            | (link = "inverse")                         |
++------------------+--------------------------------------------+
+| inverse.gaussian | (link = \$frac{1}{mu\^2}\$)                |
++------------------+--------------------------------------------+
+| poisson          | \                                          |
+|                  | (link = "log")                             |
++------------------+--------------------------------------------+
+| quasi            | (link = "identity", variance = "constant") |
++------------------+--------------------------------------------+
+| quasibinomial    | \                                          |
+|                  | (link = "logit")                           |
++------------------+--------------------------------------------+
+| quasipoisson     | (link = "log")                             |
++------------------+--------------------------------------------+
+|                  |                                            |
++------------------+--------------------------------------------+
+
+### ¡Empecemos a modelar!
+
+Vamos a modelar la regresión de Poisson relacionada con la frecuencia con la que el hilo se rompe durante el tejido. Estos datos se encuentran en el paquete **`datasets`** en R, por lo que lo primero que debemos hacer es instalar el paquete usando `install.packages("datasets")` y cargar la biblioteca con la librería `library(datasets):`
+
+```{r}
+# install.packages("datasets")
+library(datasets) # include library datasets after installation
+
+```
+
+El paquete`datasets`incluye toneladas de conjuntos de datos, por lo que debemos seleccionar específicamente nuestros datos de hilo(yarn). [Consultando la documentación del paquete](https://cran.r-project.org/manuals.html), podemos ver que se llama `warpbreaks`, así que almacenémoslo como un objeto.
+
+```{r}
+data<-warpbreaks
+head(data,10)
+```
+
+Echemos un vistaso a los datos:
+
+```{r}
+columns<-names(data) # Extract column names from dataframe
+columns # show columns
+```
+
+**¿Qué hay en nuestros datos?**
+
+Este conjunto de datos analiza cuántas roturas de urdimbre ocurrieron para diferentes tipos de telares por telar, por longitud fija de hilo. Podemos leer más detalles sobre este conjunto de datos en la documentación [aquí](https://cran.r-project.org/manuals.html), pero aquí están las tres columnas que veremos y a qué se refiere cada una:
+
+| Variable | Tipo     | Descripción                   |
+|----------|----------|-------------------------------|
+| breaks   | numérica | número de roturas             |
+| wool     | factor   | El tipo de lana(A o B)        |
+| tension  | factor   | El nivel de tensión (L, M, H) |
+|          |          |                               |
+
+Hay medidas en 9 telares de cada uno de los seis tipos de deformación, para un total de 54 entradas en el conjunto de datos.
+
+Veamos cómo se estructuran los datos mediante el comando`ls.str ():`
+
+```{r}
+ls.str(warpbreaks)
+```
+
+De lo anterior, podemos ver tanto los tipos como los niveles presentes en los datos. Lea [esto](https://www.statmethods.net/input/datatypes.html) para aprender un poco más sobre los factores en R.
+
+Ahora trabajaremos con el marco de datos. Recuerde, con un modelo de distribución de Poisson estamos tratando de averiguar cómo algunas variables predictoras afectan una variable de respuesta. Aquí, `breaks` es la variable de respuesta y `wool` y `tension` son variables predictoras.
+
+Podemos ver que la variable dependiente breaks de datos contínuos creando un histograma:
+
+```{r}
+hist(data$breaks)
+
+```
+
+Claramente, los datos no tienen la forma de una curva de campana como en una distribución normal.
+
+Veamos la media `mean()`y la varianza `var ()`de la variable dependiente:
+
+```{r}
+mean(data$breaks) # calculate mean
+
+```
+
+```{r}
+var(data$breaks) # calculate variance
+```
+
+La varianza es mucho mayor que la media, lo que sugiere que tendremos una dispersión excesiva en el modelo.
+
+Ajustemos el modelo de Poisson usando el comando `glm ().`
+
+```{r}
+# model poisson regression using glm()
+poisson.model<-glm(breaks ~ wool + tension, data, family = poisson(link = "log"))
+summary(poisson.model)
+```
+
+`summary ()` es una función genérica que se utiliza para producir resúmenes de los resultados de varias funciones de ajuste de modelos.
+
+## Interpretación del modelo de Poisson
+
+Nos acaban de dar mucha información, ahora necesitamos interpretarla. La primera columna llamada Estimación son los valores de los coeficientes de $\alpha$(intersección), $\beta_1$ y así sucesivamente. A continuación se muestra la interpretación de las estimaciones de los parámetros:
+
+-   $exp(\alpha)$= efecto sobre la media $\mu$, cuando $X=0$
+
+-   $exp(\beta)$ = con cada unidad de aumento en X, la variable predictora tiene un efecto multiplicativo de $exp(\beta)$ sobre la media de Y, es decir $\mu$.
+
+-   Si $\beta=0$, entonces $exp(\beta)=1$, y el recuento esperado es $exp(\alpha)$ y, Y y X no están relacionados.\
+
+-   Si $\beta >0$, entonces $exp(\beta)>1$, y el recuento esperado es $exp(\beta)$ veces mayor que cuando $X=0$
+
+-   Si $\beta < 0$, entonces $exp(\beta)<1$, y el recuento esperado es $exp(\beta)$ veces menor que cuando $X=0$
+
+Si`family = poisson` se mantiene en `glm ()`, estos parámetros se calculan utilizando la estimación de [máxima verosimilitud MLE](máxima%20verosimilitud%20MLE).
+
+R trata las variables categóricas como variables ficticias. Las variables categóricas, también llamadas variables indicadoras, se convierten en variables ficticias asignando a los niveles de la variable alguna representación numérica. La regla general es que si hay k categorías en una variable factorial, la salida de `glm ()` tendrá k-1 categorías con 1 restante como categoría base.
+
+Podemos ver en el resumen anterior que para la lana, "A" se ha hecho la base y no se muestra en el resumen. De manera similar, para la tensión, "L" se ha convertido en la categoría base.
+
+Para ver qué variables explicativas tienen un efecto sobre la variable de respuesta, veremos los valores p. Si la p es menor que 0.05 entonces, la variable tiene un efecto sobre la variable de respuesta. En el resumen anterior, podemos ver que todos los valores de p son menores a 0.05, por lo que ambas variables explicativas (lana y tensión) tienen un efecto significativo en las roturas. Observe cómo la salida de R usó \*\*\* al final de cada variable. El número de estrellas significa significancia.
+
+Antes de comenzar a interpretar los resultados, verifiquemos si el modelo tiene una dispersión excesiva o insuficiente. Si la desviación residual es mayor que los grados de libertad, entonces existe una dispersión excesiva. Esto significa que las estimaciones son correctas, pero los errores estándar (desviación estándar) son incorrectos y el modelo no los tiene en cuenta.
+
+La desviación nula muestra qué tan bien se predice la variable de respuesta mediante un modelo que incluye solo el intercepto (gran media) mientras que el residual con la inclusión de variables independientes. Arriba, podemos ver que la suma de 3 (53-50 = 3) variables independientes disminuyó la desviación de 297.37 a 210.39. Una mayor diferencia de valores significa un mal ajuste.
+
+Entonces, para tener un error estándar más correcto, podemos usar un modelo cuasi-poisson:
+
+```{r}
+poisson.model2<-glm(breaks ~ wool + tension, data = data, family = quasipoisson(link = "log"))
+summary(poisson.model2)
+
+```
+
+## Comparando los modelos:
+
+Ahora que tenemos dos modelos diferentes, comparémoslos para ver cuál es mejor. Primero, instalaremos la biblioteca `arm` porque contiene una función que necesitamos:
+
+```{r}
+# install.packages("arm")
+
+# load library arm that contains the function se.coef()
+library(arm)
+
+```
+
+Ahora usaremos esa función`se.coef ()` para extraer los coeficientes de cada modelo, y luego usaremos`cbind ()`para combinar esos valores extraídos en un solo marco de datos para poder compararlos.
+
+```{r}
+ #extract coefficients from first model using 'coef()'
+coef1 = coef(poisson.model)
+
+# extract coefficients from second model
+coef2 = coef(poisson.model2)
+
+# extract standard errors from first model using 'se.coef()'
+se.coef1 = se.coef(poisson.model)
+
+# extract standard errors from second model
+se.coef2 = se.coef(poisson.model2)
+
+# use 'cbind()' to combine values into one dataframe
+models.both<-cbind(coef1, se.coef1, coef2, se.coef2, exponent = exp(coef1))
+
+# show dataframe
+models.both
+
+```
+
+En el resultado anterior, podemos ver que los coeficientes son los mismos, pero los errores estándar son diferentes.
+
+Teniendo en cuenta estos puntos, veamos la estimación de la lana. Su valor es -0,2059884 y el exponente de -0,2059884 es 0,8138425.
+
+```{r}
+1-0.8138425
+```
+
+Esto muestra que cambiar de lana tipo A a lana tipo B da como resultado una disminución en las roturas de 0.8138425 veces la intersección, porque la estimación -0.2059884 es negativa. Otra forma de decir esto es que si cambiamos el tipo de lana de A a B, el número de roturas caerá en un $18.6\%$ asumiendo que todas las demás variables son iguales.
+
+# Predecir a partir del modelo
+
+Una vez que se crea el modelo, podemos usar `predict (model, data, type)`para predecir resultados usando nuevos marcos de datos que contienen datos distintos a los de entrenamiento. Veamos un ejemplo.
+
+```{r}
+# make a dataframe with new data
+newdata = data.frame(wool = "B", tension = "M")
+
+# use 'predict()' to run model on new data
+
+predict(poisson.model2, newdata = newdata, type = "response")
+
+```
+
+Nuestro modelo predice que habrá aproximadamente 24 roturas con lana tipo B y nivel de tensión M.
+
+# Visualización de hallazgos usando jtools
+
+Cuando comparte su análisis con otras personas, las tablas a menudo no son la mejor manera de captar la atención de las personas. Los diagramas y gráficos ayudan a las personas a comprender sus hallazgos más rápidamente. La forma más popular de visualizar datos en R es probablemente `ggplot2` (que se enseña en el curso de visualización de datos de Dataquest), también usaremos un paquete de R increíble llamado `jtools`que incluye herramientas para resumir y visualizar específicamente modelos de regresión. Usemos`jtools` para visualizar [`poisson.model2`]{.ul}
+
+```{r}
+#install.packages("jtools")
+
+# you may be asked to install 'broom' and 'ggstance' packages as well
+#install.packages("broom")
+#install.packages("ggstance")
+
+```
+
+`jtools`proporciona `plot_summs ()` y `plot_coefs ()` para visualizar el resumen del modelo y también nos permite comparar diferentes modelos con `ggplot2`.
+
+.
+
+```{r}
+# Include jtools library
+library(jtools)
+
+# plot regression coefficients for poisson.model2
+plot_summs(poisson.model2, scale = TRUE, exp = TRUE)
+```
+
+```{r}
+# plot regression coefficients for poisson.model2 and poisson.model
+plot_summs(poisson.model, poisson.model2, scale = TRUE, exp = TRUE)
+```
+
+En el código anterior, `plot_summs (poisson.model2, scale = TRUE, exp = TRUE)`traza el segundo modelo usando la familia cuasi-poisson en `glm`.
+
+El primer argumento en `plot_summs ()`es el modelo de regresión que se utilizará, puede ser uno o más de uno.
+
+scale ayuda con el problema de las diferentes escalas de las variables.`exp` se establece en `TRUE` porque para la regresión de Poisson es más probable que nos interesen los valores exponenciales de las estimaciones en lugar de los lineales.
+
+Puede encontrar más detalles sobre jtools y plot_summs () aquí en la documentación.
+
+También podemos visualizar la interacción entre variables predictoras.`jtools` proporciona diferentes funciones para diferentes tipos de variables. Por ejemplo, si todas las variables son categóricas, podríamos usar`cat_plot ()`para comprender mejor las interacciones entre ellas. Para variables continuas, se usa `interact_plot ()`.
+
+En los datos de warpbreaks tenemos variables predictoras categóricas, por lo que usaremos `cat_plot ()`para visualizar la interacción entre ellas, dándole argumentos que especifiquen qué modelo nos gustaría usar, la variable predictora que estamos viendo y la otra variable predictora con la que se combina para producir el resultado.
+
+```{r}
+
+library(broom)
+library(jtools)
+library(ggstance)
+#interact_plot(poisson.model2,pred = wool,modx =tension)
+# argument 1: regression model
+# pred: The categorical variable that will appear on x-axis
+# modx: Moderator variable that has an effect in combination to pred on outcome
+
+```
+
+```{r}
+library(jtools)
+#install.packages("broom")
+#install.packages("ggstance")
+#cat_plot(poisson.model2,pred = wool,modx = tension)
+# argument 1: regression model
+# pred: The categorical variable that will appear on x-axis
+# modx: Moderator variable that has an effect in combination to pred on outcom
+
+```
+
+```{r}
+#cat_plot(poisson.model2, pred=tension, modx = wool, #geom = "line")
+```
+
+# Modelado de regresión de Poisson utilizando datos de tasas
+
+Hasta ahora, en este tutorial, hemos modelado datos de recuento, pero también podemos modelar datos de tasa que predicen el número de recuentos durante un período de tiempo o agrupación. La fórmula para modelar datos de tasa viene dada por: $$\log (\frac{X}{n})=\beta_{0}+\sum \beta_i X_{i}$$ esto es equivalente a:
+
+$$\log (X)-\log (n)=\beta_{0}+\sum \beta_{i} X_{i}$$
+
+$$\log (X)=\log (n)+\beta_{0}+\sum \beta_i X_{i}$$ Por lo tanto, los datos de tasa se pueden modelar incluyendo el término log(n) con un coeficiente de 1.
+
+Esto se denomina compensación. Este desplazamiento se modela con `offset()`en R.
+
+Usemos otro conjunto de datos llamado **eba1977** del paquete **ISwR** para modelar el modelo de regresión de Poisson para datos de tasas. Primero, instalaremos el paquete:
+
+```{r}
+# install.packages("ISwR")
+library(ISwR)
+
+```
+
+Ahora, echemos un vistazo a algunos detalles sobre los datos e imprimamos las primeras diez filas para tener una idea de lo que incluye el conjunto de datos.
+
+```{r}
+data(eba1977)
+cancer.data = eba1977
+cancer.data[1:10, ]
+# Description
+# Lung cancer incidence in four Danish cities 1968-1971
+# Description:
+# This data set contains counts of incident lung cancer cases and
+# population size in four neighbouring Danish cities by age group.
+# Format:
+# A data frame with 24 observations on the following 4 variables:
+# city a factor with levels Fredericia, Horsens, Kolding, and Vejle.
+# age a factor with levels 40-54, 55-59, 60-64, 65-69,70-74, and 75+.
+# pop a numeric vector, number of inhabitants.
+# cases a numeric vector, number of lung cancer cases.
+```
+
+Para modelar datos de tasa, usamos $\dfrac{X}{n}$ donde X es el evento que sucederá y n es la agrupación. En este ejemplo, X = casos (el evento es un caso de cáncer) y n = pop (la población es la agrupación).
+
+Como en la fórmula anterior, los datos de tasa se contabilizan mediante log (n) y en estos datos n es la población, por lo que primero encontraremos el log de la población. Podemos modelar para casos / población de la siguiente manera:
+
+```{r}
+# find the log(n) of each value in 'pop' column. It is the third column
+
+logpop = log(cancer.data[ ,3])
+
+# add the log values to the dataframe using 'cbind()'
+
+new.cancer.data = cbind(cancer.data, logpop)
+
+# display new dataframe
+new.cancer.data
+```
+
+Ahora, modelemos los datos de la tasa con **offset()**
+
+```{r}
+poisson.model.rate<-glm(cases ~ city + age+ offset(logpop), family = poisson(link = "log"), data = cancer.data)
+
+#display summary
+summary(poisson.model.rate)
+```
+
+En este conjunto de datos, podemos ver que la desviación residual está cerca de los grados de libertad y el parámetro de dispersión es 1.5 (23.447 / 15) que es pequeño, por lo que el modelo es un buen ajuste.
+
+Usamos `fitted(model)` para devolver valores ajustados por el modelo. Devuelve resultados utilizando los datos de entrenamiento sobre los que se construye el modelo. Hagamos un intento:
+
+```{r}
+fitted(poisson.model.rate)
+```
+
+Usando este modelo, podemos predecir el número de casos por 1000 habitantes para un nuevo conjunto de datos, usando la función `predict (),` de manera muy similar a como lo hicimos para nuestro modelo de conteo de datos anteriormente:
+
+```{r}
+# create a test dataframe containing new values of variables
+test.data = data.frame(city = "Kolding", age = "40-54", pop = 1000, logpop = log(1000))
+
+# predict outcomes (responses) using 'predict()'
+predicted.value<-predict(poisson.model.rate, test.data, type = "response")
+
+# show predicted value
+predicted.value
+```
+
+Entonces, para la ciudad de Kolding entre las personas en el grupo de edad de 40 a 54 años, podríamos esperar aproximadamente 2 o 3 casos de cáncer de pulmón por cada 1000 personas.
+
+# Conclusión
+
+Los modelos de regresión de Poisson tienen una gran importancia en las predicciones econométricas y del mundo real. En este tutorial, hemos aprendido sobre la distribución de Poisson, los modelos lineales generalizados y los modelos de regresión de Poisson.
+
+También aprendimos cómo implementar modelos de regresión de Poisson para datos de recuento y tasa en R usando glm (), y cómo ajustar los datos al modelo para predecir un nuevo conjunto de datos. Además, analizamos cómo obtener errores estándar más precisos en glm () usando quasipoisson y vimos algunas de las posibilidades disponibles para la visualización con jtools
