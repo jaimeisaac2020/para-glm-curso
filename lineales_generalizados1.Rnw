@@ -1,0 +1,115 @@
+\documentclass{article}
+
+\begin{document}
+
+\section*{Ejemplos}
+\subsection*{Normal}
+El conjunto de datos descrito fue extraído del censo del IBGE de 2000. Presenta para cada unidad de la federación el número medio de años de estudio y el ingreso promedio mensual (en reales) del jefe o jefes del domicilio.
+
+\textbf{uf:} RR, AP, AC, RO, PA, AM, TO, PB, MA, RN, SE, PI, BA, PE, AL, CE, SP, RJ, ES, MG, SC, RS, PR, MT, GO, MS and DF\\
+\textbf{escolar:} 5.7, 6, 4.5, 4.9, 4.7, 5.5, 4.5, 3.9, 3.6, 4.5, 4.3, 3.5, 4.1, 4.6, 3.7, 4, 6.8, 7.1, 5.7, 5.4, 6.3, 6.4, 6, 5.4, 5.5, 5.7 and 8.2\\
+\textbf{renda:} 685, 683, 526, 662, 536, 627, 520, 423, 343, 513, 462, 383, 460, 517, 454, 448, 1076, 970, 722, 681, 814, 800, 782, 775, 689, 731 and 1499\\
+
+<<>>=
+uf<-c("RR", "AP", "AC", "RO", "PA", "AM", "TO", "PB", "MA", "RN", "SE", "PI", "BA", "PE", "AL", "CE", "SP", "RJ", "ES", "MG", "SC", "RS", "PR", "MT", "GO", "MS","DF")
+escolar<-c(5.7, 6, 4.5, 4.9, 4.7, 5.5, 4.5, 3.9, 3.6, 4.5, 4.3, 3.5, 4.1, 4.6, 3.7, 4, 6.8, 7.1, 5.7, 5.4, 6.3, 6.4, 6, 5.4, 5.5, 5.7,8.2)
+
+renda<-c(685, 683, 526, 662, 536, 627, 520, 423, 343, 513, 462, 383, 460, 517, 454, 448, 1076, 970, 722, 681, 814, 800, 782, 775, 689, 731,1499)
+censo.dat<-data.frame(uf=uf,escolar=escolar,renda=renda)
+censo.dat
+attach(censo.dat)
+
+@
+
+<<>>=
+cor(censo.dat[,c(2,3)])
+@
+
+<<>>=
+require(pander)
+attach(censo.dat)
+@
+
+<<>>=
+fit1.censo<-lm(renda~escolar)
+summary(fit1.censo)
+@
+\textbf{Gamma}\\
+Los datos son los resultados de un experimento conducido para evaluar el desempeño de cinco tipos de turbina de alta velocidad para motores de avión. Se consideraron diez motores de cada tipo en los análisis y se observó para cada uno el tiempo (en unidades de millones de ciclos) hasta la pérdida de la velocidad.\\
+\textbf{Datos}\\
+tipo: 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4 and 5\\
+tempo: 3.03, 3.19, 3.46, 5.88, 6.43, 5.53, 4.26, 5.22, 6.74, 9.97, 5.6, 4.47, 5.69, 6.9, 10.39, 9.3, 4.53, 6.54, 6.98, 13.55, 9.92, 4.67, 9.16, 7.21, 14.45, 12.51, 4.69, 9.4, 8.14, 14.72, 12.95, 5.78, 10.19, 8.59, 16.81, 15.21, 6.79, 10.71, 9.8, 18.39, 16.04, 9.37, 12.58, 12.28, 20.84, 16.84, 12.75, 13.41, 25.46 and 21.51\\ \\
+<<>>=
+tipo<-c(1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4,5)
+tempo<-c(3.03, 3.19, 3.46, 5.88, 6.43, 5.53, 4.26, 5.22, 6.74, 9.97, 5.6, 4.47, 5.69, 6.9, 10.39, 9.3, 4.53, 6.54, 6.98, 13.55, 9.92, 4.67, 9.16, 7.21, 14.45, 12.51, 4.69, 9.4, 8.14, 14.72, 12.95, 5.78, 10.19, 8.59, 16.81, 15.21, 6.79, 10.71, 9.8, 18.39, 16.04, 9.37,
+        12.58, 12.28, 20.84, 16.84, 12.75, 13.41, 25.46,21.51)
+turbina=data.frame(tipo=tipo,tempo=tempo)
+turbina
+@
+<<>>=
+tipo=factor(tipo)
+tipo
+fit1.turbina<-glm(tempo~tipo,family = Gamma(link = identity))
+summary(fit1.turbina)
+@
+
+\section*{Binomial}
+En un pequeño estudio, se recopilaron datos sobre la presencia de una malformación de órganos sexuales en un bebé para estudiar cómo el consumo de alcohol de la madre lo afecto. La información recopilada sobre cada tema es\\ \\
+<<>>=
+require(pander)
+
+Alcohol <- c(0,0.5,1.5,4,7)
+Absent <- c(17066,14464,788,126,37)
+Present <- c(48,38,5,1,1)
+tabla<-data.frame(Alcohol,Absent,Present)
+#tabla <- cbind(Alcohol,Absent,Present)
+
+tabla
+@
+<<>>=
+require(pander)
+
+malform.logit=glm(cbind(Present,Absent)~Alcohol,family=binomial(link=logit))
+summary(malform.logit)
+@
+\section*{Poisson}
+Los siguientes datos presentados son sobre el perfil de los clientes de una determinada tienda oriundos de 110 áreas de una ciudad. El objetivo del estudio es relacionar el número esperado de clientes en cada área con las siguientes variables explicativas en cada área: número de domicilios (en mil), ingreso promedio anual (en mil USD), edad media de los domicilios (en años), distancia al competidor más cercano (en millas) y distancia a la tienda (en millas). Por lo tanto, el área es la unidad experimental.\\ \\
+Nos referimos de la siguiente manera a los datos por facilidad:
+
+La variable ``domicilios" es el número de domicilios, ``ingreso" es el ingreso promedio anual, ``edad" es la edad media de los domicilios, ``dcompetidores" la distancia al competidor más cercano y ``dtienda" es la distancia a la tienda.\\
+<<>>=
+tiendapoisson <- read.delim("F:/tiendapoisson.txt")
+print(tiendapoisson)
+attach(tiendapoisson)
+@
+<<>>=
+require(pander)
+
+fit1.store <- glm( clientes ~ domicilios + ingreso + edad + dcompetidor + dtienda ,family="poisson",data = tiendapoisson)
+summary(fit1.store)
+@
+\section*{Binomial negativa}
+El conjunto de datos presentados acontinuación muestran la demanda de TV por cable en 40 áreas metropolitanas de los Estados Unidos (Ramanathan, 1993). Se observó, para cada área, el número de abonados (en miles) de televisión por cable (nass), el número de domicilios (en miles) en el área (domic), domicilio con TV por cable (percap), la tasa de instalación de TV por cable (tasa) en USD, el costo promedio mensual de mantenimiento de TV por cable (costo) en USD, el número de teléfono canales de cable disponibles en el área (ncabo) y el número de canales no pagados con señal de buena calidad disponibles en el área (ntv).\\ \\
+
+<<>>=
+tvcabo2 <- read.delim("F:/tvcabo2.txt")
+View(tvcabo2)
+print(tvcabo2)
+@
+<<>>=
+require(pander)
+require("MASS")
+
+fit1.tvcabo <- (glm.nb( demanda ~ domic + percap + tasa + costo + ncabo + ntv , data = tvcabo2, link = log))
+summary(fit1.tvcabo)
+@
+<<>>=
+fit2.tvcabo <- (glm.nb( demanda ~ domic   , data = tvcabo2, link = log))
+summary(fit2.tvcabo)
+@
+<<>>=
+datos<-read.table("http://www.uv.es/lejarza/actu/glm/pois.csv",header=TRUE, sep=";")
+datos
+@
+
+\end{document}
