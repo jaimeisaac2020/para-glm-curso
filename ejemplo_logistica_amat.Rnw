@@ -1,0 +1,486 @@
+\documentclass{article}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+
+\begin{document}
+\section*{Regresion Logistica}
+\subsection*{Ejemplo Regresión Logística binaria}
+Un estudio quiere establecer un modelo que permita calcular la probabilidad de obtener una matrícula de honor al final del bachillerato en función de la nota que se ha obtenido en matemáticas. La variable matrícula está codificada como 0 si no se tiene matrícula y 1 si se tiene.
+<<>>=
+matricula <- as.factor(c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1,
+                         0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1,
+                         0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
+                         0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
+                         1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0,
+                         1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1,
+                         1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1,
+                         0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+                         0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0,
+                         0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0,
+                         0, 0, 0, 0, 1, 0, 0, 0, 1, 1))
+matematicas <- c(41, 53, 54, 47, 57, 51, 42, 45, 54, 52, 51, 51, 71, 57, 50, 43,
+                 51, 60, 62, 57, 35, 75, 45, 57, 45, 46, 66, 57, 49, 49, 57, 64,
+                 63, 57, 50, 58, 75, 68, 44, 40, 41, 62, 57, 43, 48, 63, 39, 70,
+                 63, 59, 61, 38, 61, 49, 73, 44, 42, 39, 55, 52, 45, 61, 39, 41,
+                 50, 40, 60, 47, 59, 49, 46, 58, 71, 58, 46, 43, 54, 56, 46, 54,
+                 57, 54, 71, 48, 40, 64, 51, 39, 40, 61, 66, 49, 65, 52, 46, 61,
+                 72, 71, 40, 69, 64, 56, 49, 54, 53, 66, 67, 40, 46, 69, 40, 41,
+                 57, 58, 57, 37, 55, 62, 64, 40, 50, 46, 53, 52, 45, 56, 45, 54,
+                 56, 41, 54, 72, 56, 47, 49, 60, 54, 55, 33, 49, 43, 50, 52, 48,
+                 58, 43, 41, 43, 46, 44, 43, 61, 40, 49, 56, 61, 50, 51, 42, 67,
+                 53, 50, 51, 72, 48, 40, 53, 39, 63, 51, 45, 39, 42, 62, 44, 65,
+                 63, 54, 45, 60, 49, 48, 57, 55, 66, 64, 55, 42, 56, 53, 41, 42,
+                 53, 42, 60, 52, 38, 57, 58, 65)
+datos <- data.frame(matricula, matematicas)
+head(datos, 4)
+@
+\subsubsection*{Representación de las observaciones}
+
+
+\textbf{Representar las observaciones} es útil para intuir si la variable independiente escogida está relacionada con la variable respuesta y, por lo tanto, puede ser un buen predictor.
+
+<<>>=
+library(ggplot2)
+table(datos$matricula)
+@
+<<>>=
+ggplot(data = datos, aes(x = matricula, y = matematicas, color = matricula)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(width = 0.1) +
+  theme_bw() +
+  theme(legend.position = "null")
+@
+Parece existir una diferencia entre la nota de las personas con matrícula y sin matrícula.
+
+\subsubsection*{Generar el modelo de regresión logística}
+<<>>=
+modelo <- glm(matricula ~ matematicas, data = datos, family = "binomial")
+summary(modelo)
+@
+El coeficiente estimado para la intersección es el valor esperado del logaritmo de odds de que un estudiante obtenga matrícula teniendo un 0 en en matemáticas. Como es de esperar, los odds son muy bajos $e^{-9.793942}=5.579 e^{-5},$ lo que se corresponde con una probabilidad de obtener matrícula de $p=\frac{e^{-9.793942}}{1+e^{-9.793942}}=5.579 e^{-5}$\\
+Acorde al modelo, el logaritmo de los odds de que un estudiante tenga matrícula está positivamente relacionado con la puntuación obtenida en matemáticas (coeficiente de regresión $=0.1563404$ ). Esto significa que, por cada unidad que se incrementa la variable matemáticas, se espera que el logaritmo de odds de la variable matrícula se incremente en promedio 0.1563404 unidades. Aplicando la inversa del logaritmo natural $\left(e^{0.1563404}=1.169\right)$ se obtiene que, por cada unidad que se incrementa la variable matemáticas, los odds de obtener matrícula se incremente en promedio 1.169 unidades. No hay que
+confundir esto último con que la probabilidad de matrícula se incremente un $1.169 \%$.\\
+
+A diferencia de la regresión lineal en la que $\beta_{1}$ se corresponde con el cambio promedio en la variable dependiente $Y$ debido al incremento en una unidad del predictor $X,$ en regresión logística, $\beta_{1}$ indica el
+cambio en el logaritmo de odds debido al incremento de una unidad de $X, o$ lo que es lo mismo, multiplica los odds por $e^{\beta_{1}} .$ Dado que la relación entre $p(Y)$ y $X$ no es lineal, $\beta_{1}$ no se corresponde con el cambio en la probabilidad de $Y$ asociado con el incremento de una unidad de $X .$ Cuánto se incremente la
+probabilidad de $Y$ por unidad de $X$ depende del valor de $X,$ es decir, de la posición en la curva logística
+en la que se encuentre.\\
+
+Además del valor de las estimaciones de los coeficientes parciales de correlación del modelo, es conveniente calcular sus correspondientes intervalos de confianza. En el caso de regresión logística, estos intervalos suelen calcularse empleando el método de profile likelihood (en R es el método por defecto si se tiene instalado el paquete MASs). Para una descripción más detallada ver:\\
+http://www.math.umt.edu/patterson/ProfileLikelihoodCl.pdf\\
+
+<<>>=
+confint(object = modelo, level = 0.95 )
+@
+\subsubsection*{Gráfico del modelo}
+Dado que un modelo logístico modela el logaritmo de ODDs, estas son las unidades en las que se
+devuelven las predicciones. Es necesario convertirlas de nuevo en probabilidad mediante la función logit. En R, la función predict() puede devolver directamente las probabilidades en lugar de los logODDs si se indica el argumento type="response". Sin embargo, si se quieren calcular intervalos de confianza y que estos no se salgan del rango [0,1] es necesario emplear los $\log ODDs$ y una vez que se les ha sustraído o sumado el margen de error ( $Z \times SE$ ) se transforman en probabilidades.
+
+<<>>=
+# MEDIANTE BASE GRAPHICS SIN INTERVALOS DE CONFIANZA
+
+# Codificación 0,1 de la variable respuesta
+datos$matricula <- as.character(datos$matricula)
+datos$matricula <- as.numeric(datos$matricula)
+
+plot(matricula ~ matematicas, datos, col = "darkblue",
+     main = "Modelo regresión logística",
+     ylab = "P(matrícula=1|matemáticas)",
+     xlab = "matemáticas", pch = "I")
+
+# type = "response" devuelve las predicciones en forma de probabilidad en lugar de en log_ODDs
+curve(predict(modelo, data.frame(matematicas = x), type = "response"),
+      col = "firebrick", lwd = 2.5, add = TRUE)
+@
+
+
+<<>>=
+# MEDIANTE GGPLOT2 INCLUYENDO INTERVALOS DE CONFIANZA
+
+datos$matricula <- as.character(datos$matricula)
+datos$matricula <- as.numeric(datos$matricula)
+
+# Se crea un vector con nuevos valores interpolados en el rango de observaciones.
+nuevos_puntos <- seq(from = min(datos$matematicas), to = max(datos$matematicas),
+                     by = 0.5)
+
+
+# Predicciones de los nuevos puntos según el modelo. 
+# Si se indica se.fit = TRUE se devuelve el error estándar de cada predicción
+# junto con el valor de la predicción (fit).
+predicciones <- predict(modelo, data.frame(matematicas = nuevos_puntos),
+                        se.fit = TRUE)
+
+# Mediante la función logit se transforman los log_ODDs a probabilidades.
+predicciones_logit <- exp(predicciones$fit) / (1 + exp(predicciones$fit))
+
+# Se calcula el límite inferior y superior del IC del 95% sustrayendo e
+# incrementando el logODDs de cada predicción 1.95*SE. Una vez calculados los
+# logODDs del intervalo se transforman en probabilidades con la función logit.
+limite_inferior       <- predicciones$fit - 1.96 * predicciones$se.fit
+limite_inferior_logit <- exp(limite_inferior) / (1 + exp(limite_inferior))
+limite_superior       <- predicciones$fit + 1.96 * predicciones$se.fit
+limite_superior_logit <- exp(limite_superior) / (1 + exp(limite_superior))
+
+# Se crea un dataframe con los nuevos puntos y sus predicciones
+datos_curva <- data.frame(matematicas = nuevos_puntos,
+                          probabilidad_matricula = predicciones_logit,
+                          limite_inferior_logit = limite_inferior_logit, 
+                          limite_superior_logit = limite_superior_logit)
+
+ggplot(datos, aes(x = matematicas, y = matricula)) +
+      geom_point(aes(color = as.factor(matricula)), shape = "I", size = 3) + 
+      geom_line(data = datos_curva, aes(y = probabilidad_matricula),
+                color = "firebrick") + 
+      geom_line(data = datos_curva, aes(y = limite_inferior_logit),
+                linetype = "dashed") + 
+      geom_line(data = datos_curva, aes(y = limite_superior_logit),
+                linetype = "dashed") + 
+      theme_bw() +
+      labs(title = "Modelo regresión logística matrícula ~ nota matemáticas",
+           y = "P(matrícula = 1 | matemáticas)", y = "matemáticas") + 
+      theme(legend.position = "null") +
+      theme(plot.title = element_text(size = 10))
+
+@
+\subsubsection*{Evaluación del modelo}
+
+
+A la hora de evaluar la validez y calidad de un modelo de regresión logística, se analiza tanto el modelo en su conjunto como los predictores que lo forman.\\
+
+Se considera que el modelo es útil si es capaz de mostrar una mejora explicando las observaciones respecto al modelo nulo (sin predictores). El test Likelihood ratio calcula la significancia de la diferencia de residuos entre el modelo de interés y el modelo nulo. El estadístico sigue una distribución chi-cuadrado con grados de libertad equivalentes a la diferencia de grados de libertad de los dos modelos.
+
+<<>>=
+# Diferencia de residuos
+# En R, un objeto glm almacena la "deviance" del modelo, así como la "deviance"
+# del modelo nulo. 
+dif_residuos <- modelo$null.deviance - modelo$deviance
+
+# Grados libertad
+df <- modelo$df.null - modelo$df.residual
+
+# p-value
+p_value <- pchisq(q = dif_residuos,df = df, lower.tail = FALSE)
+
+paste("Diferencia de residuos:", round(dif_residuos, 4))
+@
+<<>>=
+paste("Grados de libertad:", df)
+@
+<<>>=
+paste("p-value:", p_value)
+@
+<<>>=
+# El mismo cálculo se puede obtener directamente con:
+anova(modelo, test = "Chisq")
+@
+En este caso, el modelo obtenido sí es significativo.
+Para determinar si los predictores introducidos en un modelo de regresión logística contribuyen de forma significativa se emplea el estadístico $Z$ y el test Wald chi-test. Este es el método utilizado para calcular los p-values que se muestran al hacer summary() del modelo. El predictor matemáticas sí contribuye de forma significativa (p-value $=1.03 \mathrm{e}-09$ ).\\
+
+A diferencia de los modelos de regresión lineal, en los modelos logísticos no existe un equivalente a $R^{2}$ que determine exactamente la varianza explicada por el modelo. Se han desarrollado diferentes métodos conocidos como pseudo $R^{2}$ que intentan aproximarse al concepto de $R^{2}$ pero que, aunque su rango
+oscila entre 0 y 1 , no se pueden considerar equivalentes.\\
+- McFadden's: $R_{M c F}^{2}=1-\frac{\ln \tilde{L}(\text { modelo })}{\ln L(\text { modelo nulo })},$ siendo $\hat{L}$ el valor de likelihood de cada modelo. La idea de esta fórmula es que, $l n(\bar{L}),$ tiene un significado análogo a la suma de cuadrados de la regresión lineal. De ahí que se le denomine $p$ seudo $R^{2}$.\\
+- Otra opción bastante extendida es el test de Hosmer-Lemeshow. Este test examina mediante un
+Pearson chi-square test si las proporciones de eventos observados son similares a las
+probabilidades predichas por el modelo, haciendo subgrupos.\\
+
+\subsubsection*{Comparación de clasificación predicha y observaciones}
+
+
+Para este estudio se va a emplear un threshold de 0.5. Si la probabilidad de que la variable adquiera el valor 1 (matrícula) es superior a 0.5, se asigna a este nivel, si es menor se asigna al 0 (no matrícula).
+
+<<>>=
+library(vcd)
+predicciones <- ifelse(test = modelo$fitted.values > 0.5, yes = 1, no = 0)
+matriz_confusion <- table(modelo$model$matricula, predicciones,
+                          dnn = c("observaciones", "predicciones"))
+matriz_confusion
+@
+
+<<>>=
+mosaic(matriz_confusion, shade = T, colorize = T,
+       gp = gpar(fill = matrix(c("green3", "red2", "red2", "green3"), 2, 2)))
+@
+EI modelo es capaz de clasificar correctamente $\frac{140+22}{140+22+27+11}=0.81(81 \%)$ de las observaciones cuando se emplean los datos de entrenamiento. No hay que olvidar que este es el error de entrenamiento, por lo que no es generalizable a nuevas observaciones. Para obtener una estimación más realista hay que calcular el error de test.
+
+\subsubsection*{Conclusión}
+El modelo logistico creado para predecir la probabilidad de que un alumno obtenga matrícula de honor a partir de la nota de matemáticas es en conjunto significativo acorde al Likelihood ratio (p-value = $8.717591 \mathrm{e}-14$ ). El $p$ -value del predictor matematicas es significativo $(p-$ value $=1.03 \mathrm{e}-09)$.
+$$
+\begin{aligned}
+\text { logit (matricula) } &=-9.793942+0.1563404^{*} \text { nota matematicas } \\
+\mathrm{P}(\text { matricula }) &=\frac{e^{-9.793942+0.1563404 * \text { nota matematicas }}}{1+e^{-9.793942+0.1563404 *} \text { nota matermaticas }}
+\end{aligned}
+$$
+
+\subsection*{Regresión logística múltiple}
+\subsubsection*{Introducción}
+La regresión logistica multiple es una extensión de la regresión logistica simple. Se basa en los mismos principios que la regresión logistica simple (explicados anteriormente) pero ampliando el número de preelictores. Los predictores pueden ser tanto contiliuos como categóricos.
+
+\begin{array}{l}
+\ln \left(\frac{p}{1-p}\right)=\beta_{0}+\beta_{1} x_{1}+\beta_{2} x_{2}+\ldots+\beta_{i} x_{i} \\
+logit(Y)=\beta_{0}+\beta_{1} x_{1}+\beta_{2} x_{2}+\ldots+\beta_{i} x_{i}
+\end{array}
+El valor de la probabilidad de $Y$ se puede obtener con la inversa del logaritmo natural:
+$$
+p(Y)=\frac{e^{\beta_{0}+\beta_{1} x_{1}+\beta_{2} x_{2}+\ldots+\beta_{f} x_{i}}}{1+e^{\beta_{0}+\beta_{1} x_{1}+\beta_{2} \not x_{2}+\ldots+\beta_{i} x_{i}}}
+$$
+A la hora de evaluar la validez y calidad de un modelo de regresión logística múltiple, se analiza tanto el
+modelo en su conjunto como los predictores que lo forman. Se considera que el modelo es útil si es
+capaz de mostrar una mejora respecto al modelo nulo, el modelo sin predictores. Existen 3 test estadísticos que cuantifican esta mejora mediante la comparación de los residuos: Likelihood ratio, score y Wald test. No hay garantías de que los 3 lleguen a la misma conclusión, cuando esto ocurre parece ser recomendable $\quad$ basarse $\quad$ en $\quad$ el $\quad$ likelihood $\quad$ ratio.\\
+http://www.ats.ucla.edu/stat/mult_pkg/faq/general/nested_tests.htm.\\
+
+\subsubsection*{Ejemplo1}
+
+
+Un estudio considera que existe relación entre el hecho de que un estudiante asista a clases de repaso de lectura (sí = 1, no = 0), la nota que obtiene en un examen de lectura estándar (realizado antes de iniciar las clases de repaso) y el sexo (hombre = 1, mujer = 0). Se quiere generar un modelo en el que a partir de las variables puntuación del examen y sexo, prediga la probabilidad de que el estudiante tenga que asistir a clases de repaso.
+
+<<>>=
+datos <- data.frame(sexo = c("hombre", "hombre", "mujer", "mujer", "mujer", "hombre",
+                             "mujer", "hombre", "mujer", "mujer", "hombre", "hombre",
+                             "hombre", "hombre", "mujer", "mujer", "hombre", "mujer",
+                             "hombre", "mujer", "hombre", "mujer", "mujer", "hombre",
+                             "hombre", "mujer", "mujer", "mujer", "hombre", "hombre",
+                             "hombre", "mujer", "hombre", "mujer", "hombre", "mujer",
+                             "mujer", "mujer", "mujer", "mujer", "hombre", "mujer",
+                             "hombre", "mujer", "mujer", "mujer", "mujer", "hombre",
+                             "mujer", "hombre", "mujer", "hombre", "mujer", "mujer",
+                             "hombre", "hombre", "hombre", "hombre", "hombre", "hombre",
+                             "hombre", "hombre", "hombre", "mujer", "hombre", "hombre",
+                             "hombre", "hombre", "mujer", "hombre", "mujer", "hombre",
+                             "hombre", "hombre", "mujer", "hombre", "mujer", "mujer",
+                             "hombre", "mujer", "mujer", "mujer", "hombre", "hombre",
+                             "hombre", "hombre", "hombre", "mujer", "mujer", "mujer",
+                             "mujer", "hombre", "mujer", "mujer", "mujer", "mujer",
+                             "mujer", "mujer", "mujer", "mujer","mujer", "mujer",
+                             "hombre", "mujer", "hombre", "hombre", "mujer", "mujer",
+                             "mujer", "hombre","mujer", "hombre", "mujer", "mujer",
+                             "mujer", "hombre", "mujer", "hombre", "mujer", "hombre",
+                             "mujer", "hombre", "mujer", "mujer", "mujer", "mujer",
+                             "mujer", "mujer", "mujer", "mujer", "hombre", "mujer",
+                             "hombre", "hombre", "hombre", "hombre", "hombre", "hombre",
+                             "hombre", "mujer","mujer", "mujer", "hombre", "hombre",
+                             "mujer", "mujer", "hombre", "mujer", "hombre", "hombre",
+                             "hombre", "mujer", "mujer", "mujer", "mujer", "hombre",
+                             "hombre", "mujer", "hombre", "hombre", "mujer", "hombre",
+                             "hombre", "hombre", "hombre", "mujer", "hombre", "hombre",
+                             "mujer", "mujer", "hombre", "hombre", "hombre", "hombre",
+                             "hombre", "mujer", "mujer", "mujer", "mujer", "hombre",
+                             "hombre", "hombre", "mujer", "hombre", "mujer", "hombre",
+                             "hombre", "hombre", "mujer"),
+                    examen_lectura = c(91, 77.5, 52.5, 54, 53.5, 62, 59, 51.5,
+                                       61.5, 56.5, 47.5, 75, 47.5, 53.5, 50, 50,
+                                       49, 59, 60, 60, 60.5, 50, 101, 60, 60,
+                                       83.5, 61, 75, 84, 56.5, 56.5, 45, 60.5,
+                                       77.5, 62.5, 70, 69, 62, 107.5, 54.5, 92.5,
+                                       94.5, 65, 80, 45, 45, 66, 66, 57.5, 42.5,
+                                       60, 64, 65, 47.5, 57.5, 55, 55, 76.5,
+                                       51.5, 59.5, 59.5, 59.5, 55, 70, 66.5,
+                                       84.5, 57.5, 125, 70.5, 79, 56, 75, 57.5,
+                                       56, 67.5, 114.5, 70, 67, 60.5, 95, 65.5,
+                                       85, 55, 63.5, 61.5, 60, 52.5, 65, 87.5,
+                                       62.5, 66.5, 67, 117.5, 47.5, 67.5, 67.5,
+                                       77, 73.5, 73.5, 68.5, 55, 92, 55, 55, 60,
+                                       120.5, 56, 84.5, 60, 85, 93, 60, 65, 58.5,
+                                       85, 67, 67.5, 65, 60, 47.5, 79, 80, 57.5,
+                                       64.5, 65, 60, 85, 60, 58, 61.5, 60, 65,
+                                       93.5, 52.5, 42.5, 75, 48.5, 64, 66, 82.5,
+                                       52.5, 45.5, 57.5, 65, 46, 75, 100, 77.5,
+                                       51.5, 62.5, 44.5, 51, 56, 58.5, 69, 65,
+                                       60, 65, 65, 40, 55, 52.5, 54.5, 74, 55,
+                                       60.5, 50, 48, 51, 55, 93.5, 61, 52.5,
+                                       57.5, 60, 71, 65, 60, 55, 60, 77, 52.5,
+                                       95, 50, 47.5, 50, 47, 71, 65),
+                    clases_repaso = c("0", "0", "0", "0", "0", "0", "0", "0",
+                                      "0", "0", "0", "0", "0", "0", "0", "0",
+                                      "0", "0", "0", "0", "0", "0", "0", "0",
+                                      "0", "0", "0", "0", "0", "0", "0", "0",
+                                      "0", "0", "0", "0", "0", "0", "0", "0",
+                                      "0", "0", "0", "0", "0", "0", "0", "0",
+                                      "0", "0", "0", "0", "0", "0", "0", "0",
+                                      "0", "0", "0", "0", "0", "0", "0", "0",
+                                      "0", "0", "0", "0", "0", "0", "0", "0",
+                                      "0", "0", "0", "0", "0", "0", "0", "0",
+                                      "0", "0", "0", "0", "0", "0", "0", "0",
+                                      "0", "0", "0", "0", "0", "0", "0", "0",
+                                      "0", "0", "0", "0", "0", "0", "0", "0",
+                                      "0", "0", "0", "0", "0", "0", "0", "0",
+                                      "0", "0", "0", "0", "0", "0", "0", "0",
+                                      "0", "0", "0", "0", "0", "0", "0", "0",
+                                      "0", "0", "1", "1", "1", "1", "1", "1",
+                                      "1", "1", "1", "1", "1", "1", "1", "1",
+                                      "1", "1", "1", "1", "1", "1", "1", "1",
+                                      "1", "1", "1", "1", "1", "1", "1", "1",
+                                      "1", "1", "1", "1", "1", "1", "1", "1",
+                                      "1", "1", "1", "1", "1", "1", "1", "1",
+                                      "1", "1", "1", "1", "1", "1", "1", "1",
+                                      "1", "1", "1", "1", "1"))
+
+datos$sexo <- as.factor(datos$sexo)
+datos$clases_repaso  <- as.factor(datos$clases_repaso)
+@
+\subsubsection*{Análisis de las observaciones}
+
+
+Las tablas de frecuencia así como representaciones gráficas de las observaciones son útiles para intuir si las variables independientes escogidas están relacionadas con la variable respuesta y por lo tanto ser buenos predictores
+
+<<>>=
+library(ggplot2)
+tabla <- table(datos$clases_repaso, datos$sexo,
+               dnn = c("clases de repaso","sexo"))
+addmargins(tabla)
+@
+<<>>=
+tabla_frecuencias <- prop.table(tabla)*100
+addmargins(tabla_frecuencias)
+@
+<<>>=
+ggplot(data = datos, aes(x = clases_repaso, y = examen_lectura, colour = sexo)) +
+  geom_boxplot() +
+  theme_bw() +
+  theme(legend.position = "bottom")
+@
+El número de estudiantes en la muestra es semejante para ambos sexos (96, 93). Parece ser mayor el porcentaje de hombres que necesitan clases de repaso (19.04762, 12.16931). El promedio de las notas de lectura de los estudiantes que requieren de clases particulares es menor que el de los que no requieren clases. En vista de estos datos, tiene sentido considerar el sexo y la nota como posibles predictores.
+\subsubsection*{Generar el modelo de regresión logística}
+<<>>=
+modelo_glm <- glm(clases_repaso ~ examen_lectura + sexo, data = datos,
+                  family = "binomial")
+summary(modelo_glm)
+@
+Acorde al modelo, el logaritmo de odds de que un estudiante necesite clases de repaso esta negativamente relacionado con la puntuación obtenida en el examen de lectura (coeficiente parcial = $-0.02617),$ siento significativa esta relación (p-value $=0.0324)$. También existe una relación significativa positiva entre el fogaritmo de odds de necesitar clases de repaso y el género del estudiante (p-value = 0.0462), siendo, para un mismo resultado en el examen de lectura, mayor si el estudiante es hombre. En concreto los odds de que un hombre requiera clases de repaso son $e^{0.64749}=1.910739$ mayores que
+los de las mujeres. (Esto se puede ver gráficamente representando el modelo para hombres y mujeres).
+Además del valor estimado de los coeficientes parciales de correlación calculados por el modelo, es conveniente generar sus correspondientes intervalos de confianza. En el caso de regresión logística, estos intervalos suelen calcularse basados en profile likelihood (en $\mathbf{R}$ es el método por defecto si se
+tiene instalado el paquete MASS).
+
+<<>>=
+predict(modelo_glm, data.frame(examen_lectura=77.6, sexo="mujer"),
+        type="response" )
+@
+<<>>=
+predict(modelo_glm, data.frame(examen_lectura=35.6, sexo="hombre"),
+        type="response" )
+@
+<<>>=
+AIC(modelo_glm)
+@
+
+<<>>=
+confint(modelo_glm)
+@
+<<>>=
+# En caso de querer los intervalos basados en el error estándar.
+confint.default(modelo_glm)
+@
+\subsubsection*{Representación gráfica del modelo}
+
+
+Al tratarse de un modelo con 2 predictores, no se puede obtener una representación en 2D en la que se incluyan ambos predictores a la vez. Sí es posible representar la curva del modelo logístico cuando se mantiene constante uno de los dos predictores. Por ejemplo, al representar las predicciones del modelo diferenciando entre hombres y mujeres (fijando el valor del predictor sexo) se aprecia que la curva de los hombres siempre está por encima. Esto se debe a que, como indica el coeficiente parcial de correlación del predictor sexo, para una misma nota en el examen de lectura, el logaritmo de ODDs de necesitar clases de repaso es 0.64749 veces mayor en hombres.
+<<>>=
+library(ggplot2)
+# Para graficar los valores en ggplot junto con la curva, la variable respuesta
+# tiene que ser numérica en lugar de factor.
+datos$clases_repaso <- as.numeric(as.character(datos$clases_repaso))
+
+
+# Se crea un dataframe que contenga la probabilidad de que se necesiten clases
+# de repaso dada una determinada nota en el examen de lectura y siendo hombre.
+# Vector con nuevos valores interpolados en el rango de observaciones.
+nuevos_valores_examen <- seq(from = min(datos$examen_lectura),
+                             to = max(datos$examen_lectura), by = 0.5)
+sexo <- as.factor(rep(x = "hombre", length(nuevos_valores_examen)))
+# Predicciones de los nuevos puntos según el modelo. type = "response" devuelve
+# las predicciones en forma de probabilidad en lugar de en log_ODDs.
+predicciones <- predict(object = modelo_glm,
+                        newdata=data.frame(examen_lectura=nuevos_valores_examen,
+                                           sexo = sexo),
+                        type = "response")
+# Se crea un data frame con los nuevos puntos y sus predicciones para graficar
+# la curva.
+datos_curva_hombre <- data.frame(examen_lectura = nuevos_valores_examen, 
+                                 sexo = sexo,
+                                 clases_repaso = predicciones)
+
+# Mismo proceso para mujeres (sexo = 0).
+nuevos_valores_examen <- seq(from = min(datos$examen_lectura),
+                             to = max(datos$examen_lectura), by = 0.5)
+sexo <- as.factor(rep("mujer", length(nuevos_valores_examen)))
+predicciones <- predict(object = modelo_glm,
+                        newdata=data.frame(examen_lectura=nuevos_valores_examen,
+                                           sexo = sexo),
+                        type = "response")
+datos_curva_mujer <- data.frame(examen_lectura = nuevos_valores_examen,
+                                sexo = sexo, clases_repaso = predicciones)
+
+# Se unifican los dos dataframe.
+datos_curva <- rbind(datos_curva_hombre, datos_curva_mujer)
+
+ggplot(data = datos, aes(x = examen_lectura, y = as.numeric(clases_repaso),
+                         color = sexo)) +
+    geom_point() +
+    geom_line(data = datos_curva, aes(y = clases_repaso)) + 
+    geom_line(data = datos_curva, aes(y = clases_repaso)) +
+    theme_bw() +
+    labs(title = "P. clases repaso en función de nota lectura y sexo",
+         y = "P(clase de repaso)") +
+    theme(plot.title = element_text(size = 10))
+@
+\subsubsection*{Evaluación del modelo}
+
+
+Likelihood ratio:
+
+<<>>=
+# Diferencia de residuos
+dif_residuos <- modelo_glm$null.deviance - modelo_glm$deviance
+
+# Grados libertad
+df <- modelo_glm$df.null - modelo_glm$df.residual
+# p-value
+p_value <- pchisq(q = dif_residuos,df = df, lower.tail = FALSE)
+
+paste("Diferencia de residuos:", round(dif_residuos, 4))
+@
+<<>>=
+paste("Grados de libertad:", df)
+@
+<<>>=
+paste("p-value:", round(p_value, 4))
+@
+El modelo en conjunto sí es significativo y, acorde a los p-values mostrados en el summary(), también es significativa la contribución al modelo de ambos predictores.
+
+\subsubsection*{Comparación de las predicciones con las observaciones}
+
+
+Para este estudio se va a emplear un threshold de 0.5. Si la probabilidad predicha de asistir a clases de repaso es superior a 0.5 se asigna al nivel 1 (sí asiste), si es menor se asigna al nivel 0 (no clases de repaso).
+
+<<>>=
+predicciones <- ifelse(test = modelo_glm$fitted.values > 0.5, yes = 1, no = 0)
+matriz_confusion <- table(modelo_glm$model$clases_repaso, predicciones,
+                          dnn = c("observaciones", "predicciones"))
+matriz_confusion
+@
+<<>>=
+mosaic(matriz_confusion, shade = T, colorize = T,
+       gp = gpar(fill = matrix(c("green3", "red2", "red2", "green3"), 2, 2)))
+@
+El modelo es capaz de clasificar correctamente $\frac{129+3}{129+3+56+1}=0.698(69.8 \%)$ de las observaciones de entrenamiento. Si se analiza en detalle cómo se distribuye el error, se aprecia que el modelo solo ha sido capaz de identificar correctamente a 3 de los 59 alumnos que realmente asisten a clases de repaso. EI porcentaje de falsos negativos es muy alto. Seleccionar otro threshold puede mejorar la exactitud del
+modelo.
+
+<<>>=
+library(vcd)
+predicciones <- ifelse(test = modelo_glm$fitted.values > 0.45, yes = 1, no = 0)
+matriz_confusion <- table(modelo_glm$model$clases_repaso, predicciones,
+                          dnn = c("observaciones", "predicciones"))
+matriz_confusion
+@
+Conclusion
+El modelo logístico creado para predecir la probabilidad de que un alumno tenga que asistir a clases de repaso a partir de la nota obtenida en un examen de lectura y el sexo del alumno es en conjunto significativo acorde al $L$ ikelihood ratio (p-value $=0.0066$ ). EI p-value de ambos predictores es significativo (examen_lectura $=0.0324,$ sexo1 $=0.0462$ ). EI ratio de error obtenido empleando las observaciones con las que se ha entrenado el modelo muestra un porcentaje de falsos negativos muy
+alto.
+$$
+\begin{array}{l}
+\operatorname{logit}(\text { clases de repaso })=0.53616-0.02617^{*} \text { examen lectura }+0.64749^{*} \text { sexo } \\
+\qquad \mathrm{P}(\text { clases de repaso })=\frac{e^{0.53616-0.02617 \text { examen lectura }+0.64749 \mathrm{sexo}}}{1+e^{0.53616-0.02617} \text { examen lectura }+0.64749 \mathrm{sexo}}
+\end{array}
+$$
+No hay que olvidar que los errores calculados son de entrenamiento, por lo que no son generalizables a nuevas observaciones. Para obtener una estimación más realista hay que calcular el error de test.
+\end{document}

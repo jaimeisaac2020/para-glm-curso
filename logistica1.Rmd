@@ -1,0 +1,345 @@
+---
+title: "logistica1"
+author: "Jaime Isaac Peña Mejía y Gerson Trejos"
+date: "25/2/2021"
+output: 
+  pdf_document: 
+    toc: yes
+    fig_caption: yes
+    number_sections: yes
+    keep_tex: yes
+    fig_crop: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+require(tidyverse)
+library(psych)
+require(MASS)
+require(mosaic)
+data(Pima.tr)
+head(Pima.tr)
+attach(Pima.tr)
+
+
+```
+# REGRESIÓN LOGÍSTICA SIMPLE
+```{r}
+#y=as.numeric(type)-1 is needed for the plot
+ggplot(Pima.tr, aes(x=bmi, y=as.numeric(type)-1)) + geom_point() +
+geom_smooth(method="glm",
+method.args=list(family="binomial"(link=logit)), se=TRUE) +
+theme_bw()
+```
+
+```{r}
+diabetes.model <- glm(type~bmi,data=Pima.tr,family="binomial"(link=logit))
+summary(diabetes.model)
+
+```
+
+Si solo observa el valor $p$, el resultado no sorprendente es que hay un relación entre el índice de masa corporal y la diabetes.
+
+Profundizando en la salida con más detalle, nuestra ecuación de regresión logística es:
+
+$$ ln(\frac{\hat{p}}{1-\hat{p}})=-4.11156+0.10482X $$
+
+Suponga que queremos hacer una predicción para una mujer en esta población con un índice de masa corporal de $X= 30$. Sustituya la ecuación para obtener su logit
+
+$$
+ln(\frac{\hat{p}}{1-\hat{p}})=-4.11156+0.10482(30)=-0.96696
+$$
+
+Observe que su logit (log odds-ratio) es negativo. Esto será cierto siempre que la probabilidad predicha $\hat{p}<0.5$, por lo que en este escenario usted querría un logit negativo. Cuando $\hat{p}>0.5$, el logit será positivo, y si $\hat{p}= 0.5$ entonces el logit es
+
+$$
+ln(\frac{0.5}{1-0.5})=ln(1)=0
+$$
+Probablemente preferiria una probabilidad o un porcentaje en lugar de un logit.Tome la funcion logit inversa para obtener esto.  
+$$\hat{p}=\frac{exp(-0.96696)}{1+exp(-0.96696)}=0.275 $$  
+Estamos pronosticando un $27.5\%$ de probabilidad de diabetes tipo II cuando el índice de masa corporal es igual a $X=30$.  
+
+Prestando atención al parámetro de "pendiente" $\beta_1$, su estimación es $0.10482$. Eso es positivo, lo que significa que bmi está asociado positivamente con el evento, que tiene diabetes tipo II. Por cada aumento de 1 unidad en X (es decir, alguien gana peso suficiente para que el bmi suba en 1), el aumento previsto en el logit es 0.10482.  
+
+Si esto no significa mucho para usted, entonces podemos exponencializar la pendiente para convertir el registro de la proporción de log  probabilidades en solo la proporción de probabilidades.  
+
+$$exp(\hat{\beta_1})=e^{\hat{\beta_1}}=e^{0.10428}=1.11 $$
+Entonces, la razón de posibilidades es $1.11$. Esto significa que por cada aumento de 1 en el bmi, la probabilidad
+de tener diabetes tipo II aumenta en un $11\%$. Si la razón de posibilidades era exactamente 1, eso
+indicaría una probabilidad igual (es decir, la variable no estaría asociada con la
+evento), y las razones de probabilidad por debajo de 1 indican que la probabilidad disminuye a medida que la variable
+aumenta. Si hubo un ejercicio de variable en el conjunto de datos que fue
+asociado con tener diabetes, esperaríamos que su $\beta$ fuera negativo, por lo que el
+La razón de posibilidades estaría entre 0 y 1.  
+
+Si quisiéramos observar el impacto de un aumento de 10 puntos en el bmi  ($\Delta x=10$)  
+
+$exp(\Delta x \hat{\beta_1} ) = exp(10\times 0.10428) = e^{1.0428} = 2.85$    
+Las probabilidades(odss) de tener diabetes casi se triplicarían si el IMC aumenta en 10 unidades.  
+
+  
+  
+#  Test de Wald para regresión logística  
+
+R de forma predeterminada utiliza la prueba de Wald en la tabla de resumen para un lineal generalizado modelo. Repitamos esa tabla
+
+```{r}
+summary(diabetes.model)
+```
+R informa el estadístico de Wald $z$, que  es la raíz cuadrada de la prueba de Wald $\chi^2$
+discutido en el capítulo 21. Esto se basa en el hecho matemático de que si
+al cuadrado de la distribución normal estándar $Z$, se obtiene una distribución chi-cuadrado
+con $df=1$.  
+
+Las hipótesis son:  
+
+\begin{equation}
+H_0:\beta_{1}=0  \hspace{1cm} \textup{vs.}  \hspace{1cm} H_1:\beta_{1}\not= 0
+\end{equation}
+
+
+
+o en términos de odds-ratio $\theta$    
+
+\begin{equation}
+H_0:\theta_{1}=0  \hspace{1cm} \textup{versus} \hspace{1cm} H_1:\theta_{1}\not= 0
+\end{equation}  
+
+Observe que el estadístico $z$ dado es la estimación dividida por el error estándar y el p-valor  se basa en la distribución normal estándar.  
+
+$$z=\frac{\hat{\beta_1}}{S_{\hat{\beta_1}}}=\frac{0.10482}{0.02738}=3.849 $$
+
+Existe una relación significativa entre bmi y diabetes tipo II:   
+
+Wald $z=3.829$,$p=0.000129$  
+
+Algunos paquetes de software darán la prueba de chi-cuadrado de Wald en su lugar, que es solo nuestra estadística al cuadrado.  
+
+$$ \chi^2=\left(\frac{\hat{\beta_1}}{{S_{\beta_1}}}\right)^2=\left(\frac{0.10482}{0.02738}\right)^2=14.656$$
+Dado que esta estadística es chi-cuadrado con $df=1$, el valor de $p$ es:   
+
+
+```{r}
+1-pchisq(14.656,df=1)
+```
+El intervalo de confianza de Wald para $\beta_1$ se calcula de manera similar a muchos otros intervalos de confianza que hemos visto  
+
+$$\beta_1 \pm z(S_{\beta_1})$$  
+
+Para nuestro al $95\%$ de confianza:  
+
+$$0.10482 \pm 1.96 \times 0.02738 $$  
+$$0.10482 \pm 0.05366 $$ 
+$$\left( 0.05062,0.15794\right)$$  
+
+Exponencia este intervalo para obtener un intervalo de confianza para la razón de posibilidades $\theta$  
+
+
+
+$$\left(e^{0.05062}, e^{0.05062}\right) $$
+
+Observe que el IC completo para $\beta_1$ está por encima de cero y, de manera equivalente, el IC completo para $\theta$ es
+por encima de uno. Esto indica una relación significativa.  
+
+# Prueba de razón de verosimilitud.  
+
+
+La inferencia para modelos lineales generalizados también se puede realizar con una razón de verosimilitud.  
+
+Esto implicará el análisis de la tabla de deviance.  
+
+```{r}
+library(car)
+Anova(diabetes.model,type="II",test="LR")
+```
+
+Leyendo de la salida, vemos que $\chi^2=16.445$ con $df=1$, $p< 0.0001$.  
+
+Observe que el estadístico de la prueba de chi cuadrado NO es igual al chi cuadrado de Wald prueba calculada anteriormente.    
+
+$$\chi^2=-2ln\left(\frac{\mathcal{L_R}}{\mathcal{L_F}}\right) $$  
+
+$$\chi^2=-2\left(ln\mathcal{L_R}-ln\mathcal{L_F}\right) $$
+Hasta ahora, solo hemos ajustado el tipo de modelo completo type ~ bmi. Ajustemos el modelo reducido
+escriba ~ 1 (es decir, un modelo de solo intercepción o "nulo") y calculamos las probabilidades logarítmicas y la deviance con R.  
+
+
+
+```{r}
+diabetes.null <- glm(type~1,data=Pima.tr,family="binomial"(link=logit))
+logLik(diabetes.null)
+```
+```{r}
+logLik(diabetes.model)
+```
+```{r}
+diff <- logLik(diabetes.null)[1] - logLik(diabetes.model)[1]
+chisq.LRT <- -2*diff
+chisq.LRT
+```
+
+```{r}
+pval.LRT <- 1-pchisq(chisq.LRT,df=1)
+pval.LRT
+```
+Observe que obtenemos la misma estadística de prueba proporcionada por el comando Anova.
+También mire nuevamente la parte inferior del resumen.  
+
+```{r}
+summary(diabetes.model)
+```
+Observe que la diferencia de la desviación nula (256.41) y la desviación residual
+(239.97) es 16.44, nuestro estadístico de prueba de chi-cuadrado con $199-198 = 1df$ El
+La desviación nula es -2 veces la forma logarítmica del modelo reducido, mientras que la
+la desviación es -2 veces la probabilidad logarítmica del modelo completo. Esto es análogo a
+el concepto de "SS extra" de las pruebas F parciales.  
+
+# REGRESIÓN LOGÍSTICA MÚLTIPLE  
+
+Veamos cómo ajustar varios modelos de regresión logística a un conjunto de datos. Tomemos
+el conjunto de datos Pima.tr y cree una variable categórica Mom donde una mujer
+con npreg> 0 se clasifica como madre (sin tener en cuenta la posibilidad de que algunos
+los embarazos pueden no haber resultado en un nacimiento vivo).  
+
+```{r}
+Pima.tr <- Pima.tr %>%
+mutate(Mom=ifelse(npreg==0,"No","Yes"))
+xtabs(~type+Mom,data=Pima.tr)
+```
+
+Calculemos la razón de posibilidades(odss-ratio) de la tabla :  
+
+$$ OR=\dfrac{\frac{a}{b}}{\frac{c}{d}}=\dfrac{\frac{16}{116}}{\frac{12}{256}}=0.6437$$
+Tomaremos el recíproco para facilitar la interpretación, $\frac{1}{OR}=\frac{1}{0.6437}=1.5536$    
+
+Las probabilidades
+de tener diabetes tipo II son 1.55 veces mayores para las no madres que para las madres.
+Observe que aproximadamente el $43\%$ de las no madres y el  
+$33\%$ de las madres tienen el Tipo II diabetes.  
+
+Primero, encuentre un intervalo de confianza para el logaritmo de la razón de posibilidades(logit)  
+
+$$ln(OR)\pm z\sqrt{\frac{1}{a}+\frac{1}{b}+\frac{1}{c}+\frac{1}{d} }$$
+$$ln(1.5536)\pm (1.96)\sqrt{\frac{1}{16}+\frac{1}{116}+\frac{1}{12}+\frac{1}{56}} $$
+
+$$\left( 0.4406 \pm 0.8316\right) $$
+$$(-0.3730, 1.2542)$$  
+
+Este intervalo de confianza contiene 0, por lo que la variable Mom no es un predictor significativo
+de la diabetes tipo II. Si prefiere el IC en términos de razón de posibilidades, exponencial.  
+
+$$ \left( e^{-0.3730} , e^{1.2542}\right) $$  
+
+
+
+
+$$\left( 0.6887, 3.5050\right) $$  
+
+El IC incluye el valor 1 (que indica que no hay efecto para la razón de posibilidades).  
+
+Usemos R para ajustar el tipo de type~Mom  
+
+```{r}
+mod0<- glm(type~1,data=Pima.tr,family="binomial"(link=logit))
+mod1<- glm(type~Mom,data=Pima.tr,family="binomial"(link=logit))
+summary(mod1)
+```
+
+```{r}
+Anova(mod1,test="LR")
+```
+
+```{r}
+confint(mod1)
+```
+Vemos que Mom no es significativa con la prueba de Wald o la razón de verosimilitud
+prueba. El intervalo de confianza se calcula con una fórmula más compleja que
+dado aquí, por lo que los resultados no son idénticos. Los signos son opuestos porque mi
+La tabla usó **No** como un éxito y el ajuste glm de R usó **Sí** como un éxito.
+Hagamos una regresión logística múltiple y hagamos una predicción. Usaré 3 predictores
+bmi, age y Mom.  
+
+
+```{r}
+mod2 <- glm(type~bmi+age+Mom,data=Pima.tr,family="binomial"(link=logit))
+summary(mod2)
+```
+Observe que el bmi y la edad son predictores significativos de bmi con valores pendiente positivas.
+ Lo que indica un mayor riesgo a medida que aumenta el bmi o la edad. Mom no es
+significativo en $\alpha=0.05$, pero tiene una pendiente negativa que indica que las madres fueron menos probabilidades de ser diabéticas que las no madres.  
+
+
+Si una mujer tiene 40 años, un bmi de 28 y es madre, calculemos su
+probabilidad de diabetes tipo II.  
+
+
+
+$$ln\left(\frac{\hat{\pi}}{1-\hat{\pi}}\right)=-5.76192 + 0.09703(28) + 0.07830(40)-0.83471(1) = -0.74779 $$  
+
+
+
+Su logit negativo indica menos del $50\%$ de posibilidades de diabetes. Tomando el logit inverso:  
+
+
+$$\frac{e^{-0.74779}}{1+e^{-0.74779}}=0.321 $$ 
+
+
+La probabilidad es de aproximadamente el $32\%$. Ahora hazlo para una persona con las mismas estadísticas,
+excepto que no sea madre.  
+
+
+
+$$ ln\left(\frac{\hat{\pi}}{1-\hat{\pi}}\right)=-5.76192 + 0.09703(28) + 0.07830(40)-0.83471(0) = 0.08692$$  
+
+
+Ahora el logit es positivo, por lo que la probabilidad será superior al $50\%$.   
+
+
+
+$$\frac{e^{0.08692}}{1+e^{0.08692}}=0.522 $$  
+
+
+
+Una prueba de razón de verosimilitud que compara el modelo 1 (solo con mamá) y el modelo 2 (con
+bmi, age y Mom) tendrá $df=2$ con dos parámetros adicionales, y tendríamos esperar que el segundo modelo sea una mejora significativa.  
+
+
+
+```{r}
+anova(mod1,mod2,test="LR")
+```
+
+Vemos que hay una mejora significativa, con $\chi^2=42.353$, $df=2$ y $p=0.0001$.  
+
+Tal vez no deberíamos haber creado una variable categórica como Mom, pero solo usar
+npreg. Encajaré un tercer tipo de type ~ bmi + age + npreg.  
+
+```{r}
+mod3 <- glm(type~bmi+age+npreg,data=Pima.tr,family="binomial"(link=logit))
+summary(mod3)
+```
+
+Algo extraño, ya que npreg no es significativo, pero el signo de su estimación es positivo,
+en lugar de negativo para Mom. Puede haber alguna explicación médica. No soy
+conciente de.  
+
+
+Por último, suponga que quisiera comparar los modelos 2 y 3. No están anidados, por lo que
+necesita usar AIC en su lugar. Crearé una tabla AIC para los cuatro modelos (incluidos el modelo nulo).
+
+```{r}
+require(bbmle)
+AICtab(mod0,mod1,mod2,mod3,base=TRUE,delta=TRUE,weights=TRUE,sort=TRUE)
+```
+Al AIC parece gustarle un poco más el Model 2 que el Model 3, aunque no hasta cierto punto
+eso se consideraría sustancial. El modelo 0 y el modelo 1 son muy débiles, con $\Delta_i>10$ y pesos diminutos Akaike $w_i<0.001$.  
+
+
+```{r}
+predict(object = mod2, newdata = data.frame(bmi =30.3 ,age=27,Mom="No"))
+```
+
+
