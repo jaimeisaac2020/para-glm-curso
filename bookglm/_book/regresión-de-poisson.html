@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 4 Regresión de Poisson | A Minimal Book Example</title>
+  <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 4 Regresión de Poisson | A Minimal Book Example" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 4 Regresión de Poisson | A Minimal Book Example" />
+  
+  <meta name="twitter:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  
+
+<meta name="author" content="Yihui Xie" />
+
+
+<meta name="date" content="2021-04-20" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="regresión-logística-1.html"/>
+<link rel="next" href="predecir-a-partir-del-modelo.html"/>
+<script src="libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Prerequisites</a></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a></li>
+<li class="chapter" data-level="3" data-path="regresión-logística-1.html"><a href="regresión-logística-1.html"><i class="fa fa-check"></i><b>3</b> Regresión Logística 1</a></li>
+<li class="chapter" data-level="4" data-path="regresión-de-poisson.html"><a href="regresión-de-poisson.html"><i class="fa fa-check"></i><b>4</b> Regresión de Poisson</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="regresión-de-poisson.html"><a href="regresión-de-poisson.html#qué-son-los-modelos-de-regresión-de-poisson"><i class="fa fa-check"></i><b>4.1</b> ¿Qué son los modelos de regresión de Poisson?</a></li>
+<li class="chapter" data-level="4.2" data-path="regresión-de-poisson.html"><a href="regresión-de-poisson.html#en-qué-se-diferencia-la-distribución-de-poisson-de-la-distribución-normal"><i class="fa fa-check"></i><b>4.2</b> ¿En qué se diferencia la distribución de Poisson de la distribución normal?</a></li>
+<li class="chapter" data-level="4.3" data-path="regresión-de-poisson.html"><a href="regresión-de-poisson.html#modelos-de-regresión-de-poisson-y-glmgeneralized-linear-models"><i class="fa fa-check"></i><b>4.3</b> Modelos de regresión de Poisson y GLM(Generalized Linear MOdels)</a></li>
+<li class="chapter" data-level="4.4" data-path="regresión-de-poisson.html"><a href="regresión-de-poisson.html#modelado-de-regresión-de-poisson-utilizando-datos-de-recuento."><i class="fa fa-check"></i><b>4.4</b> Modelado de regresión de Poisson utilizando datos de recuento.</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="regresión-de-poisson.html"><a href="regresión-de-poisson.html#empecemos-a-modelar"><i class="fa fa-check"></i><b>4.4.1</b> ¡Empecemos a modelar!</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="regresión-de-poisson.html"><a href="regresión-de-poisson.html#interpretación-del-modelo-de-poisson"><i class="fa fa-check"></i><b>4.5</b> Interpretación del modelo de Poisson</a></li>
+<li class="chapter" data-level="4.6" data-path="regresión-de-poisson.html"><a href="regresión-de-poisson.html#comparando-los-modelos"><i class="fa fa-check"></i><b>4.6</b> Comparando los modelos:</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="predecir-a-partir-del-modelo.html"><a href="predecir-a-partir-del-modelo.html"><i class="fa fa-check"></i><b>5</b> Predecir a partir del modelo</a></li>
+<li class="chapter" data-level="6" data-path="visualización-de-hallazgos-usando-jtools.html"><a href="visualización-de-hallazgos-usando-jtools.html"><i class="fa fa-check"></i><b>6</b> Visualización de hallazgos usando jtools</a></li>
+<li class="chapter" data-level="7" data-path="modelado-de-regresión-de-poisson-utilizando-datos-de-tasas.html"><a href="modelado-de-regresión-de-poisson-utilizando-datos-de-tasas.html"><i class="fa fa-check"></i><b>7</b> Modelado de regresión de Poisson utilizando datos de tasas</a></li>
+<li class="chapter" data-level="8" data-path="conclusión.html"><a href="conclusión.html"><i class="fa fa-check"></i><b>8</b> Conclusión</a></li>
+<li class="chapter" data-level="9" data-path="applications.html"><a href="applications.html"><i class="fa fa-check"></i><b>9</b> Applications</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="applications.html"><a href="applications.html#example-one"><i class="fa fa-check"></i><b>9.1</b> Example one</a></li>
+<li class="chapter" data-level="9.2" data-path="applications.html"><a href="applications.html#example-two"><i class="fa fa-check"></i><b>9.2</b> Example two</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="final-words.html"><a href="final-words.html"><i class="fa fa-check"></i><b>10</b> Final Words</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">A Minimal Book Example</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="regresión-de-poisson" class="section level1" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Regresión de Poisson</h1>
+<div id="qué-son-los-modelos-de-regresión-de-poisson" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> ¿Qué son los modelos de regresión de Poisson?</h2>
+<p>Los modelos de <em>regresión de Poisson</em> se utilizan mejor para modelar eventos en los que se cuentan los resultados. O, más específicamente, contar datos: datos discretos con valores enteros no negativos que cuentan algo, como la cantidad de veces que ocurre un evento durante un período de tiempo determinado o la cantidad de personas en la fila en la tienda de comestibles.</p>
+<p>Los datos de recuento también se pueden expresar como datos de tasa, ya que el número de veces que ocurre un evento dentro de un período de tiempo se puede expresar como una cuenta sin procesar (es decir, “En un día, comemos tres comidas”) o como una tasa (“Comemos a una tasa de 0,125 comidas por hora”).</p>
+<p><strong>La regresión de Poisson</strong> nos ayuda a analizar tanto los datos de recuento como los datos de tasa al permitirnos determinar qué variables explicativas (valores X) tienen un efecto en una variable de respuesta dada (valor Y, el recuento o una tasa). Por ejemplo, una tienda de comestibles podría aplicar la regresión de Poisson para comprender y predecir mejor la cantidad de personas en una línea.</p>
+</div>
+<div id="en-qué-se-diferencia-la-distribución-de-poisson-de-la-distribución-normal" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> ¿En qué se diferencia la distribución de Poisson de la distribución normal?</h2>
+<p>La distribución de Poisson se usa más comúnmente para encontrar la probabilidad de que ocurran eventos dentro de un intervalo de tiempo dado. Dado que estamos hablando de un recuento, con la distribución de Poisson, el resultado debe ser 0 o superior; no es posible que un evento ocurra un número negativo de veces. Por otro lado, la distribución normal es una distribución continua para una variable continua y podría resultar en un valor positivo o negativo:</p>
+<table>
+<colgroup>
+<col width="38%" />
+<col width="61%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Distribución Poisson</th>
+<th>Distribución Normal</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Se utiliza para contar datos o tasa(razón) de datos.</td>
+<td>Usada para variables contínuas</td>
+</tr>
+<tr class="even">
+<td>Sesgada según los valores de lambda</td>
+<td>Curva en forma de campana que es simétrica alrededor de la media</td>
+</tr>
+<tr class="odd">
+<td>Varianza igual que la media</td>
+<td>La varianza y la media son parámetros diferentes; media, mediana y moda son iguales</td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Podemos generar una distribución normal en R así:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="regresión-de-poisson.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a sequence -3 to +3 with .05 increments</span></span>
+<span id="cb3-2"><a href="regresión-de-poisson.html#cb3-2" aria-hidden="true" tabindex="-1"></a>xseq<span class="ot">&lt;-</span><span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>, .<span class="dv">05</span>) </span>
+<span id="cb3-3"><a href="regresión-de-poisson.html#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># generate a Probability Density Function</span></span>
+<span id="cb3-4"><a href="regresión-de-poisson.html#cb3-4" aria-hidden="true" tabindex="-1"></a>densities <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(xseq, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb3-5"><a href="regresión-de-poisson.html#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the graph</span></span>
+<span id="cb3-6"><a href="regresión-de-poisson.html#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(xseq, densities, <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Density&quot;</span>, <span class="at">type =</span> <span class="st">&quot;l&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div>
+<p><img src="bookglm_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="regresión-de-poisson.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># col: changes the color of line</span></span>
+<span id="cb4-2"><a href="regresión-de-poisson.html#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># &#39;xlab&#39; and &#39;ylab&#39; are labels for x and y axis respectively</span></span>
+<span id="cb4-3"><a href="regresión-de-poisson.html#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># type: defines the type of plot. &#39;l&#39; gives a line graph</span></span>
+<span id="cb4-4"><a href="regresión-de-poisson.html#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># lwd: defines line width</span></span></code></pre></div>
+<p>En R, <strong>dnorm (secuencia, media, std.dev)</strong> se usa para trazar la función de densidad de probabilidad (PDF) de una distribución normal.</p>
+<p>Para comprender la distribución de Poisson, considere el siguiente problema del libro de texto Tutorial R de Chi Yau:</p>
+<p><strong>Si hay 12 automóviles que cruzan un puente por minuto en promedio, ¿cuál es la probabilidad de que diecisiete o más automóviles crucen el puente en un minuto dado?</strong></p>
+<p>Aquí, la cantidad promedio de automóviles que cruzan un puente por minuto es <span class="math inline">\(\mu=12\)</span>.</p>
+<p><code>ppois(q, u, lower.tail = TRUE)</code> es una función R que da la probabilidad de que una variable aleatoria sea menor o igual a un valor.</p>
+<p>Tenemos que encontrar la probabilidad de tener diecisiete o más autos, por lo que usaremos <code>lower.trail = FALSE</code> y estableceremos q en 16:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="regresión-de-poisson.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ppois</span>(<span class="dv">16</span>, <span class="dv">12</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<pre><code>## [1] 0.101291</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="regresión-de-poisson.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># lower.tail = logical; if TRUE (default) then probabilities are P[X &lt; = x], otherwise, P[X &gt; x].</span></span></code></pre></div>
+<p>Para obtener un porcentaje, simplemente necesitamos multiplicar esta salida por 100. Ahora tenemos la respuesta a nuestra pregunta: hay una probabilidad del <span class="math inline">\(10.1\%\)</span> de tener 17 o más autos cruzando el puente en cualquier minuto en particular.</p>
+</div>
+<div id="modelos-de-regresión-de-poisson-y-glmgeneralized-linear-models" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> Modelos de regresión de Poisson y GLM(Generalized Linear MOdels)</h2>
+<p>Los modelos lineales generalizados son modelos en los que las variables de respuesta siguen una distribución diferente a la distribución normal. Eso contrasta con los modelos de regresión lineal, en los que las variables de respuesta siguen una distribución normal. Esto se debe a que los modelos lineales generalizados tienen variables de respuesta que son categóricas, como Sí, No; o Grupo A, Grupo B y, por lo tanto, no van de <span class="math inline">\(\infty\)</span> a <span class="math inline">\(\infty\)</span>. Por tanto, la relación entre la respuesta y las variables predictoras puede no ser lineal. En GLM</p>
+<p><span class="math inline">\(y_i=\alpha+\beta_1X_{1i}+\beta_2X_{2i}+\ldots+\beta_pX_{pi}+e_i\)</span>, <span class="math inline">\(i=1,2,\ldots,n\)</span></p>
+<p>La variable de respuesta <span class="math inline">\(y_i\)</span> se modela mediante una función lineal de variables predictoras y algún término de error.</p>
+<p>Un <strong>modelo de regresión de Poisson</strong> es un modelo lineal generalizado (GLM) que se utiliza para modelar datos de recuento y tablas de contingencia. La salida <span class="math inline">\(Y\)</span> (recuento) es un valor que sigue la distribución de Poisson. Asume el logaritmo de los valores esperados (media) que pueden modelarse en forma lineal mediante algunos parámetros desconocidos.</p>
+<p>Para transformar la relación no lineal en forma lineal, se utiliza una función de enlace que es el logaritmo de la regresión de Poisson. Por esa razón, un modelo de regresión de Poisson también se denomina modelo log-lineal. La forma matemática general del modelo de regresión de Poisson es:</p>
+<p><span class="math display">\[log(y)=\alpha +\beta_1X_1+\beta_2X_2+\cdots+\beta_pX_p\]</span></p>
+<p>donde,</p>
+<ul>
+<li><p><span class="math inline">\(y\)</span> es la variable respuesta</p></li>
+<li><p><span class="math inline">\(\alpha\)</span> y <span class="math inline">\(\beta\)</span>: son coeficientes numéricos, <span class="math inline">\(\alpha\)</span> es la intersección, a veces <span class="math inline">\(\alpha\)</span> también está representada por <span class="math inline">\(\beta_0\)</span>, es lo mismo.</p></li>
+<li><p>x es la variable predictora/explicativa</p></li>
+</ul>
+<p>Los coeficientes se calculan utilizando métodos como la <strong>Estimación de máxima verosimilitud (MLE)</strong> o la cuasi-verosimilitud máxima.</p>
+<p>Considere una ecuación con una variable predictora y una variable de respuesta:</p>
+<p><span class="math display">\[log(y)=\alpha+\beta(x) \]</span></p>
+<p>Esto es equivalente a,</p>
+<p><span class="math display">\[y=e^{\alpha+\beta X} \]</span></p>
+<p><strong>Nota:</strong> En los modelos de regresión de Poisson, las variables predictoras o explicativas pueden tener una combinación de valores numéricos o categóricos.</p>
+<p>Una de las características más importantes para la distribución de Poisson y la regresión de Poisson es la equidispersión, lo que significa que la media y la varianza de la distribución son iguales.</p>
+<p>La varianza mide la dispersión de los datos. Es el “promedio de las diferencias al cuadrado de la media.” La varianza (Var) es igual a 0 si todos los valores son idénticos. Cuanto mayor sea la diferencia entre los valores, mayor será la varianza. La media es el promedio de valores de un conjunto de datos. El promedio es la suma de los valores dividida por el número de valores.</p>
+<p>Digamos que la media (<span class="math inline">\(\mu\)</span>) se denota por <span class="math inline">\(E(X)\)</span></p>
+<p><span class="math display">\[E(X)=\mu\]</span> Para la regresión de Poisson, la media y la varianza se relacionan como:</p>
+<p><span class="math display">\[var(X)=\sigma^2E(X) \]</span> Donde <span class="math inline">\(\sigma^2\)</span> es el parámetro de Dispersión.</p>
+<p>Dado que <span class="math inline">\(var(X)=E(X)\)</span> (varianza = media) debe ser válida para que el modelo de Poisson se ajuste completamente, <span class="math inline">\(\sigma^2\)</span> debe ser igual a 1.</p>
+<p>Cuando la varianza es mayor que la media, eso se denomina sobredispersión y es mayor que 1. Si es menor que 1, se conoce como subdispersión.</p>
+</div>
+<div id="modelado-de-regresión-de-poisson-utilizando-datos-de-recuento." class="section level2" number="4.4">
+<h2><span class="header-section-number">4.4</span> Modelado de regresión de Poisson utilizando datos de recuento.</h2>
+<p>En R, el comando <code>glm ()</code>se usa para modelar modelos lineales generalizados. Aquí está la estructura general de <code>glm ()</code>:</p>
+<pre><code>glm(formula, family = familytype(link = &quot;&quot;), data,...)</code></pre>
+<p><strong>formula</strong> La fórmula es una representación simbólica de cómo se modela para ajustar.</p>
+<p><strong>family</strong> La familia indica la elección de las funciones de varianza y enlace. Hay varias opciones de familia, incluidas Poisson y Logistic.</p>
+<p><strong>datos</strong> Los datos son el conjunto de datos que se utilizará.</p>
+<p><code>glm()</code> ofrece ocho opciones para la familia con las siguientes funciones de enlace predeterminadas:</p>
+<table style="width:89%;">
+<colgroup>
+<col width="26%" />
+<col width="62%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Family</strong></th>
+<th><strong>Default Link Function</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>binomial</td>
+<td>(link = “logit”)</td>
+</tr>
+<tr class="even">
+<td>gaussian</td>
+<td>(link = “identity”)</td>
+</tr>
+<tr class="odd">
+<td>Gamma</td>
+<td>(link = “inverse”)</td>
+</tr>
+<tr class="even">
+<td>inverse.gaussian</td>
+<td>(link = $frac{1}{mu^2}$)</td>
+</tr>
+<tr class="odd">
+<td>poisson</td>
+<td><br />
+(link = “log”)</td>
+</tr>
+<tr class="even">
+<td>quasi</td>
+<td>(link = “identity,” variance = “constant”)</td>
+</tr>
+<tr class="odd">
+<td>quasibinomial</td>
+<td><br />
+(link = “logit”)</td>
+</tr>
+<tr class="even">
+<td>quasipoisson</td>
+<td>(link = “log”)</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div id="empecemos-a-modelar" class="section level3" number="4.4.1">
+<h3><span class="header-section-number">4.4.1</span> ¡Empecemos a modelar!</h3>
+<p>Vamos a modelar la regresión de Poisson relacionada con la frecuencia con la que el hilo se rompe durante el tejido. Estos datos se encuentran en el paquete <strong><code>datasets</code></strong> en R, por lo que lo primero que debemos hacer es instalar el paquete usando <code>install.packages("datasets")</code> y cargar la biblioteca con la librería <code>library(datasets):</code></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="regresión-de-poisson.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;datasets&quot;)</span></span>
+<span id="cb9-2"><a href="regresión-de-poisson.html#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(datasets) <span class="co"># include library datasets after installation</span></span></code></pre></div>
+<p>El paquete<code>datasets</code>incluye toneladas de conjuntos de datos, por lo que debemos seleccionar específicamente nuestros datos de hilo(yarn). <a href="https://cran.r-project.org/manuals.html">Consultando la documentación del paquete</a>, podemos ver que se llama <code>warpbreaks</code>, así que almacenémoslo como un objeto.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="regresión-de-poisson.html#cb10-1" aria-hidden="true" tabindex="-1"></a>data<span class="ot">&lt;-</span>warpbreaks</span>
+<span id="cb10-2"><a href="regresión-de-poisson.html#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data,<span class="dv">10</span>)</span></code></pre></div>
+<pre><code>##    breaks wool tension
+## 1      26    A       L
+## 2      30    A       L
+## 3      54    A       L
+## 4      25    A       L
+## 5      70    A       L
+## 6      52    A       L
+## 7      51    A       L
+## 8      26    A       L
+## 9      67    A       L
+## 10     18    A       M</code></pre>
+<p>Echemos un vistaso a los datos:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="regresión-de-poisson.html#cb12-1" aria-hidden="true" tabindex="-1"></a>columns<span class="ot">&lt;-</span><span class="fu">names</span>(data) <span class="co"># Extract column names from dataframe</span></span>
+<span id="cb12-2"><a href="regresión-de-poisson.html#cb12-2" aria-hidden="true" tabindex="-1"></a>columns <span class="co"># show columns</span></span></code></pre></div>
+<pre><code>## [1] &quot;breaks&quot;  &quot;wool&quot;    &quot;tension&quot;</code></pre>
+<p><strong>¿Qué hay en nuestros datos?</strong></p>
+<p>Este conjunto de datos analiza cuántas roturas de urdimbre ocurrieron para diferentes tipos de telares por telar, por longitud fija de hilo. Podemos leer más detalles sobre este conjunto de datos en la documentación <a href="https://cran.r-project.org/manuals.html">aquí</a>, pero aquí están las tres columnas que veremos y a qué se refiere cada una:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Tipo</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>breaks</td>
+<td>numérica</td>
+<td>número de roturas</td>
+</tr>
+<tr class="even">
+<td>wool</td>
+<td>factor</td>
+<td>El tipo de lana(A o B)</td>
+</tr>
+<tr class="odd">
+<td>tension</td>
+<td>factor</td>
+<td>El nivel de tensión (L, M, H)</td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Hay medidas en 9 telares de cada uno de los seis tipos de deformación, para un total de 54 entradas en el conjunto de datos.</p>
+<p>Veamos cómo se estructuran los datos mediante el comando<code>ls.str ():</code></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="regresión-de-poisson.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls.str</span>(warpbreaks)</span></code></pre></div>
+<pre><code>## breaks :  num [1:54] 26 30 54 25 70 52 51 26 67 18 ...
+## tension :  Factor w/ 3 levels &quot;L&quot;,&quot;M&quot;,&quot;H&quot;: 1 1 1 1 1 1 1 1 1 2 ...
+## wool :  Factor w/ 2 levels &quot;A&quot;,&quot;B&quot;: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+<p>De lo anterior, podemos ver tanto los tipos como los niveles presentes en los datos. Lea <a href="https://www.statmethods.net/input/datatypes.html">esto</a> para aprender un poco más sobre los factores en R.</p>
+<p>Ahora trabajaremos con el marco de datos. Recuerde, con un modelo de distribución de Poisson estamos tratando de averiguar cómo algunas variables predictoras afectan una variable de respuesta. Aquí, <code>breaks</code> es la variable de respuesta y <code>wool</code> y <code>tension</code> son variables predictoras.</p>
+<p>Podemos ver que la variable dependiente breaks de datos contínuos creando un histograma:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="regresión-de-poisson.html#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(data<span class="sc">$</span>breaks)</span></code></pre></div>
+<p><img src="bookglm_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Claramente, los datos no tienen la forma de una curva de campana como en una distribución normal.</p>
+<p>Veamos la media <code>mean()</code>y la varianza <code>var ()</code>de la variable dependiente:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="regresión-de-poisson.html#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(data<span class="sc">$</span>breaks) <span class="co"># calculate mean</span></span></code></pre></div>
+<pre><code>## [1] 28.14815</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="regresión-de-poisson.html#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(data<span class="sc">$</span>breaks) <span class="co"># calculate variance</span></span></code></pre></div>
+<pre><code>## [1] 174.2041</code></pre>
+<p>La varianza es mucho mayor que la media, lo que sugiere que tendremos una dispersión excesiva en el modelo.</p>
+<p>Ajustemos el modelo de Poisson usando el comando <code>glm ().</code></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="regresión-de-poisson.html#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># model poisson regression using glm()</span></span>
+<span id="cb21-2"><a href="regresión-de-poisson.html#cb21-2" aria-hidden="true" tabindex="-1"></a>poisson.model<span class="ot">&lt;-</span><span class="fu">glm</span>(breaks <span class="sc">~</span> wool <span class="sc">+</span> tension, data, <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>))</span>
+<span id="cb21-3"><a href="regresión-de-poisson.html#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(poisson.model)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = breaks ~ wool + tension, family = poisson(link = &quot;log&quot;), 
+##     data = data)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -3.6871  -1.6503  -0.4269   1.1902   4.2616  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  3.69196    0.04541  81.302  &lt; 2e-16 ***
+## woolB       -0.20599    0.05157  -3.994 6.49e-05 ***
+## tensionM    -0.32132    0.06027  -5.332 9.73e-08 ***
+## tensionH    -0.51849    0.06396  -8.107 5.21e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 297.37  on 53  degrees of freedom
+## Residual deviance: 210.39  on 50  degrees of freedom
+## AIC: 493.06
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p><code>summary ()</code> es una función genérica que se utiliza para producir resúmenes de los resultados de varias funciones de ajuste de modelos.</p>
+</div>
+</div>
+<div id="interpretación-del-modelo-de-poisson" class="section level2" number="4.5">
+<h2><span class="header-section-number">4.5</span> Interpretación del modelo de Poisson</h2>
+<p>Nos acaban de dar mucha información, ahora necesitamos interpretarla. La primera columna llamada Estimación son los valores de los coeficientes de <span class="math inline">\(\alpha\)</span>(intersección), <span class="math inline">\(\beta_1\)</span> y así sucesivamente. A continuación se muestra la interpretación de las estimaciones de los parámetros:</p>
+<ul>
+<li><p><span class="math inline">\(exp(\alpha)\)</span>= efecto sobre la media <span class="math inline">\(\mu\)</span>, cuando <span class="math inline">\(X=0\)</span></p></li>
+<li><p><span class="math inline">\(exp(\beta)\)</span> = con cada unidad de aumento en X, la variable predictora tiene un efecto multiplicativo de <span class="math inline">\(exp(\beta)\)</span> sobre la media de Y, es decir <span class="math inline">\(\mu\)</span>.</p></li>
+<li><p>Si <span class="math inline">\(\beta=0\)</span>, entonces <span class="math inline">\(exp(\beta)=1\)</span>, y el recuento esperado es <span class="math inline">\(exp(\alpha)\)</span> y, Y y X no están relacionados.<br />
+</p></li>
+<li><p>Si <span class="math inline">\(\beta &gt;0\)</span>, entonces <span class="math inline">\(exp(\beta)&gt;1\)</span>, y el recuento esperado es <span class="math inline">\(exp(\beta)\)</span> veces mayor que cuando <span class="math inline">\(X=0\)</span></p></li>
+<li><p>Si <span class="math inline">\(\beta &lt; 0\)</span>, entonces <span class="math inline">\(exp(\beta)&lt;1\)</span>, y el recuento esperado es <span class="math inline">\(exp(\beta)\)</span> veces menor que cuando <span class="math inline">\(X=0\)</span></p></li>
+</ul>
+<p>Si<code>family = poisson</code> se mantiene en <code>glm ()</code>, estos parámetros se calculan utilizando la estimación de <a href="máxima%20verosimilitud%20MLE">máxima verosimilitud MLE</a>.</p>
+<p>R trata las variables categóricas como variables ficticias. Las variables categóricas, también llamadas variables indicadoras, se convierten en variables ficticias asignando a los niveles de la variable alguna representación numérica. La regla general es que si hay k categorías en una variable factorial, la salida de <code>glm ()</code> tendrá k-1 categorías con 1 restante como categoría base.</p>
+<p>Podemos ver en el resumen anterior que para la lana, “A” se ha hecho la base y no se muestra en el resumen. De manera similar, para la tensión, “L” se ha convertido en la categoría base.</p>
+<p>Para ver qué variables explicativas tienen un efecto sobre la variable de respuesta, veremos los valores p. Si la p es menor que 0.05 entonces, la variable tiene un efecto sobre la variable de respuesta. En el resumen anterior, podemos ver que todos los valores de p son menores a 0.05, por lo que ambas variables explicativas (lana y tensión) tienen un efecto significativo en las roturas. Observe cómo la salida de R usó *** al final de cada variable. El número de estrellas significa significancia.</p>
+<p>Antes de comenzar a interpretar los resultados, verifiquemos si el modelo tiene una dispersión excesiva o insuficiente. Si la desviación residual es mayor que los grados de libertad, entonces existe una dispersión excesiva. Esto significa que las estimaciones son correctas, pero los errores estándar (desviación estándar) son incorrectos y el modelo no los tiene en cuenta.</p>
+<p>La desviación nula muestra qué tan bien se predice la variable de respuesta mediante un modelo que incluye solo el intercepto (gran media) mientras que el residual con la inclusión de variables independientes. Arriba, podemos ver que la suma de 3 (53-50 = 3) variables independientes disminuyó la desviación de 297.37 a 210.39. Una mayor diferencia de valores significa un mal ajuste.</p>
+<p>Entonces, para tener un error estándar más correcto, podemos usar un modelo cuasi-poisson:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="regresión-de-poisson.html#cb23-1" aria-hidden="true" tabindex="-1"></a>poisson.model2<span class="ot">&lt;-</span><span class="fu">glm</span>(breaks <span class="sc">~</span> wool <span class="sc">+</span> tension, <span class="at">data =</span> data, <span class="at">family =</span> <span class="fu">quasipoisson</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>))</span>
+<span id="cb23-2"><a href="regresión-de-poisson.html#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(poisson.model2)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = breaks ~ wool + tension, family = quasipoisson(link = &quot;log&quot;), 
+##     data = data)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -3.6871  -1.6503  -0.4269   1.1902   4.2616  
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  3.69196    0.09374  39.384  &lt; 2e-16 ***
+## woolB       -0.20599    0.10646  -1.935 0.058673 .  
+## tensionM    -0.32132    0.12441  -2.583 0.012775 *  
+## tensionH    -0.51849    0.13203  -3.927 0.000264 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for quasipoisson family taken to be 4.261537)
+## 
+##     Null deviance: 297.37  on 53  degrees of freedom
+## Residual deviance: 210.39  on 50  degrees of freedom
+## AIC: NA
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+<div id="comparando-los-modelos" class="section level2" number="4.6">
+<h2><span class="header-section-number">4.6</span> Comparando los modelos:</h2>
+<p>Ahora que tenemos dos modelos diferentes, comparémoslos para ver cuál es mejor. Primero, instalaremos la biblioteca <code>arm</code> porque contiene una función que necesitamos:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="regresión-de-poisson.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;arm&quot;)</span></span>
+<span id="cb25-2"><a href="regresión-de-poisson.html#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="regresión-de-poisson.html#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># load library arm that contains the function se.coef()</span></span>
+<span id="cb25-4"><a href="regresión-de-poisson.html#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(arm)</span></code></pre></div>
+<pre><code>## Loading required package: MASS</code></pre>
+<pre><code>## Loading required package: Matrix</code></pre>
+<pre><code>## Loading required package: lme4</code></pre>
+<pre><code>## 
+## arm (Version 1.11-2, built: 2020-7-27)</code></pre>
+<pre><code>## Working directory is C:/Users/Jaime/github/para-glm-curso/bookglm</code></pre>
+<p>Ahora usaremos esa función<code>se.coef ()</code> para extraer los coeficientes de cada modelo, y luego usaremos<code>cbind ()</code>para combinar esos valores extraídos en un solo marco de datos para poder compararlos.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="regresión-de-poisson.html#cb31-1" aria-hidden="true" tabindex="-1"></a> <span class="co">#extract coefficients from first model using &#39;coef()&#39;</span></span>
+<span id="cb31-2"><a href="regresión-de-poisson.html#cb31-2" aria-hidden="true" tabindex="-1"></a>coef1 <span class="ot">=</span> <span class="fu">coef</span>(poisson.model)</span>
+<span id="cb31-3"><a href="regresión-de-poisson.html#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="regresión-de-poisson.html#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co"># extract coefficients from second model</span></span>
+<span id="cb31-5"><a href="regresión-de-poisson.html#cb31-5" aria-hidden="true" tabindex="-1"></a>coef2 <span class="ot">=</span> <span class="fu">coef</span>(poisson.model2)</span>
+<span id="cb31-6"><a href="regresión-de-poisson.html#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-7"><a href="regresión-de-poisson.html#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="co"># extract standard errors from first model using &#39;se.coef()&#39;</span></span>
+<span id="cb31-8"><a href="regresión-de-poisson.html#cb31-8" aria-hidden="true" tabindex="-1"></a>se.coef1 <span class="ot">=</span> <span class="fu">se.coef</span>(poisson.model)</span>
+<span id="cb31-9"><a href="regresión-de-poisson.html#cb31-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-10"><a href="regresión-de-poisson.html#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="co"># extract standard errors from second model</span></span>
+<span id="cb31-11"><a href="regresión-de-poisson.html#cb31-11" aria-hidden="true" tabindex="-1"></a>se.coef2 <span class="ot">=</span> <span class="fu">se.coef</span>(poisson.model2)</span>
+<span id="cb31-12"><a href="regresión-de-poisson.html#cb31-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-13"><a href="regresión-de-poisson.html#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="co"># use &#39;cbind()&#39; to combine values into one dataframe</span></span>
+<span id="cb31-14"><a href="regresión-de-poisson.html#cb31-14" aria-hidden="true" tabindex="-1"></a>models.both<span class="ot">&lt;-</span><span class="fu">cbind</span>(coef1, se.coef1, coef2, se.coef2, <span class="at">exponent =</span> <span class="fu">exp</span>(coef1))</span>
+<span id="cb31-15"><a href="regresión-de-poisson.html#cb31-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-16"><a href="regresión-de-poisson.html#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="co"># show dataframe</span></span>
+<span id="cb31-17"><a href="regresión-de-poisson.html#cb31-17" aria-hidden="true" tabindex="-1"></a>models.both</span></code></pre></div>
+<pre><code>##                  coef1   se.coef1      coef2   se.coef2   exponent
+## (Intercept)  3.6919631 0.04541069  3.6919631 0.09374352 40.1235380
+## woolB       -0.2059884 0.05157117 -0.2059884 0.10646089  0.8138425
+## tensionM    -0.3213204 0.06026580 -0.3213204 0.12440965  0.7251908
+## tensionH    -0.5184885 0.06395944 -0.5184885 0.13203462  0.5954198</code></pre>
+<p>En el resultado anterior, podemos ver que los coeficientes son los mismos, pero los errores estándar son diferentes.</p>
+<p>Teniendo en cuenta estos puntos, veamos la estimación de la lana. Su valor es -0,2059884 y el exponente de -0,2059884 es 0,8138425.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="regresión-de-poisson.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="fl">-0.8138425</span></span></code></pre></div>
+<pre><code>## [1] 0.1861575</code></pre>
+<p>Esto muestra que cambiar de lana tipo A a lana tipo B da como resultado una disminución en las roturas de 0.8138425 veces la intersección, porque la estimación -0.2059884 es negativa. Otra forma de decir esto es que si cambiamos el tipo de lana de A a B, el número de roturas caerá en un <span class="math inline">\(18.6\%\)</span> asumiendo que todas las demás variables son iguales.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="regresión-logística-1.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="predecir-a-partir-del-modelo.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["bookglm.pdf", "bookglm.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

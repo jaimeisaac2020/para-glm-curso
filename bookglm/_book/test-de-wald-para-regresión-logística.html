@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 5 Test de Wald para regresión logística | Modelos lineales generalizados con R</title>
+  <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 5 Test de Wald para regresión logística | Modelos lineales generalizados con R" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 5 Test de Wald para regresión logística | Modelos lineales generalizados con R" />
+  
+  <meta name="twitter:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  
+
+<meta name="author" content="Jaime Isaac y Gerson Rivera" />
+
+
+<meta name="date" content="2021-04-20" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="regresión-logística-simple.html"/>
+<link rel="next" href="prueba-de-razón-de-verosimilitud-.html"/>
+<script src="libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Prerequisites</a></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a></li>
+<li class="chapter" data-level="3" data-path="regresión-logística-1.html"><a href="regresión-logística-1.html"><i class="fa fa-check"></i><b>3</b> Regresión Logística 1</a></li>
+<li class="chapter" data-level="4" data-path="regresión-logística-simple.html"><a href="regresión-logística-simple.html"><i class="fa fa-check"></i><b>4</b> REGRESIÓN LOGÍSTICA SIMPLE</a></li>
+<li class="chapter" data-level="5" data-path="test-de-wald-para-regresión-logística.html"><a href="test-de-wald-para-regresión-logística.html"><i class="fa fa-check"></i><b>5</b> Test de Wald para regresión logística</a></li>
+<li class="chapter" data-level="6" data-path="prueba-de-razón-de-verosimilitud-.html"><a href="prueba-de-razón-de-verosimilitud-.html"><i class="fa fa-check"></i><b>6</b> Prueba de razón de verosimilitud.</a></li>
+<li class="chapter" data-level="7" data-path="regresión-logística-múltiple.html"><a href="regresión-logística-múltiple.html"><i class="fa fa-check"></i><b>7</b> REGRESIÓN LOGÍSTICA MÚLTIPLE</a></li>
+<li class="chapter" data-level="8" data-path="regresión-de-poisson.html"><a href="regresión-de-poisson.html"><i class="fa fa-check"></i><b>8</b> Regresión de Poisson</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="regresión-de-poisson.html"><a href="regresión-de-poisson.html#qué-son-los-modelos-de-regresión-de-poisson"><i class="fa fa-check"></i><b>8.1</b> ¿Qué son los modelos de regresión de Poisson?</a></li>
+<li class="chapter" data-level="8.2" data-path="regresión-de-poisson.html"><a href="regresión-de-poisson.html#en-qué-se-diferencia-la-distribución-de-poisson-de-la-distribución-normal"><i class="fa fa-check"></i><b>8.2</b> ¿En qué se diferencia la distribución de Poisson de la distribución normal?</a></li>
+<li class="chapter" data-level="8.3" data-path="regresión-de-poisson.html"><a href="regresión-de-poisson.html#modelos-de-regresión-de-poisson-y-glmgeneralized-linear-models"><i class="fa fa-check"></i><b>8.3</b> Modelos de regresión de Poisson y GLM(Generalized Linear MOdels)</a></li>
+<li class="chapter" data-level="8.4" data-path="regresión-de-poisson.html"><a href="regresión-de-poisson.html#modelado-de-regresión-de-poisson-utilizando-datos-de-recuento."><i class="fa fa-check"></i><b>8.4</b> Modelado de regresión de Poisson utilizando datos de recuento.</a>
+<ul>
+<li class="chapter" data-level="8.4.1" data-path="regresión-de-poisson.html"><a href="regresión-de-poisson.html#empecemos-a-modelar"><i class="fa fa-check"></i><b>8.4.1</b> ¡Empecemos a modelar!</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="regresión-de-poisson.html"><a href="regresión-de-poisson.html#interpretación-del-modelo-de-poisson"><i class="fa fa-check"></i><b>8.5</b> Interpretación del modelo de Poisson</a></li>
+<li class="chapter" data-level="8.6" data-path="regresión-de-poisson.html"><a href="regresión-de-poisson.html#comparando-los-modelos"><i class="fa fa-check"></i><b>8.6</b> Comparando los modelos:</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="applications.html"><a href="applications.html"><i class="fa fa-check"></i><b>9</b> Applications</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="applications.html"><a href="applications.html#example-one"><i class="fa fa-check"></i><b>9.1</b> Example one</a></li>
+<li class="chapter" data-level="9.2" data-path="applications.html"><a href="applications.html#example-two"><i class="fa fa-check"></i><b>9.2</b> Example two</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="final-words.html"><a href="final-words.html"><i class="fa fa-check"></i><b>10</b> Final Words</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Modelos lineales generalizados con R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="test-de-wald-para-regresión-logística" class="section level1" number="5">
+<h1><span class="header-section-number">Chapter 5</span> Test de Wald para regresión logística</h1>
+<p>R de forma predeterminada utiliza la prueba de Wald en la tabla de resumen para un lineal generalizado modelo. Repitamos esa tabla</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="test-de-wald-para-regresión-logística.html#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(diabetes.model)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = type ~ bmi, family = binomial(link = logit), data = Pima.tr)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.5797  -0.9235  -0.6541   1.2506   1.9377  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -4.11156    0.92806  -4.430 9.41e-06 ***
+## bmi          0.10482    0.02738   3.829 0.000129 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 256.41  on 199  degrees of freedom
+## Residual deviance: 239.97  on 198  degrees of freedom
+## AIC: 243.97
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>R informa el estadístico de Wald <span class="math inline">\(z\)</span>, que es la raíz cuadrada de la prueba de Wald <span class="math inline">\(\chi^2\)</span>
+discutido en el capítulo 21. Esto se basa en el hecho matemático de que si
+al cuadrado de la distribución normal estándar <span class="math inline">\(Z\)</span>, se obtiene una distribución chi-cuadrado
+con <span class="math inline">\(df=1\)</span>.</p>
+<p>Las hipótesis son:</p>
+<p><span class="math display">\[\begin{equation}
+H_0:\beta_{1}=0  \hspace{1cm} \textup{vs.}  \hspace{1cm} H_1:\beta_{1}\not= 0
+\end{equation}\]</span></p>
+<p>o en términos de odds-ratio <span class="math inline">\(\theta\)</span></p>
+<p><span class="math display">\[\begin{equation}
+H_0:\theta_{1}=0  \hspace{1cm} \textup{versus} \hspace{1cm} H_1:\theta_{1}\not= 0
+\end{equation}\]</span></p>
+<p>Observe que el estadístico <span class="math inline">\(z\)</span> dado es la estimación dividida por el error estándar y el p-valor se basa en la distribución normal estándar.</p>
+<p><span class="math display">\[z=\frac{\hat{\beta_1}}{S_{\hat{\beta_1}}}=\frac{0.10482}{0.02738}=3.849 \]</span></p>
+<p>Existe una relación significativa entre bmi y diabetes tipo II:</p>
+<p>Wald <span class="math inline">\(z=3.829\)</span>,<span class="math inline">\(p=0.000129\)</span></p>
+<p>Algunos paquetes de software darán la prueba de chi-cuadrado de Wald en su lugar, que es solo nuestra estadística al cuadrado.</p>
+<p><span class="math display">\[ \chi^2=\left(\frac{\hat{\beta_1}}{{S_{\beta_1}}}\right)^2=\left(\frac{0.10482}{0.02738}\right)^2=14.656\]</span>
+Dado que esta estadística es chi-cuadrado con <span class="math inline">\(df=1\)</span>, el valor de <span class="math inline">\(p\)</span> es:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="test-de-wald-para-regresión-logística.html#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">-</span><span class="fu">pchisq</span>(<span class="fl">14.656</span>,<span class="at">df=</span><span class="dv">1</span>)</span></code></pre></div>
+<pre><code>## [1] 0.0001290233</code></pre>
+<p>El intervalo de confianza de Wald para <span class="math inline">\(\beta_1\)</span> se calcula de manera similar a muchos otros intervalos de confianza que hemos visto</p>
+<p><span class="math display">\[\beta_1 \pm z(S_{\beta_1})\]</span></p>
+<p>Para nuestro al <span class="math inline">\(95\%\)</span> de confianza:</p>
+<p><span class="math display">\[0.10482 \pm 1.96 \times 0.02738 \]</span><br />
+<span class="math display">\[0.10482 \pm 0.05366 \]</span>
+<span class="math display">\[\left( 0.05062,0.15794\right)\]</span></p>
+<p>Exponencia este intervalo para obtener un intervalo de confianza para la razón de posibilidades <span class="math inline">\(\theta\)</span></p>
+<p><span class="math display">\[\left(e^{0.05062}, e^{0.05062}\right) \]</span></p>
+<p>Observe que el IC completo para <span class="math inline">\(\beta_1\)</span> está por encima de cero y, de manera equivalente, el IC completo para <span class="math inline">\(\theta\)</span> es
+por encima de uno. Esto indica una relación significativa.</p>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="regresión-logística-simple.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="prueba-de-razón-de-verosimilitud-.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["bookglm.pdf", "bookglm.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,82 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+# Variables Binarias y regresión Logística.
+## Distribuciones de probabilidad.
+En este capítulo consideramos modelos lineales generalizados en los que las variables de resultado se miden en una escala binaria. Por ejemplo, las respuestas pueden estar vivas o muertas, presentes o ausentes. El éxito y el fracaso se utilizan como términos genéricos de las dos categorías. Primero, definimos la variable aleatoria binaria
+$$
+Z = \left\{\begin{array}{l}
+1 \quad \text{si el resultado es un éxito} \\
+0 \quad \text{si el resultado es un fracaso}
+\end{array}\right.
+$$
+con probabilidades $\operatorname{Pr}(Z=1) =\pi$ y $\operatorname{Pr}(Z=0) = 1-\pi$, que es la distribución de Bernoulli $\mathrm{B}$(\pi PS Si hay $n$ tales variables aleatorias $Z_{1}, \ldots,Z_{n}$, que son independientes con $\operatorname{Pr}\left(Z_{j} =1\right) = \pi_{j}$, entonces su probabilidad conjunta es
+\begin{equation}
+\prod_{j=1}^{n} \pi_{j}^{z_{j}}\left(1-\pi_{j} \right)^{1-z_{j}} = \exp\left[\sum_{j=1}^{n}z_{j}\log\left(\frac{\pi_{j}} {1- \pi_{j}} \right) + \sum_{j=1}^{n} \log\left(1-\pi_{j}\right)\right]
+\end{equation}
+que es un miembro de la familia exponencial.  
+
+A continuación, para el caso en el que los $\pi_{j}$ son todos iguales, podemos definir
+$$
+Y = \sum_{j=1}^{n}Z_{j}
+$$
+de modo que $Y$ es el número de éxitos en $n$ "ensayos". La variable aleatoria $Y$ tiene la distribución $\operatorname{Bin}(n, \pi)$
+\begin{equation}
+\operatorname{Pr}(Y = y) = \left(\begin{array}{l}
+n\\
+y
+\end{array}\right) \pi^{y}(1- \pi)^{n-y}, \quad y = 0,1, \ldots, n
+\end{equation}
+Finalmente, consideramos el caso general de $N$ variables aleatorias independientes 
+$Y_{1}, Y_{2}, \ldots, Y_{N}$ correspondientes al número de éxitos en $N$ diferentes subgrupos o estratos (en la siguiente tabla). Si $Y_{i}\sim \operatorname{Bin} \left(n_{i}, \pi_{i}\right)$, la función de probabilidad de registro es
+$$
+\begin{array}{l}
+l\left(\pi_{1}, \ldots, \pi_{N} ; y_{1}, \ldots, y_{N}\right) \\
+=\sum_{i=1}^{N}\left[y_{i} \log \left(\frac{\pi_{i}}{1-\pi_{i}}\right)+n_{i} \log \left(1-\pi_{i}\right)+\log \left(\begin{array}{l}
+n_{i} \\
+y_{i}
+\end{array}\right]\right.
+\end{array}
+$$
+poner aqui una tabla como imagen dobson
+
+## Modelos lineales generalizados.
+Queremos describir la proporción de éxitos, $P_{i}= \dfrac{Y_{i}}{n_{i}}$, en cada subgrupo en términos de niveles de factores y otras variables explicativas que caracterizan al subgrupo. Como $\mathrm{E}\left(Y_{i}\right)=n_{i} \pi_{i}$ y así $\mathrm{E} \left(P_{i}\right)=\pi_{i}$, modelamos las probabilidades $\pi_{i}$ como
+$$
+g\left(\pi_{i}\right)=\mathbf{x}_{i}^{T}\boldsymbol{\beta}
+$$
+donde $\mathbf{x}_{i}$ es un vector de variables explicativas(variables ficticias para niveles de factor y valores medidos para covariables), $\boldsymbol{\beta}$ es un vector de parámetros y $g$ es un función de enlace. El caso más simple es el modelo lineal.
+$$
+\pi=\mathbf{x}^{T}\boldsymbol{\beta}
+$$
+Esto se usa en algunas aplicaciones prácticas, pero tiene la desventaja de que aunque $\pi$ es una probabilidad, los valores ajustados $\mathbf{x}^ {T}\mathbf{b}$ pueden ser menores que cero o mayores que uno.
+
+Para garantizar que $\pi$ esté restringido al intervalo $[0,1]$, a menudo se modela utilizando una distribución de probabilidad acumulativa  
+
+$$
+\pi=\int_{-\infty}^{t}f(s)ds
+$$
+donde $f(s)\geqslant 0$ y $\int_{-\infty}^{\infty}(s)ds=1$. La función de densidad de probabilidad $f(s)$ se denomina distribución de tolerancia.   
+
+## Modelos de respuesta a la dosis.  
+
+
+Históricamente, uno de los primeros usos de modelos de regresión para datos binomiales fue para los resultados de bioensayos (Finney 1973). Las respuestas fueron las proporciones o porcentajes de "éxitos"; por ejemplo, la proporción de animales de experimentación muertos por distintos niveles de dosis de una sustancia tóxica. A veces, estos datos se denominan respuestas cuánticas. El objetivo es describir la probabilidad de "éxito", $\pi$, en función de la dosis, $x$; por ejemplo, $g(\pi) = \beta_{1} + \beta_{2}x$. Si la distribución de tolerancia $f(s)$ es la distribución uniforme en el intervalo $\left[c_{1}, c_{2}\right]$
+$$
+f (s) = \left\{\begin{array}{cc}
+\frac{1}{c_{2} -c_{1}} & \text{if} c_{1} \leqslant s \leqslant c_{2} \\
+0 & \text{de lo contrario}
+\end{array} \right.
+$$
+entonces $\pi$ es acumulativo  
+
+$$
+\pi = \int_{c_{1}}^{x} f (s) ds = \frac{x-c_ {1}} {c_{2} -c_{1}} \quad \text {para}\quad  c_{1} \leqslant x \leqslant c_{2}
+$$
+(ver figura $7.1$). Esta ecuación tiene la forma $\pi=\beta_{1} + \beta_{2}x$, donde
+$$
+\beta_{1} = \frac{-c_{1}} {c_{2} -c_{1}} \quad \text{y} \quad \beta_{2} = \frac{1}{c_{2} -c_{ 1}}
+$$
+
