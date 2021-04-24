@@ -44,7 +44,7 @@ $$
 ln(\frac{\hat{p}}{1-\hat{p}})=-4.11156+0.10482(30)=-0.96696
 $$
 
-Observe que su logit (log odds-ratio) es negativo. Esto será cierto siempre que la probabilidad predicha $\hat{p}<0.5$, por lo que en este escenario usted querría un logit negativo. Cuando $\hat{p}>0.5$, el logit será positivo, y si $\hat{p}= 0.5$ entonces el logit es:
+Observe que su logit (log odds-ratio) es negativo. Esto será cierto siempre que la probabilidad predicha $\hat{p}<0.5$, por lo que en este escenario usted querría un logit negativo. Cuando $\hat{p}>0.5$, el logit será positivo, y si $\hat{p}= 0.5$ entonces el logit es::
 
 $$
 ln(\frac{0.5}{1-0.5})=ln(1)=0
