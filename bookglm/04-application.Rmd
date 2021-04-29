@@ -79,4 +79,27 @@ $$
 $$
 \beta_{1} = \frac{-c_{1}} {c_{2} -c_{1}} \quad \text{y} \quad \beta_{2} = \frac{1}{c_{2} -c_{ 1}}
 $$
+Este modelo lineal es equivalente a usar la función de identidad como función de enlace $g$ e imponer condiciones a $x, \beta_{1}$ y $\beta_{2}$ correspondientes a $c_{1}\leq x \leq c_{2}$. Estas condiciones adicionales significan que los métodos estándar para estimar $\beta_{1}$ y $\beta_{2}$ para modelos lineales generalizados no pueden aplicarse directamente. En la práctica, este modelo no se utiliza mucho.  
+
+
+Uno de los modelos originales utilizados para los datos de bioensayos se llama modelo probit. La distribución normal se utiliza como distribución de tolerancia (ver Figura 7.2).
+$$
+\begin{aligned}
+\pi & = \frac{1}{\sigma\sqrt{2\pi}}\int_{-\infty}^{x} \exp\left[- \frac{1}{2} \left(\frac{s-\mu}{\sigma} \right)^{2} \right]ds\\
+& = \Phi\left(\frac{x-\mu}{\sigma} \right)
+\end{aligned}
+$$
+
+donde $\Phi$ denota la función de probabilidad acumulada para la distribución normal estándar $\mathrm{N}(0,1)$. Por lo tanto,
+$$
+\Phi^{-1}(\pi) = \beta_{1} + \beta_{2}x
+$$
+donde $\beta_{1} = -\mu /\sigma$ y $\beta_{2} = 1 / \sigma$ y la función de enlace $g$ es la función de probabilidad normal acumulativa inversa $\Phi^{-1}$. Los modelos probit se utilizan en varias áreas de las ciencias biológicas y sociales en las que existen interpretaciones naturales del modelo; por ejemplo, $x =\mu$ se denomina dosis letal mediana LD(50) porque corresponde a la dosis que se puede esperar que mate a la mitad de los animales.    
+
+
+Otro modelo que da resultados numéricos muy parecidos a los del modelo probit, pero que computacionalmente es algo más sencillo, es el modelo logístico logit. La distribución de tolerancia es
+$$
+f(s) = \frac{\beta_{2} \exp\left(\beta_{1} + \beta_{2} s \right)} {\left[1+ \exp \left(\beta_{1} + \beta_{2} s \right) \right]^{2}}
+$$
+
 
