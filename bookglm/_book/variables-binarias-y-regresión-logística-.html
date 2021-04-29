@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 5 Variables Binarias y regresión Logística. | Modelos lineales generalizados con R</title>
   <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
-  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 5 Variables Binarias y regresión Logística. | Modelos lineales generalizados con R" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="Jaime Isaac y Gerson Rivera" />
 
 
-<meta name="date" content="2021-04-22" />
+<meta name="date" content="2021-04-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -51,6 +51,8 @@
 
 
 
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -118,6 +120,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
@@ -151,7 +176,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5" data-path="variables-binarias-y-regresión-logística-.html"><a href="variables-binarias-y-regresión-logística-.html"><i class="fa fa-check"></i><b>5</b> Variables Binarias y regresión Logística.</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="variables-binarias-y-regresión-logística-.html"><a href="variables-binarias-y-regresión-logística-.html#distribuciones-de-probabilidad."><i class="fa fa-check"></i><b>5.1</b> Distribuciones de probabilidad.</a></li>
+<li class="chapter" data-level="5.1" data-path="variables-binarias-y-regresión-logística-.html"><a href="variables-binarias-y-regresión-logística-.html#distribuciones-de-probabilidad.."><i class="fa fa-check"></i><b>5.1</b> Distribuciones de probabilidad..</a></li>
 <li class="chapter" data-level="5.2" data-path="variables-binarias-y-regresión-logística-.html"><a href="variables-binarias-y-regresión-logística-.html#modelos-lineales-generalizados."><i class="fa fa-check"></i><b>5.2</b> Modelos lineales generalizados.</a></li>
 <li class="chapter" data-level="5.3" data-path="variables-binarias-y-regresión-logística-.html"><a href="variables-binarias-y-regresión-logística-.html#modelos-de-respuesta-a-la-dosis."><i class="fa fa-check"></i><b>5.3</b> Modelos de respuesta a la dosis.</a></li>
 </ul></li>
@@ -179,8 +204,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="variables-binarias-y-regresión-logística." class="section level1" number="5">
 <h1><span class="header-section-number">Chapter 5</span> Variables Binarias y regresión Logística.</h1>
-<div id="distribuciones-de-probabilidad." class="section level2" number="5.1">
-<h2><span class="header-section-number">5.1</span> Distribuciones de probabilidad.</h2>
+<div id="distribuciones-de-probabilidad.." class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> Distribuciones de probabilidad..</h2>
 <p>En este capítulo consideramos modelos lineales generalizados en los que las variables de resultado se miden en una escala binaria. Por ejemplo, las respuestas pueden estar vivas o muertas, presentes o ausentes. El éxito y el fracaso se utilizan como términos genéricos de las dos categorías. Primero, definimos la variable aleatoria binaria
 <span class="math display">\[
 Z = \left\{\begin{array}{l}
@@ -190,12 +215,12 @@ Z = \left\{\begin{array}{l}
 \]</span>
 con probabilidades <span class="math inline">\(\operatorname{Pr}(Z=1) =\pi\)</span> y <span class="math inline">\(\operatorname{Pr}(Z=0) = 1-\pi\)</span>, que es la distribución de Bernoulli <span class="math inline">\(\mathrm{B}\)</span>(PS Si hay <span class="math inline">\(n\)</span> tales variables aleatorias <span class="math inline">\(Z_{1}, \ldots,Z_{n}\)</span>, que son independientes con <span class="math inline">\(\operatorname{Pr}\left(Z_{j} =1\right) = \pi_{j}\)</span>, entonces su probabilidad conjunta es
 <span class="math display">\[\begin{equation}
-\prod_{j=1}^{n} \pi_{j}^{z_{j}}\left(1- \pi_{j} \right)^{1-z_{j}} = \exp\left[\sum_{j=1}^{n}z_{j}\log\left(\frac{\pi_{j}} {1- \pi_{j}} \right) + \sum_{j=1}^{n} \log\left(1-\pi_{j} \right)\right]
+\prod_{j=1}^{n} \pi_{j}^{z_{j}}\left(1-\pi_{j} \right)^{1-z_{j}} = \exp\left[\sum_{j=1}^{n}z_{j}\log\left(\frac{\pi_{j}} {1- \pi_{j}} \right) + \sum_{j=1}^{n} \log\left(1-\pi_{j}\right)\right]
 \end{equation}\]</span>
 que es un miembro de la familia exponencial.</p>
 <p>A continuación, para el caso en el que los <span class="math inline">\(\pi_{j}\)</span> son todos iguales, podemos definir
 <span class="math display">\[
-Y = \sum_{j = 1}^{n}Z_{j}
+Y = \sum_{j=1}^{n}Z_{j}
 \]</span>
 de modo que <span class="math inline">\(Y\)</span> es el número de éxitos en <span class="math inline">\(n\)</span> “ensayos.” La variable aleatoria <span class="math inline">\(Y\)</span> tiene la distribución <span class="math inline">\(\operatorname{Bin}(n, \pi)\)</span>
 <span class="math display">\[\begin{equation}
@@ -206,16 +231,16 @@ y
 \end{equation}\]</span>
 Finalmente, consideramos el caso general de <span class="math inline">\(N\)</span> variables aleatorias independientes
 <span class="math inline">\(Y_{1}, Y_{2}, \ldots, Y_{N}\)</span> correspondientes al número de éxitos en <span class="math inline">\(N\)</span> diferentes subgrupos o estratos (en la siguiente tabla). Si <span class="math inline">\(Y_{i}\sim \operatorname{Bin} \left(n_{i}, \pi_{i}\right)\)</span>, la función de probabilidad de registro es
-<span class="math display">\[\begin{equation}
+<span class="math display">\[
 \begin{array}{l}
-l \left(\pi_{1}, \ldots, \pi_{N}; y_{1}, \ldots, y_{N} \right) \\
-= \displaystyle \sum_{i = 1}^{N} \left[y_{i} \log \left(\frac{\pi_{i}} {1- \pi_{i}} \right) + n_{i} \log\left(1- \pi_{i} \right) + \log \left(\begin{array}{l}
+l\left(\pi_{1}, \ldots, \pi_{N} ; y_{1}, \ldots, y_{N}\right) \\
+=\sum_{i=1}^{N}\left[y_{i} \log \left(\frac{\pi_{i}}{1-\pi_{i}}\right)+n_{i} \log \left(1-\pi_{i}\right)+\log \left(\begin{array}{l}
 n_{i} \\
-y_{i}\right)
-\end{array} \right]
+y_{i}
+\end{array}\right]\right.
 \end{array}
-\end{equation}\]</span></p>
-<p>poner aqui una tabla como imagen dobson</p>
+\]</span>
+poner aqui una tabla como imagen dobson</p>
 </div>
 <div id="modelos-lineales-generalizados." class="section level2" number="5.2">
 <h2><span class="header-section-number">5.2</span> Modelos lineales generalizados.</h2>
@@ -283,6 +308,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {

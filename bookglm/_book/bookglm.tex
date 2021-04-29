@@ -117,7 +117,7 @@
 
 \title{Modelos lineales generalizados con R}
 \author{Jaime Isaac y Gerson Rivera}
-\date{2021-04-24}
+\date{2021-04-28}
 
 \begin{document}
 \maketitle
@@ -230,18 +230,18 @@ You can write citations, too. For example, we are using the \textbf{bookdown} pa
 \end{verbatim}
 
 \begin{verbatim}
-## -- Attaching packages ---------------
+## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
 \end{verbatim}
 
 \begin{verbatim}
-## v ggplot2 3.3.2     v purrr   0.3.4
-## v tibble  3.0.3     v dplyr   1.0.2
-## v tidyr   1.1.2     v stringr 1.4.0
-## v readr   1.3.1     v forcats 0.5.0
+## v ggplot2 3.3.3     v purrr   0.3.4
+## v tibble  3.1.1     v dplyr   1.0.5
+## v tidyr   1.1.3     v stringr 1.4.0
+## v readr   1.4.0     v forcats 0.5.1
 \end{verbatim}
 
 \begin{verbatim}
-## -- Conflicts ------------------------
+## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()
 \end{verbatim}
@@ -292,10 +292,6 @@ You can write citations, too. For example, we are using the \textbf{bookdown} pa
 
 \begin{verbatim}
 ## Loading required package: mosaic
-\end{verbatim}
-
-\begin{verbatim}
-## Warning: package 'mosaic' was built under R version 4.0.3
 \end{verbatim}
 
 \begin{verbatim}
@@ -444,7 +440,7 @@ Suponga que queremos hacer una predicción para una mujer en esta población con
 ln(\frac{\hat{p}}{1-\hat{p}})=-4.11156+0.10482(30)=-0.96696
 \]
 
-Observe que su logit (log odds-ratio) es negativo. Esto será cierto siempre que la probabilidad predicha \(\hat{p}<0.5\), por lo que en este escenario usted querría un logit negativo. Cuando \(\hat{p}>0.5\), el logit será positivo, y si \(\hat{p}= 0.5\) entonces el logit es
+Observe que su logit (log odds-ratio) es negativo. Esto será cierto siempre que la probabilidad predicha \(\hat{p}<0.5\), por lo que en este escenario usted querría un logit negativo. Cuando \(\hat{p}>0.5\), el logit será positivo, y si \(\hat{p}= 0.5\) entonces el logit es::
 
 \[
 ln(\frac{0.5}{1-0.5})=ln(1)=0
@@ -976,10 +972,6 @@ necesita usar AIC en su lugar. Crearé una tabla AIC para los cuatro modelos (in
 \end{verbatim}
 
 \begin{verbatim}
-## Warning: package 'bbmle' was built under R version 4.0.3
-\end{verbatim}
-
-\begin{verbatim}
 ## Loading required package: stats4
 \end{verbatim}
 
@@ -1466,7 +1458,7 @@ Ahora que tenemos dos modelos diferentes, comparémoslos para ver cuál es mejor
 \end{verbatim}
 
 \begin{verbatim}
-## Working directory is C:/Users/Jaime/github/para-glm-curso/bookglm
+## Working directory is /home/jaime/Escritorio/git/github/para-glm-curso/bookglm
 \end{verbatim}
 
 \begin{verbatim}
@@ -1590,10 +1582,6 @@ Cuando comparte su análisis con otras personas, las tablas a menudo no son la m
 \end{Shaded}
 
 \begin{verbatim}
-## Warning: package 'jtools' was built under R version 4.0.4
-\end{verbatim}
-
-\begin{verbatim}
 ## 
 ## Attaching package: 'jtools'
 \end{verbatim}
@@ -1656,15 +1644,6 @@ En los datos de warpbreaks tenemos variables predictoras categóricas, por lo qu
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(broom)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## Warning: package 'broom' was built under R version 4.0.4
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(jtools)}
 \FunctionTok{library}\NormalTok{(ggstance)}
 \CommentTok{\#interact\_plot(poisson.model2,pred = wool,modx =tension)}
@@ -1711,10 +1690,6 @@ Usemos otro conjunto de datos llamado \textbf{eba1977} del paquete \textbf{ISwR}
 \FunctionTok{library}\NormalTok{(ISwR)}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-## Warning: package 'ISwR' was built under R version 4.0.4
-\end{verbatim}
 
 Ahora, echemos un vistazo a algunos detalles sobre los datos e imprimamos las primeras diez filas para tener una idea de lo que incluye el conjunto de datos.
 
@@ -1898,8 +1873,8 @@ También aprendimos cómo implementar modelos de regresión de Poisson para dato
 \hypertarget{variables-binarias-y-regresiuxf3n-loguxedstica.}{%
 \chapter{Variables Binarias y regresión Logística.}\label{variables-binarias-y-regresiuxf3n-loguxedstica.}}
 
-\hypertarget{distribuciones-de-probabilidad.}{%
-\section{Distribuciones de probabilidad.}\label{distribuciones-de-probabilidad.}}
+\hypertarget{distribuciones-de-probabilidad..}{%
+\section{Distribuciones de probabilidad..}\label{distribuciones-de-probabilidad..}}
 
 En este capítulo consideramos modelos lineales generalizados en los que las variables de resultado se miden en una escala binaria. Por ejemplo, las respuestas pueden estar vivas o muertas, presentes o ausentes. El éxito y el fracaso se utilizan como términos genéricos de las dos categorías. Primero, definimos la variable aleatoria binaria
 \[
