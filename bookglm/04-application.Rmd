@@ -4,7 +4,7 @@ output:
   html_document: default
 ---
 # Variables Binarias y regresión Logística.
-## Distribuciones de probabilidad.
+## Distribuciones de probabilidad..
 En este capítulo consideramos modelos lineales generalizados en los que las variables de resultado se miden en una escala binaria. Por ejemplo, las respuestas pueden estar vivas o muertas, presentes o ausentes. El éxito y el fracaso se utilizan como términos genéricos de las dos categorías. Primero, definimos la variable aleatoria binaria
 $$
 Z = \left\{\begin{array}{l}
