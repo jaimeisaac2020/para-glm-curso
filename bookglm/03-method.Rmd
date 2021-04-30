@@ -5,6 +5,8 @@ output:
     fig_crop: no
     keep_tex: yes
 ---
+
+
 # Regresión de Poisson
 
 ## ¿Qué son los modelos de regresión de Poisson?

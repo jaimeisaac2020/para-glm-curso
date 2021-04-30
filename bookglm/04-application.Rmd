@@ -1,37 +1,55 @@
 ---
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
+
 # Variables Binarias y regresión Logística.
+
 ## Distribuciones de probabilidad..
-En este capítulo consideramos modelos lineales generalizados en los que las variables de resultado se miden en una escala binaria. Por ejemplo, las respuestas pueden estar vivas o muertas, presentes o ausentes. El éxito y el fracaso se utilizan como términos genéricos de las dos categorías. Primero, definimos la variable aleatoria binaria
-$$
+
+En este capítulo consideramos modelos lineales generalizados en los que
+las variables de resultado se miden en una escala binaria. Por ejemplo,
+las respuestas pueden estar vivas o muertas, presentes o ausentes. El
+éxito y el fracaso se utilizan como términos genéricos de las dos
+categorías. Primero, definimos la variable aleatoria binaria $$
 Z = \left\{\begin{array}{l}
 1 \quad \text{si el resultado es un éxito} \\
 0 \quad \text{si el resultado es un fracaso}
 \end{array}\right.
-$$
-con probabilidades $\operatorname{Pr}(Z=1) =\pi$ y $\operatorname{Pr}(Z=0) = 1-\pi$, que es la distribución de Bernoulli $\mathrm{B}$(\pi PS Si hay $n$ tales variables aleatorias $Z_{1}, \ldots,Z_{n}$, que son independientes con $\operatorname{Pr}\left(Z_{j} =1\right) = \pi_{j}$, entonces su probabilidad conjunta es
-\begin{equation}
-\prod_{j=1}^{n} \pi_{j}^{z_{j}}\left(1-\pi_{j} \right)^{1-z_{j}} = \exp\left[\sum_{j=1}^{n}z_{j}\log\left(\frac{\pi_{j}} {1- \pi_{j}} \right) + \sum_{j=1}^{n} \log\left(1-\pi_{j}\right)\right]
-\end{equation}
-que es un miembro de la familia exponencial.  
+$$ con probabilidades $\operatorname{Pr}(Z=1) =\pi$ y
+$\operatorname{Pr}(Z=0) = 1-\pi$, que es la distribución de Bernoulli
+$\mathrm{B}(\pi)$ PS Si hay $n$ tales variables aleatorias
+$Z_{1}, \ldots,Z_{n}$, que son independientes con
+$\operatorname{Pr}\left(Z_{j} =1\right) = \pi_{j}$, entonces su
+probabilidad conjunta es 
+\begin{equation} 
+\prod_{j=1}^{n}
+\pi_{j}^{z_{j}}\left(1-\pi_{j} \right)^{1-z_{j}} =
+\exp\left[\sum_{j=1}^{n}z_{j}\log\left(\frac{\pi_{j}} {1-
+\pi_{j}} \right) + \sum_{j=1}^{n}
+\log\left(1-\pi_{j}\right)\right] 
+\end{equation} que es un
+miembro de la familia exponencial.
 
-A continuación, para el caso en el que los $\pi_{j}$ son todos iguales, podemos definir
-$$
+A continuación, para el caso en el que los $\pi_{j}$ son todos iguales,
+podemos definir $$
 Y = \sum_{j=1}^{n}Z_{j}
-$$
-de modo que $Y$ es el número de éxitos en $n$ "ensayos". La variable aleatoria $Y$ tiene la distribución $\operatorname{Bin}(n, \pi)$
+$$ de modo que $Y$ es el número de éxitos en $n$ "ensayos". La variable
+aleatoria $Y$ tiene la distribución $\operatorname{Bin}(n, \pi)$
+\begin{equation} \operatorname{Pr}(Y = y) = \left(\begin{array}{l}
+n  
+y \end{array}\right) \pi^{y}(1- \pi)^{n-y}, \quad y = 0,1,
+\ldots, n \end{equation} Finalmente, consideramos el caso general de
+$N$ variables aleatorias independientes $Y_{1}, Y_{2}, \ldots, Y_{N}$
+correspondientes al número de éxitos en $N$ diferentes subgrupos o
+estratos (en la siguiente tabla). Si
+$Y_{i}\sim \operatorname{Bin} \left(n_{i}, \pi_{i}\right)$, la función
+de probabilidad de registro es 
 \begin{equation}
-\operatorname{Pr}(Y = y) = \left(\begin{array}{l}
-n\\
-y
-\end{array}\right) \pi^{y}(1- \pi)^{n-y}, \quad y = 0,1, \ldots, n
-\end{equation}
-Finalmente, consideramos el caso general de $N$ variables aleatorias independientes 
-$Y_{1}, Y_{2}, \ldots, Y_{N}$ correspondientes al número de éxitos en $N$ diferentes subgrupos o estratos (en la siguiente tabla). Si $Y_{i}\sim \operatorname{Bin} \left(n_{i}, \pi_{i}\right)$, la función de probabilidad de registro es
-$$
 \begin{array}{l}
 l\left(\pi_{1}, \ldots, \pi_{N} ; y_{1}, \ldots, y_{N}\right) \\
 =\sum_{i=1}^{N}\left[y_{i} \log \left(\frac{\pi_{i}}{1-\pi_{i}}\right)+n_{i} \log \left(1-\pi_{i}\right)+\log \left(\begin{array}{l}
@@ -39,76 +57,212 @@ n_{i} \\
 y_{i}
 \end{array}\right]\right.
 \end{array}
-$$
-poner aqui una tabla como imagen dobson
+\label{eq:bin1}
+\end{equation}
+ poner aqui una tabla como imagen dobson
 
 ## Modelos lineales generalizados.
-Queremos describir la proporción de éxitos, $P_{i}= \dfrac{Y_{i}}{n_{i}}$, en cada subgrupo en términos de niveles de factores y otras variables explicativas que caracterizan al subgrupo. Como $\mathrm{E}\left(Y_{i}\right)=n_{i} \pi_{i}$ y así $\mathrm{E} \left(P_{i}\right)=\pi_{i}$, modelamos las probabilidades $\pi_{i}$ como
-$$
-g\left(\pi_{i}\right)=\mathbf{x}_{i}^{T}\boldsymbol{\beta}
-$$
-donde $\mathbf{x}_{i}$ es un vector de variables explicativas(variables ficticias para niveles de factor y valores medidos para covariables), $\boldsymbol{\beta}$ es un vector de parámetros y $g$ es un función de enlace. El caso más simple es el modelo lineal.
-$$
-\pi=\mathbf{x}^{T}\boldsymbol{\beta}
-$$
-Esto se usa en algunas aplicaciones prácticas, pero tiene la desventaja de que aunque $\pi$ es una probabilidad, los valores ajustados $\mathbf{x}^ {T}\mathbf{b}$ pueden ser menores que cero o mayores que uno.
 
-Para garantizar que $\pi$ esté restringido al intervalo $[0,1]$, a menudo se modela utilizando una distribución de probabilidad acumulativa  
+Queremos describir la proporción de éxitos,
+$P_{i}= \dfrac{Y_{i}}{n_{i}}$, en cada subgrupo en términos de niveles
+de factores y otras variables explicativas que caracterizan al subgrupo.
+Como $\mathrm{E}\left(Y_{i}\right)=n_{i} \pi_{i}$ y así
+$\mathrm{E} \left(P_{i}\right)=\pi_{i}$, modelamos las probabilidades
+$\pi_{i}$ como $$
+g\left(\pi_{i}\right)=x_{i}^{T}\boldsymbol{\beta}
+$$ donde $x_{i}$ es un vector de variables
+explicativas(variables ficticias para niveles de factor y valores
+medidos para covariables), $\boldsymbol{\beta}$ es un vector de
+parámetros y $g$ es un función de enlace. El caso más simple es el
+modelo lineal. $$
+\pi=x^{T}\boldsymbol{\beta}
+$$ Esto se usa en algunas aplicaciones prácticas, pero tiene la
+desventaja de que aunque $\pi$ es una probabilidad, los valores
+ajustados $x^ {T}b$ pueden ser menores que cero o
+mayores que uno.
+
+Para garantizar que $\pi$ esté restringido al intervalo $[0,1]$, a
+menudo se modela utilizando una distribución de probabilidad acumulativa
 
 $$
 \pi=\int_{-\infty}^{t}f(s)ds
-$$
-donde $f(s)\geqslant 0$ y $\int_{-\infty}^{\infty}(s)ds=1$. La función de densidad de probabilidad $f(s)$ se denomina distribución de tolerancia.   
+$$ donde $f(s)\geqslant 0$ y $\int_{-\infty}^{\infty}(s)ds=1$. La
+función de densidad de probabilidad $f(s)$ se denomina distribución de
+tolerancia.
 
-## Modelos de respuesta a la dosis.  
+## Modelos de respuesta a la dosis.
 
-
-Históricamente, uno de los primeros usos de modelos de regresión para datos binomiales fue para los resultados de bioensayos (Finney 1973). Las respuestas fueron las proporciones o porcentajes de "éxitos"; por ejemplo, la proporción de animales de experimentación muertos por distintos niveles de dosis de una sustancia tóxica. A veces, estos datos se denominan respuestas cuánticas. El objetivo es describir la probabilidad de "éxito", $\pi$, en función de la dosis, $x$; por ejemplo, $g(\pi) = \beta_{1} + \beta_{2}x$. Si la distribución de tolerancia $f(s)$ es la distribución uniforme en el intervalo $\left[c_{1}, c_{2}\right]$
-$$
+Históricamente, uno de los primeros usos de modelos de regresión para
+datos binomiales fue para los resultados de bioensayos (Finney 1973).
+Las respuestas fueron las proporciones o porcentajes de "éxitos"; por
+ejemplo, la proporción de animales de experimentación muertos por
+distintos niveles de dosis de una sustancia tóxica. A veces, estos datos
+se denominan respuestas cuánticas. El objetivo es describir la
+probabilidad de "éxito", $\pi$, en función de la dosis, $x$; por
+ejemplo, $g(\pi) = \beta_{1} + \beta_{2}x$. Si la distribución de
+tolerancia $f(s)$ es la distribución uniforme en el intervalo
+$\left[c_{1}, c_{2}\right]$ $$
 f (s) = \left\{\begin{array}{cc}
 \frac{1}{c_{2} -c_{1}} & \text{if} c_{1} \leqslant s \leqslant c_{2} \\
 0 & \text{de lo contrario}
 \end{array} \right.
-$$
-entonces $\pi$ es acumulativo  
+$$ entonces $\pi$ es acumulativo
 
 $$
 \pi = \int_{c_{1}}^{x} f (s) ds = \frac{x-c_ {1}} {c_{2} -c_{1}} \quad \text {para}\quad  c_{1} \leqslant x \leqslant c_{2}
-$$
-(ver figura $7.1$). Esta ecuación tiene la forma $\pi=\beta_{1} + \beta_{2}x$, donde
-$$
+$$ (ver figura $7.1$). Esta ecuación tiene la forma
+$\pi=\beta_{1} + \beta_{2}x$, donde $$
 \beta_{1} = \frac{-c_{1}} {c_{2} -c_{1}} \quad \text{y} \quad \beta_{2} = \frac{1}{c_{2} -c_{ 1}}
-$$
-Este modelo lineal es equivalente a usar la función de identidad como función de enlace $g$ e imponer condiciones a $x, \beta_{1}$ y $\beta_{2}$ correspondientes a $c_{1}\leq x \leq c_{2}$. Estas condiciones adicionales significan que los métodos estándar para estimar $\beta_{1}$ y $\beta_{2}$ para modelos lineales generalizados no pueden aplicarse directamente. En la práctica, este modelo no se utiliza mucho.  
+$$ Este modelo lineal es equivalente a usar la función de identidad como
+función de enlace $g$ e imponer condiciones a $x, \beta_{1}$ y
+$\beta_{2}$ correspondientes a $c_{1}\leq x \leq c_{2}$. Estas
+condiciones adicionales significan que los métodos estándar para estimar
+$\beta_{1}$ y $\beta_{2}$ para modelos lineales generalizados no pueden
+aplicarse directamente. En la práctica, este modelo no se utiliza mucho.
 
-
-Uno de los modelos originales utilizados para los datos de bioensayos se llama modelo probit. La distribución normal se utiliza como distribución de tolerancia (ver Figura 7.2).
-$$
+Uno de los modelos originales utilizados para los datos de bioensayos se
+llama modelo probit. La distribución normal se utiliza como distribución
+de tolerancia (ver Figura 7.2). $$
 \begin{aligned}
 \pi & = \frac{1}{\sigma\sqrt{2\pi}}\int_{-\infty}^{x} \exp\left[- \frac{1}{2} \left(\frac{s-\mu}{\sigma} \right)^{2} \right]ds\\
 & = \Phi\left(\frac{x-\mu}{\sigma} \right)
 \end{aligned}
 $$
 
-donde $\Phi$ denota la función de probabilidad acumulada para la distribución normal estándar $\mathrm{N}(0,1)$. Por lo tanto,
-$$
+donde $\Phi$ denota la función de probabilidad acumulada para la
+distribución normal estándar $\mathrm{N}(0,1)$. Por lo tanto, $$
 \Phi^{-1}(\pi) = \beta_{1} + \beta_{2}x
-$$
-donde $\beta_{1} = -\mu /\sigma$ y $\beta_{2} = 1 / \sigma$ y la función de enlace $g$ es la función de probabilidad normal acumulativa inversa $\Phi^{-1}$. Los modelos probit se utilizan en varias áreas de las ciencias biológicas y sociales en las que existen interpretaciones naturales del modelo; por ejemplo, $x =\mu$ se denomina dosis letal mediana LD(50) porque corresponde a la dosis que se puede esperar que mate a la mitad de los animales.    
+$$ donde $\beta_{1} = -\mu /\sigma$ y $\beta_{2} = 1 / \sigma$ y la
+función de enlace $g$ es la función de probabilidad normal acumulativa
+inversa $\Phi^{-1}$. Los modelos probit se utilizan en varias áreas de
+las ciencias biológicas y sociales en las que existen interpretaciones
+naturales del modelo; por ejemplo, $x =\mu$ se denomina dosis letal
+mediana LD(50) porque corresponde a la dosis que se puede esperar que
+mate a la mitad de los animales.
 
-
-Otro modelo que da resultados numéricos muy parecidos a los del modelo probit, pero que computacionalmente es algo más sencillo, es el modelo logístico logit. La distribución de tolerancia es
-$$
+Otro modelo que da resultados numéricos muy parecidos a los del modelo
+probit, pero que computacionalmente es algo más sencillo, es el modelo
+logístico logit. La distribución de tolerancia es $$
 f(s) = \frac{\beta_{2} \exp\left(\beta_{1} + \beta_{2} s \right)} {\left[1+ \exp \left(\beta_{1} + \beta_{2} s \right) \right]^{2}}
-$$
-Así,
-$$
+$$ Así, $$
 \pi = \int_{- \infty}^{x}f(s)ds = \frac{\exp \left(\beta_{1} + \beta_{2} x \right)} {1+ \exp \left(\beta_{1} + \beta_{2} x \right)}
-$$
-Esto le da la función de enlace
-$$
+$$ Esto le da la función de enlace $$
 \log \left(\frac{\pi} {1- \pi} \right) = \beta_{1} + \beta_{2} x
-$$
-El término $\log[\pi/(1- \pi)]$ a veces se denomina **función logit** y tiene una interpretación natural como el logaritmo de probabilidades (consulte el ejercicio 7.2). El modelo logístico se usa ampliamente para datos Binomiales y se implementa en muchos programas estadísticos. Las formas de las funciones $f (s)$ y $\pi(x)$ son similares a las del modelo probit (Figura 7.2) excepto en las colas de las distribuciones (ver Cox y Snell, 1989).
+$$ El término $\log[\pi/(1- \pi)]$ a veces se denomina **función logit**
+y tiene una interpretación natural como el logaritmo de probabilidades
+(consulte el ejercicio 7.2). El modelo logístico se usa ampliamente para
+datos Binomiales y se implementa en muchos programas estadísticos. Las
+formas de las funciones $f (s)$ y $\pi(x)$ son similares a las del
+modelo probit (Figura 7.2) excepto en las colas de las distribuciones
+(ver Cox y Snell, 1989).
 
-También se utilizan varios otros modelos para los datos de respuesta a la dosis. Por ejemplo, si la distribución de valor extremo
+También se utilizan varios otros modelos para los datos de respuesta a
+la dosis. Por ejemplo, si la distribución de valor extremo
+
+$$
+f (s) = \beta_{2} \exp \left[\left(\beta_{1} + \beta_{2} s \right) - \exp\left(\beta_{1} + \beta_{2} s \right) \right]
+$$ se utiliza como distribución de tolerancia, entonces $$
+\pi = 1- \exp \left[- \exp \left(\beta_{1} + \beta_{2} x \right) \right]
+$$ y entonces $\log [- \log (1- \pi)] = \beta_{1} + \beta_{2} x$. Este
+enlace, $\log[-\log(1- \pi)]$, se llama la función complementaria
+log-log. El modelo es similar a los modelos logístico y probit para
+valores de $\pi$ cerca de $0.5$ pero difiere de ellos por $\pi$ cerca de
+0 o $1.$ Estos modelos se ilustran en el siguiente ejemplo.
+
+**Tabla 7.2 Datos de mortalidad de escarabajos.**
+
++--------------------+----------------+----------------+
+| Dose, $x_i$        | número de esc  | número de      |
+|                    | arabajos,$n_i$ | muertos, $y_i$ |
+| $(log_{1           |                |                |
+| 0}CS_{2}mgl^{-1})$ |                |                |
++:==================:+:==============:+:==============:+
+| 1.6907             | 59             | 6              |
++--------------------+----------------+----------------+
+| 1.7242             | 60             | 13             |
++--------------------+----------------+----------------+
+| 1.7552             | 62             | 18             |
++--------------------+----------------+----------------+
+| 1.7842             | 56             | 28             |
++--------------------+----------------+----------------+
+| 1.8113             | 63             | 52             |
++--------------------+----------------+----------------+
+| 1.8369             | 59             | 53             |
++--------------------+----------------+----------------+
+| 1.8610             | 62             | 61             |
++--------------------+----------------+----------------+
+| 1.8839             | 60             | 60             |
++--------------------+----------------+----------------+
+
+```{r}
+n<-c(59,60,62,56,63,59,62,60);n
+dose<-c(1.6907,1.7242,1.7552,1.7842,1.8113,1.8369,1.8610,1.8839)
+dose
+y<-c(6,13,18,28,52,53,61,60);y
+cumsum(y/sum(y))
+y/sum(y)
+plot(dose,y/n,xlab = "dosis",ylab = "proporcion de asesinados",col="red")
+
+```
+
+### Ejemplo: Mortalidad de escarabajos
+
+La tabla $7.2$ muestra el número de escarabajos muertos después de
+cinco horas de exposición a disulfuro de carbono gaseoso en diversas
+concentraciones (datos de Bliss, 1935). La figura $7.3$ muestra las
+proporciones $p_{i} = y_{i} / n_{i}$ representadas frente a la
+dosis $x_{i}$ (en realidad $x_{i}$ es el logaritmo de la
+cantidad de disulfuro de carbono). Empezamos ajustando el modelo logístico
+
+$$\pi_{i}=\frac{\exp \left(\beta_{1}+\beta_{2} x_{i}\right)}{1+\exp \left(\beta_{1}+\beta_{2} x_{i}\right)}$$
+
+así,
+$$
+\log\left(\frac{\pi_{i}}{1-\pi_{i}}\right)=\beta_{1}+\beta_{2} x_{i}
+$$
+y
+
+$$
+\log \left(1-\pi_{i}\right)=-\log \left[1+\exp \left(\beta_{1}+\beta_{2} x_{i}\right)\right]
+$$
+Por lo tanto, de la ecuación \ref{eq:bin1}, la función logarítmica de verosimilitud es  
+
+$$
+l=\sum_{i=1}^{N}\left[y_{i}\left(\beta_{1}+\beta_{2} x_{i}\right)-n_{i} \log \left[1+\exp \left(\beta_{1}+\beta_{2} x_{i}\right)\right]+\log \left(\begin{array}{c}
+n_{i} \\
+y_{i}
+\end{array}\right)\right]
+$$
+y las puntuaciones(scores) con respecto a $\beta_{1}$ y $\beta_{2}$ son 
+
+$$
+\begin{aligned}
+U_{1} &=\frac{\partial l}{\partial \beta_{1}}=\sum\left\{y_{i}-n_{i}\left[\frac{\exp \left(\beta_{1}+\beta_{2} x_{i}\right)}{1+\exp \left(\beta_{1}+\beta_{2} x_{i}\right)}\right]\right\}=\sum\left(y_{i}-n_{i} \pi_{i}\right) \\
+U_{2} &=\frac{\partial l}{\partial \beta_{2}}=\sum\left\{y_{i} x_{i}-n_{i} x_{i}\left[\frac{\exp \left(\beta_{1}+\beta_{2} x_{i}\right)}{1+\exp \left(\beta_{1}+\beta_{2} x_{i}\right)}\right]\right\} \\
+&=\sum x_{i}\left(y_{i}-n_{i} \pi_{i}\right) .
+\end{aligned}
+$$
+
+Similarmente la matriz de información es:  
+
+$$
+\mathfrak{I}=\left[\begin{array}{cc}
+\sum n_{i} \pi_{i}\left(1-\pi_{i}\right) & \sum n_{i} x_{i} \pi_{i}\left(1-\pi_{i}\right) \\
+\sum n_{i} x_{i} \pi_{i}\left(1-\pi_{i}\right) & \sum n_{i} x_{i}^{2} \pi_{i}\left(1-\pi_{i}\right)
+\end{array}\right] .
+$$  
+
+Las estimaciones de máxima verosimilitud se obtienen resolviendo la ecuación iterativa  
+
+$$
+\mathfrak{I}^{(m-1)} b^{m}=\mathfrak{I}^{(m-1)} b^{(m-1)}+U^{(m-1)}
+$$  
+
+(de (4.22)) donde el superíndice $(m)$ indica la aproximación $m$ ésima y $b$ es el vector de estimaciones. Comenzando con $b_{1}^{(0)} =0$ y $b_{2}^{(0)} = 0$, las aproximaciones sucesivas se muestran en la Tabla 7.3. Las estimaciones convergen en la sexta iteración. La tabla también muestra el aumento en los valores de la función de probabilidad logarítmica (7.3), omitiendo el término constante $\log \left(\begin{array} {l}n_{i}\\y_{i}\end{array} \right)$. Los valores ajustados son $\widehat {y}_{i} =n_{i} \widehat{\pi}_{i}$ calculados en cada etapa (inicialmente $\widehat{\pi}_{i} = 0.5$ por todos los $i$).
+
+Para la aproximación final, la matriz de varianza-covarianza estimada para
+$b, \left[\mathfrak{I}(b)^{-1} \right]$, se muestra en la parte inferior de la Tabla $7.3$ junto con la desviación 
+
+$$
+D=2 \sum_{i=1}^{N}\left[y_{i} \log \left(\frac{y_{i}}{\widehat{y}_{i}}\right)+\left(n_{i}-y_{i}\right) \log \left(\frac{n-y_{i}}{n-\widehat{y}_{i}}\right)\right]
+$$

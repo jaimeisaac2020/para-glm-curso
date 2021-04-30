@@ -1,11 +1,206 @@
 ---
-output: 
-  pdf_document: 
+output:
+  html_document:
+    df_print: paged
+  pdf_document:
     keep_tex: yes
     fig_caption: yes
     fig_crop: no
+editor_options:
+  markdown:
+    wrap: 72
 ---
-# Regresión Logística 1
+
+
+
+
+
+# Familia Exponencial y modelos lineales generalizados
+## Introducción
+
+Modelos lineales de la forma.
+\begin{equation}
+  E \left(Y_{i} \right) = \mu_{i} = x_{i}^{T}\boldsymbol {\beta}; \quad Y_{i} \sim \mathrm{N} \left (\mu_{i}, \sigma^{2} \right) 
+  \label{eq:eq1}
+\end{equation}
+  
+  
+  
+donde las variables aleatorias $Y_{i}$ son independientes son la base de la mayoría de los análisis de datos continuos. Tenga en cuenta que las variables aleatorias $Y_{i}$ para diferentes sujetos, indexadas por el subíndice $i,$ pueden tener diferentes valores esperados $\mu_{i}.$ A veces puede haber solo una observación $y_{i}$ para cada $Y_{i}$, pero en otras ocasiones puede haber varias observaciones $y_{ij}\left(j = 1, \ldots, n_{i}\right)$ para cada $Y_{i}$. El vector transpuesto $x_{i}^{T}$ representa la $i$ ésima fila de la matriz de diseño $X.$ El ejemplo sobre la asociación entre el peso al nacer y la edad gestacional es de este formulario, consulte la Sección 2.2.2. También lo es el ejercicio sobre el crecimiento de las plantas, donde $Y_{i}$ es el peso seco de las plantas y $X$ tiene elementos para identificar los grupos de tratamiento y control (ejercicio 2.1). Las generalizaciones de estos ejemplos a la asociación entre una respuesta continua y varias variables explicativas (regresión múltiple) y las comparaciones de más de dos medias (análisis de varianza) también son de esta forma.    
+
+  
+  
+Los avances en la teoría estadística y los programas informáticos nos permiten utilizar métodos análogos a los desarrollados para los modelos lineales en las siguientes situaciones más generales:  
+
+1. Las variables de respuesta tienen distribuciones distintas de la distribución normal; incluso pueden ser categóricas en lugar de continuas.  
+
+2. No es necesario que la asociación entre la respuesta y las variables explicativas sea de la forma lineal simple de la ecuación \@ref{eq:eq1}.  
+
+
+Uno de estos avances ha sido el reconocimiento de que muchos de los "agradables"
+Las propiedades de la distribución Normal son compartidas por una clase más amplia de distribuciones llamada familia exponencial de distribuciones. Estas distribuciones y sus propiedades se analizan en la siguiente sección.  
+
+
+Un segundo avance es la extensión de los métodos numéricos para estimar los parámetros $\boldsymbol{\beta}$ del modelo lineal descrito en la ecuación \@ref{eq:eq1} a la situación donde hay alguna función no lineal que relaciona $E\left(Y_{i}\right) = \mu_{i}$ al componente lineal $x_{i}^{T}\boldsymbol{\beta},$ es decir,
+$$
+g \left (\mu_{i}\right) = \mathbf {x}_{i}^{T} \boldsymbol {\beta}
+$$
+(ver Sección 2.4). La función $g$ se llama función de enlace. En la formulación inicial de modelos lineales generalizados de Nelder y Wedderburn (1972) y en la mayoría de los ejemplos considerados en este libro, $g$ es una función matemática simple. Estos modelos ahora se han generalizado aún más a situaciones en las que las funciones pueden estimarse numéricamente; estos modelos se denominan modelos aditivos generalizados (véase Hastie y Tibshirani, 1990). En teoría, la estimación es sencilla. En la práctica, puede requerir una cantidad considerable de cálculos que impliquen la optimización numérica de funciones no lineales. Los procedimientos para realizar estos cálculos se incluyen ahora en muchos programas estadísticos.
+
+## Familia exponencial de distribuciones
+Considere una sola variable aleatoria $Y$ cuya distribución de probabilidad depende de un solo parámetro $\theta$. La distribución pertenece a la familia exponencial si se puede escribir en la forma
+
+
+\begin{equation}
+ f (y; \theta) = s (y) t (\theta) e ^ {a (y) b (\theta)}  
+ \label{eq2}
+\end{equation}
+donde $a, b, s$ y $t$ son funciones conocidas. Observe la simetría entre $y$ y
+$\theta$. Esto se enfatiza si la ecuación (3.2) se reescribe como
+
+\begin{equation}
+ \qquad f (y; \theta) = \exp [a (y) b (\theta) + c (\theta) + d (y)]  
+ \label{eq3}
+\end{equation}
+
+
+\text {donde} $s (y) = \exp d (y)$ \text {y} $t (\theta) = \exp c (\theta)$
+
+
+Si $a (y) = y,$ se dice que la distribución está en forma canónica (es decir, estándar) y $b (\theta)$ a veces se llama el parámetro natural de la distribución. Si hay otros parámetros, además del parámetro de interés $\theta$, se consideran parámetros molestos que forman parte de las funciones $a$, $b,c $ y $d$, y se tratan como si son conocidos.    
+
+
+Muchas distribuciones conocidas pertenecen a la familia exponencial. Por ejemplo, las distribuciones de Poisson, Normal y Binomial se pueden escribir todas en la forma canónica; consulte la Tabla 3.1.    
+
+
+Tabla 3.1 Distribuciones de Poisson, Normal y Binomial como miembros de la familia exponentia.    
+
+\begin{tabular} {| c | c | c | c |}
+\hline Distribución y parámetro natural & $ c $ & $ d $ \\
+\hline Poisson & $ \log \theta $ & $ - \theta $ & $ - \log y! $ \\
+Normal & $ \frac {\mu} {\sigma ^ {2}} $ & $ - \frac {\mu ^ {2}} {2 \sigma ^ {2}} - \frac {1} {2} \log \left (2 \pi \sigma ^ {2} \right) $ & $ - \frac {y ^ {2}} {2 \sigma ^ {2}} $ \\
+Binomial & $ \log \left (\frac {\pi} {1- \pi} \right) $ & $ n \log (1- \pi) $ & $ \log \left (\begin{array} {l } n \\
+y \end{array} \right) $ \\
+\hline
+\end{tabular}
+
+### distribución de Poisson
+La función de probabilidad para la variable aleatoria discreta $Y$ es
+$$
+f (y, \theta) = \frac {\theta ^ {y} e ^ {- \theta}} {y!}
+$$
+donde $y$ toma los valores $0,1,2, \ldots$. Esto se puede reescribir como
+$$
+f (y, \theta) = \exp (y \log \theta- \theta- \log y!)
+$$
+que está en la forma canónica porque $a (y) = y.$ También el parámetro natural es $\log \theta$.  
+
+La distribución de Poisson, denotada por $Y\sim\operatorname {Po} (\theta)$, se utiliza para modelar los datos de recuento. Por lo general, estos son el número de ocurrencias de algún evento en un período de tiempo o espacio definido, cuando la probabilidad de que un evento ocurra en un tiempo (o espacio) muy pequeño es baja y los eventos ocurren de forma independiente. Los ejemplos incluyen el número de condiciones médicas informadas por una persona (ejemplo 2.2 .1), el número de ciclones tropicales durante una temporada (ejemplo 1.6.5), el número de errores ortográficos en la página de un periódico o el número de errores componentes en una computadora o en un lote de artículos manufacturados. Si una variable aleatoria tiene la distribución de Poisson, su valor esperado y su varianza son iguales. Los datos reales que podrían ser modelados de manera plausible por la distribución de Poisson a menudo tienen una varianza mayor y se dice que están sobredispersos, y es posible que el modelo deba adaptarse para reflejar esta característica. El capítulo 9 describe varios modelos basados en la distribución de Poisson.   
+
+
+### Distribución Normal
+La función de densidad de probabilidad es
+$$
+f (y; \mu) = \frac {1} {\left (2 \pi \sigma ^ {2} \right) ^ {1/2}} \exp \left [- \frac {1} {2 \sigma ^ {2}} (y- \mu) ^ {2}\right]
+$$
+donde $\mu$ es el parámetro de interés y $\sigma^{2}$ se considera un parámetro molesto. Esto se puede reescribir como
+$$
+f (y; \mu) = \exp \left [- \frac {y ^ {2}} {2 \sigma ^ {2}} + \frac {y \mu} {\sigma ^ {2}} - \frac {\mu ^ {2}} {2 \sigma ^ {2}} - \frac {1} {2} \log \left (2 \pi \sigma ^ {2} \right) \right]
+$$
+Esto está en forma canónica. El parámetro natural es $b(\mu) = \mu / \sigma^{2}$ y los otros términos en \ref{eq3} son
+$$
+c(\mu) = - \frac {\mu^{2}} {2\sigma^{2}} - \frac{1} {2} \log \left (2 \pi \sigma^{2} \right) \text {y} d (y) = - \frac{y^{2}} {2 \sigma ^ {2}}
+$$
+
+(alternativamente, el término $- \frac {1} {2} \log \left (2 \pi \sigma ^ {2} \right)$ podría incluirse en $d (y)$.  
+La distribución normal se utiliza para modelar datos continuos que tienen una distribución simétrica. Se usa ampliamente por tres razones principales. Primero, muchos fenómenos que ocurren naturalmente están bien descritos por la distribución Normal; por ejemplo, altura o presión arterial de las personas. En segundo lugar, incluso si los datos no están distribuidos normalmente (por ejemplo, si su distribución está sesgada), el promedio o el total de una muestra aleatoria de valores se distribuirán aproximadamente normalmente; este resultado se prueba en el teorema del límite central. En tercer lugar, existe una gran cantidad de teoría estadística desarrollada para la distribución normal, incluidas las distribuciones muestrales derivadas de ella y las aproximaciones a otras distribuciones. Por estas razones, si los datos continuos $y$ no se distribuyen normalmente, a menudo vale la pena intentar identificar una transformación, como $y^{\prime} = \log y$ o $y^{\prime} = \sqrt{y},$ que produce datos $y^{\prime}$ que son aproximadamente normales.   
+
+
+
+### Distribucion Binomial
+Considere una serie de eventos binarios, llamados "ensayos", cada uno con solo dos resultados posibles: "éxito" o "fracaso". Sea la variable aleatoria $Y$ el número de
+"éxitos" en $n$ ensayos independientes en los que la probabilidad de éxito, $\pi$, es la misma en todos los ensayos. Entonces $Y$ tiene la distribución binomial con función de densidad de probabilidad
+$$
+f (y; \pi) = \left (\begin{array} {l}
+n \\
+y
+\end{array} \right) \pi ^ {y} (1- \pi) ^ {n-y}
+$$
+donde $y$ toma los valores $0,1,2, \ldots, n$ y
+$$
+\left (\begin{array} {l}
+n \\
+y
+\end{array} \right) = \frac {n!} {y! (n-y)!}
+$$
+Esto se indica con $Y\sim\operatorname {Bin} (n, \pi)$. Aquí $\pi$ es el parámetro de interés y se supone que $n$ es conocido. La función de probabilidad se puede reescribir como
+$$
+f (y; \pi) = \exp \left[y \log \pi-y \log (1- \pi) + n \log (1- \pi) + \log \left (\begin{array} { l}
+n \\
+y
+\end{array} \right) \right]
+$$
+que tiene la forma (3.3) con $b(\pi) = \log \pi- \log (1- \pi) = \log [\pi / (1- \pi)]$  
+
+
+La distribución binomial suele ser el modelo de primera elección para las observaciones de un proceso con resultados binarios. Los ejemplos incluyen el número de candidatos que pasan una prueba (los posibles resultados para cada candidato son aprobar o reprobar) o el número de pacientes con alguna enfermedad que están vivos en un momento específico desde el diagnóstico (los posibles resultados son la supervivencia o la muerte).  
+
+
+Otros ejemplos de distribuciones pertenecientes a la familia exponencial se dan en los ejercicios al final del capítulo; no todos tienen la forma canónica.  
+
+
+
+
+## Propiedades de distribuciones en la familia exponencial
+Se necesitan expresiones para el valor esperado y la varianza de $(Y)$. Para encontrarlos, se utilizan los siguientes resultados que se aplican a cualquier función de densidad de probabilidad siempre que se pueda intercambiar el orden de integración y diferenciación. De la definición de una función de densidad de probabilidad, el área bajo la curva es la unidad, por lo que
+\begin{equation}
+  \int f (y; \theta) d y = 1  
+  \label{eq4}
+\end{equation}
+
+
+donde la integración está sobre todos los valores posibles de $y$. (Si la variable aleatoria $Y$ es discreta, entonces la integración se reemplaza por la suma). Si ambos lados de \ref{eq4} se diferencian con respecto a $\theta$, esto da
+\begin{equation}
+  \frac {d} {d \theta} \int f (y; \theta) d y = \frac {d} {d\theta} .1 = 0.  
+  \label{eq5}
+\end{equation}
+
+Si el orden de integración y diferenciación en el primer término se invierte, entonces \ref{eq5} se convierte en
+
+\begin{equation}
+  \int \frac {d f (y; \theta)} {d \theta} d y = 0  
+  \label{eq6}
+\end{equation}
+De manera similar, si \ref{eq4} se diferencia dos veces con respecto a $\theta$ y el orden de integración y diferenciación se invierte, esto da
+
+\begin{equation}
+   \int \frac {d ^ {2} f (y; \theta)} {d \theta ^ {2}} d y = 0 
+   \label{eq7}
+\end{equation}
+Estos resultados ahora se pueden usar para distribuciones en la familia exponencial. Desde \ref{eq3}
+$$
+f (y; \theta) = \exp [a (y) b (\theta) + c (\theta) + d (y)]
+$$
+Así,
+$$
+\frac{df (y; \theta)} {d \theta} = \left [a (y) b^{\prime}(\theta) + c ^{\prime} (\theta) \right] f ( y; \theta)
+$$
+Por \ref{eq6}
+$$
+\int \left [a (y) b ^ {\prime} (\theta) + c ^ {\prime} (\theta) \right] f (y; \theta) d y = 0
+$$
+Esto se puede simplificar a
+
+\begin{equation}
+  b ^ {\prime} (\theta) \mathrm {E} [a (y)] + c ^ {\prime} (\theta) = 0  
+  \label{eq8}
+\end{equation}
+
+porque $\int a (y) f (y; \theta) dy = \mathrm {E} [a (y)]$ por la definición del valor esperado y $\int c ^ {\prime} (\theta) f (y; \theta) dy = c ^ {\prime} (\theta)$ por \ref{eq4}. Reorganizar \ref{eq8} da
+
+
+# REGRESIÓN LOGÍSTICA SIMPLE
+
 ```{r}
 require(tidyverse)
 library(psych)
@@ -17,7 +212,6 @@ attach(Pima.tr)
 
 
 ```
-# REGRESIÓN LOGÍSTICA SIMPLE
 ```{r}
 #y=as.numeric(type)-1 is needed for the plot
 ggplot(Pima.tr, aes(x=bmi, y=as.numeric(type)-1)) + geom_point() +
@@ -44,7 +238,7 @@ $$
 ln(\frac{\hat{p}}{1-\hat{p}})=-4.11156+0.10482(30)=-0.96696
 $$
 
-Observe que su logit (log odds-ratio) es negativo. Esto será cierto siempre que la probabilidad predicha $\hat{p}<0.5$, por lo que en este escenario usted querría un logit negativo. Cuando $\hat{p}>0.5$, el logit será positivo, y si $\hat{p}= 0.5$ entonces el logit es::
+Observe que su logit (log odds-ratio) es negativo. Esto será cierto siempre que la probabilidad predicha $\hat{p}<0.5$, por lo que en este escenario usted querría un logit negativo. Cuando $\hat{p}>0.5$, el logit será positivo, y si $\hat{p}= 0.5$ entonces el logit es
 
 $$
 ln(\frac{0.5}{1-0.5})=ln(1)=0
@@ -332,6 +526,5 @@ eso se consideraría sustancial. El modelo 0 y el modelo 1 son muy débiles, con
 ```{r}
 predict(object = mod2, newdata = data.frame(bmi =30.3 ,age=27,Mom="No"))
 ```
-
 
 
