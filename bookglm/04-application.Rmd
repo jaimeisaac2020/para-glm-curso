@@ -1,7 +1,7 @@
 ---
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 # Variables Binarias y regresión Logística.
 ## Distribuciones de probabilidad..
