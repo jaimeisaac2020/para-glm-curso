@@ -101,5 +101,14 @@ Otro modelo que da resultados numéricos muy parecidos a los del modelo probit, 
 $$
 f(s) = \frac{\beta_{2} \exp\left(\beta_{1} + \beta_{2} s \right)} {\left[1+ \exp \left(\beta_{1} + \beta_{2} s \right) \right]^{2}}
 $$
+Así,
+$$
+\pi = \int_{- \infty}^{x}f(s)ds = \frac{\exp \left(\beta_{1} + \beta_{2} x \right)} {1+ \exp \left(\beta_{1} + \beta_{2} x \right)}
+$$
+Esto le da la función de enlace
+$$
+\log \left(\frac{\pi} {1- \pi} \right) = \beta_{1} + \beta_{2} x
+$$
+El término $\log[\pi/(1- \pi)]$ a veces se denomina **función logit** y tiene una interpretación natural como el logaritmo de probabilidades (consulte el ejercicio 7.2). El modelo logístico se usa ampliamente para datos Binomiales y se implementa en muchos programas estadísticos. Las formas de las funciones $f (s)$ y $\pi(x)$ son similares a las del modelo probit (Figura 7.2) excepto en las colas de las distribuciones (ver Cox y Snell, 1989).
 
-
+También se utilizan varios otros modelos para los datos de respuesta a la dosis. Por ejemplo, si la distribución de valor extremo
