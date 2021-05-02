@@ -2,7 +2,7 @@
 output:
   html_document:
     df_print: paged
-  pdf_document:
+  pdf_document: 
     keep_tex: yes
     fig_caption: yes
     fig_crop: no
@@ -11,17 +11,13 @@ editor_options:
     wrap: 72
 ---
 
-
-
-
-
 # Familia Exponencial y modelos lineales generalizados
 ## Introducción
 
 Modelos lineales de la forma.
 \begin{equation}
   E \left(Y_{i} \right) = \mu_{i} = x_{i}^{T}\boldsymbol {\beta}; \quad Y_{i} \sim \mathrm{N} \left (\mu_{i}, \sigma^{2} \right) 
-  \label{eq:eq1}
+ (\#eq:eq1)
 \end{equation}
   
   
@@ -34,14 +30,14 @@ Los avances en la teoría estadística y los programas informáticos nos permite
 
 1. Las variables de respuesta tienen distribuciones distintas de la distribución normal; incluso pueden ser categóricas en lugar de continuas.  
 
-2. No es necesario que la asociación entre la respuesta y las variables explicativas sea de la forma lineal simple de la ecuación \@ref{eq:eq1}.  
+2. No es necesario que la asociación entre la respuesta y las variables explicativas sea de la forma lineal simple de la ecuación \@ref(eq:eq1).  
 
 
 Uno de estos avances ha sido el reconocimiento de que muchos de los "agradables"
 Las propiedades de la distribución Normal son compartidas por una clase más amplia de distribuciones llamada familia exponencial de distribuciones. Estas distribuciones y sus propiedades se analizan en la siguiente sección.  
 
 
-Un segundo avance es la extensión de los métodos numéricos para estimar los parámetros $\boldsymbol{\beta}$ del modelo lineal descrito en la ecuación \@ref{eq:eq1} a la situación donde hay alguna función no lineal que relaciona $E\left(Y_{i}\right) = \mu_{i}$ al componente lineal $x_{i}^{T}\boldsymbol{\beta},$ es decir,
+Un segundo avance es la extensión de los métodos numéricos para estimar los parámetros $\boldsymbol{\beta}$ del modelo lineal descrito en la ecuación \@ref(eq:eq1) a la situación donde hay alguna función no lineal que relaciona $E\left(Y_{i}\right) = \mu_{i}$ al componente lineal $x_{i}^{T}\boldsymbol{\beta},$ es decir,
 $$
 g \left (\mu_{i}\right) = \mathbf {x}_{i}^{T} \boldsymbol {\beta}
 $$
@@ -53,14 +49,14 @@ Considere una sola variable aleatoria $Y$ cuya distribución de probabilidad dep
 
 \begin{equation}
  f (y; \theta) = s (y) t (\theta) e ^ {a (y) b (\theta)}  
- \label{eq2}
+ (\#eq:eq2)
 \end{equation}
 donde $a, b, s$ y $t$ son funciones conocidas. Observe la simetría entre $y$ y
 $\theta$. Esto se enfatiza si la ecuación (3.2) se reescribe como
 
 \begin{equation}
  \qquad f (y; \theta) = \exp [a (y) b (\theta) + c (\theta) + d (y)]  
- \label{eq3}
+ (\#eq:eq3)
 \end{equation}
 
 
@@ -95,7 +91,7 @@ f (y, \theta) = \exp (y \log \theta- \theta- \log y!)
 $$
 que está en la forma canónica porque $a (y) = y.$ También el parámetro natural es $\log \theta$.  
 
-La distribución de Poisson, denotada por $Y\sim\operatorname {Po} (\theta)$, se utiliza para modelar los datos de recuento. Por lo general, estos son el número de ocurrencias de algún evento en un período de tiempo o espacio definido, cuando la probabilidad de que un evento ocurra en un tiempo (o espacio) muy pequeño es baja y los eventos ocurren de forma independiente. Los ejemplos incluyen el número de condiciones médicas informadas por una persona (ejemplo 2.2 .1), el número de ciclones tropicales durante una temporada (ejemplo 1.6.5), el número de errores ortográficos en la página de un periódico o el número de errores componentes en una computadora o en un lote de artículos manufacturados. Si una variable aleatoria tiene la distribución de Poisson, su valor esperado y su varianza son iguales. Los datos reales que podrían ser modelados de manera plausible por la distribución de Poisson a menudo tienen una varianza mayor y se dice que están sobredispersos, y es posible que el modelo deba adaptarse para reflejar esta característica. El capítulo 9 describe varios modelos basados en la distribución de Poisson.   
+La distribución de Poisson, denotada por $Y\sim Po (\theta)$, se utiliza para modelar los datos de recuento. Por lo general, estos son el número de ocurrencias de algún evento en un período de tiempo o espacio definido, cuando la probabilidad de que un evento ocurra en un tiempo (o espacio) muy pequeño es baja y los eventos ocurren de forma independiente. Los ejemplos incluyen el número de condiciones médicas informadas por una persona (ejemplo 2.2 .1), el número de ciclones tropicales durante una temporada (ejemplo 1.6.5), el número de errores ortográficos en la página de un periódico o el número de errores componentes en una computadora o en un lote de artículos manufacturados. Si una variable aleatoria tiene la distribución de Poisson, su valor esperado y su varianza son iguales. Los datos reales que podrían ser modelados de manera plausible por la distribución de Poisson a menudo tienen una varianza mayor y se dice que están sobredispersos, y es posible que el modelo deba adaptarse para reflejar esta característica. El capítulo 9 describe varios modelos basados en la distribución de Poisson.   
 
 
 ### Distribución Normal
@@ -107,7 +103,7 @@ donde $\mu$ es el parámetro de interés y $\sigma^{2}$ se considera un parámet
 $$
 f (y; \mu) = \exp \left [- \frac {y ^ {2}} {2 \sigma ^ {2}} + \frac {y \mu} {\sigma ^ {2}} - \frac {\mu ^ {2}} {2 \sigma ^ {2}} - \frac {1} {2} \log \left (2 \pi \sigma ^ {2} \right) \right]
 $$
-Esto está en forma canónica. El parámetro natural es $b(\mu) = \mu / \sigma^{2}$ y los otros términos en \ref{eq3} son
+Esto está en forma canónica. El parámetro natural es $b(\mu) = \mu / \sigma^{2}$ y los otros términos en \@ref(eq:eq3) son
 $$
 c(\mu) = - \frac {\mu^{2}} {2\sigma^{2}} - \frac{1} {2} \log \left (2 \pi \sigma^{2} \right) \text {y} d (y) = - \frac{y^{2}} {2 \sigma ^ {2}}
 $$
@@ -133,7 +129,7 @@ n \\
 y
 \end{array} \right) = \frac {n!} {y! (n-y)!}
 $$
-Esto se indica con $Y\sim\operatorname {Bin} (n, \pi)$. Aquí $\pi$ es el parámetro de interés y se supone que $n$ es conocido. La función de probabilidad se puede reescribir como
+Esto se indica con $Y\sim Bin(n, \pi)$. Aquí $\pi$ es el parámetro de interés y se supone que $n$ es conocido. La función de probabilidad se puede reescribir como
 $$
 f (y; \pi) = \exp \left[y \log \pi-y \log (1- \pi) + n \log (1- \pi) + \log \left (\begin{array} { l}
 n \\
@@ -155,48 +151,297 @@ Otros ejemplos de distribuciones pertenecientes a la familia exponencial se dan 
 Se necesitan expresiones para el valor esperado y la varianza de $(Y)$. Para encontrarlos, se utilizan los siguientes resultados que se aplican a cualquier función de densidad de probabilidad siempre que se pueda intercambiar el orden de integración y diferenciación. De la definición de una función de densidad de probabilidad, el área bajo la curva es la unidad, por lo que
 \begin{equation}
   \int f (y; \theta) d y = 1  
-  \label{eq4}
+ (\#eq:eq4)
 \end{equation}
 
 
-donde la integración está sobre todos los valores posibles de $y$. (Si la variable aleatoria $Y$ es discreta, entonces la integración se reemplaza por la suma). Si ambos lados de \ref{eq4} se diferencian con respecto a $\theta$, esto da
+donde la integración está sobre todos los valores posibles de $y$. (Si la variable aleatoria $Y$ es discreta, entonces la integración se reemplaza por la suma). Si ambos lados de \@ref(eq:eq4) se diferencian con respecto a $\theta$, esto da
 \begin{equation}
   \frac {d} {d \theta} \int f (y; \theta) d y = \frac {d} {d\theta} .1 = 0.  
-  \label{eq5}
+  (\#eq:eq5)
 \end{equation}
 
-Si el orden de integración y diferenciación en el primer término se invierte, entonces \ref{eq5} se convierte en
+Si el orden de integración y diferenciación en el primer término se invierte, entonces \@ref(eq:eq5) se convierte en
 
 \begin{equation}
   \int \frac {d f (y; \theta)} {d \theta} d y = 0  
-  \label{eq6}
+  (\#eq:eq6)
 \end{equation}
-De manera similar, si \ref{eq4} se diferencia dos veces con respecto a $\theta$ y el orden de integración y diferenciación se invierte, esto da
+De manera similar, si \@ref(eq:eq4) se diferencia dos veces con respecto a $\theta$ y el orden de integración y diferenciación se invierte, esto da
 
 \begin{equation}
-   \int \frac {d ^ {2} f (y; \theta)} {d \theta ^ {2}} d y = 0 
-   \label{eq7}
+   \int \frac{d^{2} f (y; \theta)} {d \theta^{2}} d y = 0 
+   (\#eq:eq7)
 \end{equation}
-Estos resultados ahora se pueden usar para distribuciones en la familia exponencial. Desde \ref{eq3}
+Estos resultados ahora se pueden usar para distribuciones en la familia exponencial. Desde \@ref(eq:eq3)
 $$
-f (y; \theta) = \exp [a (y) b (\theta) + c (\theta) + d (y)]
+f(y;\theta) = \exp[a(y)b(\theta)+c(\theta)+d(y)]
 $$
-Así,
+Así,  
+
 $$
-\frac{df (y; \theta)} {d \theta} = \left [a (y) b^{\prime}(\theta) + c ^{\prime} (\theta) \right] f ( y; \theta)
+\frac{df(y; \theta)}{d\theta} =\left[a(y)b^{\prime}(\theta) + c^{\prime}(\theta)\right]f(y;\theta)
 $$
-Por \ref{eq6}
+Por \@ref(eq:eq6)
 $$
-\int \left [a (y) b ^ {\prime} (\theta) + c ^ {\prime} (\theta) \right] f (y; \theta) d y = 0
+\int \left[a (y)b^{\prime}(\theta) + c^{\prime}(\theta)\right]f(y;\theta)dy= 0
 $$
 Esto se puede simplificar a
 
 \begin{equation}
-  b ^ {\prime} (\theta) \mathrm {E} [a (y)] + c ^ {\prime} (\theta) = 0  
-  \label{eq8}
+  b^{\prime}(\theta)E[a(y)] +c^{\prime}(\theta) = 0  
+  (\#eq:eq8)
 \end{equation}
 
-porque $\int a (y) f (y; \theta) dy = \mathrm {E} [a (y)]$ por la definición del valor esperado y $\int c ^ {\prime} (\theta) f (y; \theta) dy = c ^ {\prime} (\theta)$ por \ref{eq4}. Reorganizar \ref{eq8} da
+porque $\int a(y)f(y;\theta)dy =E[a(y)]$ por la definición del valor esperado y $\int c^{\prime}(\theta)f(y;\theta)dy = c^{\prime} (\theta)$ por \@ref(eq:eq4). Reorganizar \@ref(eq:eq8) da  
+
+\begin{equation}
+  E[a(Y)]=-c^{\prime}(\theta)b^{\prime}(\theta)
+(\#eq:eq9)  
+\end{equation}  
+Se puede usar un argumento similar para obtener $var(a(y))$
+\begin{equation}
+ \frac{d^{2}f(y;\theta)}{d\theta^{2}}=\left[a(y)b^{\prime \prime}(\theta)+c^{\prime \prime}(\theta)\right]f(y;\theta)+ \left[a(y)b^{\prime}(\theta)+c^{\prime}(\theta)\right]^{2}f(y;\theta)
+ (\#eq:eq10)   
+\end{equation}
+El segundo término en el lado derecho de \@ref(eq:eq10) se puede reescribir como  
+
+$$\left[b^{\prime}(\theta)\right]^{2}\{a(y)-E[a(Y)]\}^{2}f(y;\theta)$$
+usando \@ref(eq:eq9). Luego por \@ref(eq:eq7)
+
+\begin{equation}
+  \int \frac{d^{2}f(y; \theta)} {d \theta^{2}}dy = b^{\prime\prime} (\theta) E[a(Y)]+ c^{\prime\prime} (\theta) + \left[b^{\prime}(\theta)\right]^{2}var[a(Y)] = 0
+(\#eq:eq11) 
+\end{equation}
+porque $\int\{a(y)-\mathrm{E}[a(Y)]\}^{2}f(y;\theta)dy = var[a(Y)]$ por definición.
+Reordenando (\@ref(eq:eq11) y sustituyendo \@ref(eq:eq9) da
+
+\begin{equation}
+var[a(Y)] = \frac{b^{\prime \prime}(\theta)c^{\prime}(\theta) -c^{\prime \prime}(\theta)b^{\prime}(\theta)}{\left[b^{\prime} (\theta)\right]^{3}}
+(\#eq:eq12)  
+\end{equation}
+
+
+Las ecuaciones \@ref(eq:eq9) y \@ref(eq:eq12) pueden verificarse fácilmente para las distribuciones de Poisson, Normal y Binomial (vea el ejercicio 3.4) y usarse para obtener el valor esperado y la varianza para otras distribuciones en la familia exponencial.
+
+También se necesitan expresiones para el valor esperado y la varianza de las derivadas de la función logarítmica de verosimilitud. De \@ref(eq:eq3), la función logarítmica de verosimilitud para una distribución en la familia exponencial es
+$$
+l (\theta; y) = a (y) b (\theta) + c (\theta) + d (y)
+$$
+La derivada de $l(\theta; y)$ con respecto a $\theta$ es
+$$
+U (\theta; y) = \frac {dl (\theta; y)} {d \theta} = a (y) b ^ {\prime} (\theta) + c ^ {\prime} (\theta) .
+$$
+La función $U$ se denomina estadística de puntuación y, como depende de $y$, se puede considerar como una variable aleatoria, es decir,
+
+\begin{equation}
+  U= a(Y)b^{\prime}(\theta)+c^{\prime}(\theta)  
+ (\#eq:eq13)
+\end{equation}
+
+Su valor esperado es
+$$
+E(U) = b^{\prime}(\theta)\mathrm{E}[a(Y)] + c^{\prime}(\theta)
+$$
+De \@ref(eq:eq9)
+
+\begin{equation}
+ \mathrm {E} (U) = b^{\prime} (\theta) \left [-\frac{c^{\prime} (\theta)} {b^{\prime}(\theta)}\right]+c^{\prime}(\theta) = 0
+(\#eq:eq14)
+\end{equation}
+La varianza de $U$ se llama información y se indicará con $\mathfrak{I}$. Usando la fórmula para la varianza de una transformación lineal de variables aleatorias(ver 1.3 y \@ref(eq:eq9)
+$$
+\mathfrak{I} = var(U) = \left[b^{\prime}(\theta)^{2}\right] var[a(Y)]
+$$
+Sustituyendo \@ref(eq:eq12) se obtiene
+
+\begin{equation}
+   var(U) = \frac{b^{\prime \prime} (\theta)c^{\prime} (\theta)}{b^{\prime}(\theta)} - c^{\prime \prime}(\theta)
+  (\#eq:eq15)
+\end{equation}
+La estadística de puntuación(Score Statistic) $U$ se utiliza para inferencias sobre los valores de los parámetros en modelos lineales generalizados (consulte el Capítulo 5). Otra propiedad de $U$ que se utilizará más adelante es
+
+
+\begin{equation}
+ var(U) = \mathrm {E} \left (U ^ {2} \right) = - \mathrm {E} \left (U ^ {\prime} \right)
+(\#eq:eq16)
+\end{equation}
+La primera igualdad se sigue del resultado general
+$$
+var(X) = \mathrm {E} \left (X ^ {2} \right) - [\mathrm {E} (X)] ^ {2}
+$$
+para cualquier variable aleatoria y el hecho de que $\mathrm{E}(U) = 0$ de \@ref(eq:eq14). Para obtener la segunda igualdad, $U$ se diferencia con respecto a $\theta;$ de \@ref(eq:eq13)
+$$
+U^{\prime} = \frac{dU}{d\theta} = a(Y)b^{\prime\prime}(\theta) + c^{\prime \prime}(\theta)
+$$
+Por lo tanto, el valor esperado de $U^{\prime}$ es  
+
+\begin{equation}
+  \begin{split}
+     \mathrm{E}\left(U^{\prime}\right) & =b^{\prime          \prime}(\theta)\mathrm{E}[a(Y)] + c^{\prime \prime }(\theta) \\
+                                       & = b^{\prime \prime}(\theta) \left[-\frac{c^{\prime}(\theta)} {b^{\prime}(\theta)}\right] + c^{\prime \prime} (\theta) \\
+& = - var(U) \\
+&= -\mathfrak{I}\\
+\end{split}  
+(\#eq:eq17)
+\end{equation}
+
+
+sustituyendo \@ref(eq:eq9) y luego usando \@ref(eq:eq15).
+
+## Modelos lineales generalizados
+Nelder y Wedderburn (1972) demostraron la unidad de muchos métodos estadísticos utilizando la idea de un modelo lineal generalizado. Este modelo se define en términos de un conjunto de variables aleatorias independientes $Y_{1}, \ldots, Y_{N},$ cada una con una distribución de la familia exponencial y las siguientes propiedades:  
+1. La distribución de cada $Y_{i}$ tiene la forma canónica y depende de un solo parámetro $\theta_ {i}$ (los $\theta_{i}$ no tienen que ser todos iguales); por lo tanto,
+$$
+f\left(y_{i}; \theta_{i}\right) = \exp\left[y_{i} b_{i} \left(\theta_{i}\right) + c_{i} \left( \theta_{i}\right) + d_{i} \left(y_{i} \right)\right]
+$$
+2. Las distribuciones de todos los $Y_{i}$ son de la misma forma (por ejemplo, todos Normal o todos Binomiales) de modo que los subíndices en $b,c$ y $d$ no son necesarios.  
+
+Por lo tanto, la función de densidad de probabilidad conjunta de $Y_{1}, \ldots, Y_{N}$ es
+\begin{equation}
+\begin{split}
+f\left(y_{1}, \ldots, y_{N} ; \theta_{1}, \ldots, \theta_{N}\right) &=\displaystyle \prod_{i=1}^{N} \exp \left[y_{i} b\left(\theta_{i}\right)+c\left(\theta_{i}\right)+d\left(y_{i}\right)\right] \\
+&=\exp \left[\sum_{i=1}^{N} y_{i} b\left(\theta_{i}\right)+\sum_{i=1}^{N} c\left(\theta_{i}\right)+\sum_{i=1}^{N} d\left(y_{i}\right)\right]
+(\#eq:eq18)
+\end{split}
+\end{equation}
+
+Los parámetros $\theta_{i}$ generalmente no son de interés directo (ya que puede haber uno para cada observación). Para la especificación del modelo, generalmente estamos interesados en un conjunto más pequeño de parámetros $\beta_{1}, \ldots, \beta_{p}$ (donde $\left.p <N \right)$.  
+Suponga que $\mathrm{E} \left(Y_{i}\right) = \mu_{i}$, donde $\mu_{i}$ es alguna función de $ \theta_{i}$. Para un modelo lineal generalizado, hay una transformación de $\mu_{i}$ tal que
+$$
+g \left (\mu_{i} \right) = \mathbf{x}_{i}^{T} \boldsymbol {\beta}
+$$
+En esta ecuación:  
+
+a). $g$ es una función diferenciable monótona llamada función de enlace; es decir, es plano, o aumenta o disminuye con $\mu_{i}$, pero no puede aumentar para algunos valores de $\mu_{i}$ y disminuir para otros valores.  
+
+b) El vector $x_{i}$ es un vector $p \times 1$ de variables explicativas (covariables y variables ficticias para niveles de factores),
+$$
+\begin{aligned}
+&x_{i}=\left[\begin{array}{c}
+x_{i 1} \\
+\vdots \\
+x_{i p}
+\end{array}\right] \text { Así, }\quad x_{i}^{T}=\left[\begin{array}{lll}
+x_{i 1} & \cdots & x_{i p}
+\end{array}\right]
+\end{aligned}
+$$
+y  
+
+
+c)
+$$
+\boldsymbol{\beta} \quad \text{ es  de  }\quad p\times1 \text{ vector de parametros } \boldsymbol{\beta}=\left[\begin{array}{c}
+\beta_{1} \\
+\vdots \\
+\beta_{p}
+\end{array}\right] \text { . }
+$$
+
+El vector $x_{i}^{T}$ es la $i$ ésima fila de la matriz de diseño $X$. Por tanto, un modelo lineal generalizado tiene tres componentes:  
+
+1. Variables de respuesta $Y_{1}, \ldots, Y_{N},$ que se supone que comparten la misma distribución de la familia exponencial;  
+
+2. Un conjunto de parámetros $\boldsymbol{\beta}$ y variables explicativas
+$$
+X=\left[\begin{array}{c}
+x_{1}^{T} \\
+\vdots \\
+x_{N}^{T}
+\end{array}\right]=\left[\begin{array}{ccc}
+x_{11} & \ldots & x_{1 p} \\
+\vdots & & \vdots \\
+x_{N 1} & & x_{N p}
+\end{array}\right]
+$$
+3. Una función de enlace monótona $g$ tal que  
+
+$$
+g\left(\mu_{i}\right) = x_{i}^{T} \boldsymbol {\beta}
+$$
+dónde
+$$
+\mu_{i} = \mathrm{E} \left(Y_{i}\right)
+$$
+
+## Ejemplos
+### El modelo lineal normal.
+El caso especial más conocido de un modelo lineal generalizado es el modelo
+$$
+\mathrm {E} \left (Y_ {i} \right) = \mu_ {i} = x_{i}^{T} \boldsymbol {\beta}; \quad Y_{i} \sim \mathrm {N} \left (\mu_ {i}, \sigma^{2} \right)
+$$
+donde $Y_{1}, \ldots, Y_{N}$ son independientes. Aquí la función de enlace es la función de identidad, $g \left (\mu_ {i} \right) = \mu_ {i}.$ Este modelo generalmente se escribe en la forma
+$$
+y = X\boldsymbol{\beta} + e
+$$
+donde $e = \left[\begin {array} {c} e_{1} \\ \vdots \\ e_{N} \end{array}\right]$ y $e_{i}$ son variables aleatorias independientes distribuidas de forma idéntica con $e_{i} \sim \mathrm{N}\left(0, \sigma^{2}\right)$ para $i = 1, \ldots, N$.
+
+De esta forma, el componente lineal $\boldsymbol{\mu} = X \boldsymbol{\beta}$ representa la "señal" y $e$ representa el "ruido", la variación aleatoria o " error." La regresión múltiple, el análisis de varianza y el análisis de covarianza son todos de esta forma.  
+
+### Lingüística histórica  
+
+Considere un idioma que es descendiente de otro idioma; por ejemplo, el griego moderno es descendiente del griego antiguo y las lenguas romances son descendientes del latín. Un modelo simple para el cambio de vocabulario es que si los idiomas están separados por tiempo $t,$, entonces la probabilidad de que tengan palabras afines para un significado particular es $e^{-\theta t}$, donde $\theta$ es un parámetro (ver Figura 3.1). Se cree que $\theta$ es aproximadamente el mismo para muchos significados de uso común. Para una lista de prueba de $N$ diferentes significados comúnmente utilizados, suponga que un lingüista juzga, para cada significado, si las palabras correspondientes en dos idiomas son afines o no afines. Podemos desarrollar un modelo lineal generalizado para describir esta situación. Defina las variables aleatorias $Y_{1}, \ldots, Y_{N}$ de la siguiente manera:
+
+$$
+Y_{i}=\left\{\begin{array}{ll}
+1 & \text{Si \quad los \quad idiomas \quad tienen \quad palabras\quad  afines }\\
+0 & \text { Si \quad las\quad  palabras\quad  no\quad  son \quad afines }
+\end{array}\right.
+$$
+Entonces,
+$$
+P\left(Y_{i}=1\right)=e^{-\theta t}=\pi
+$$
+y
+$$
+P\left(Y_{i}=0\right)=1-e^{-\theta t}=1-\pi
+$$
+Este es un ejemplo de la distribución de Bernoulli $\mathrm {B}(\pi),$ que se usa para describir la probabilidad de una variable aleatoria binaria. Es un caso especial de la distribución binomial $Bin(n, \pi)$ con $n = 1$ y $\mathrm{E} \left(Y_{i}\right) = \pi$. En este caso, estamos interesados en el parámetro $\theta$ en lugar de $\pi$, por lo que la función de enlace $g$ se toma como logarítmica
+$$
+g (\pi) = \log \pi = -\theta t
+$$
+y $g [\mathrm{E}(Y)]$ es lineal en el parámetro $\theta.$ En la notación utilizada anteriormente, $x_{i} = [-t]$ (lo mismo para todos $i$) y $\boldsymbol{\beta} = [\theta]$.  
+
+
+### Tasas de mortalidad.
+Para una población grande, la probabilidad de que un individuo elegido al azar muera en un momento determinado es pequeña. Si asumimos que las muertes por una enfermedad no infecciosa son eventos independientes, entonces el número de muertes $Y$ en una población puede modelarse mediante una distribución de Poisson
+$$
+f(y;\mu)=\frac{\mu^{y}e^{-\mu}}{y!}
+$$
+donde $y$ puede tomar los valores $0,1,2, \ldots$ y $\mu=\mathrm{E}(Y)$ es el número esperado de muertes en un período de tiempo específico, como un año.
+
+El parámetro $\mu$ dependerá del tamaño de la población, el período de observación y diversas características de la población (por ejemplo, edad, sexo e historial médico). Puede modelarse, por ejemplo, por
+$$
+\mathrm{E}(Y) =\mu = n\lambda\left(x^{T} \boldsymbol{\beta}\right)
+$$
+
+donde $n$ es el tamaño de la población y $\lambda\left(x^{T}\boldsymbol{\beta}\right)$ es la tasa por 100.000 personas por año (que depende de las características de la población descritas por el componente lineal $x^{T} \boldsymbol{\beta}$).
+
+Los cambios en la mortalidad con la edad se pueden modelar tomando variables aleatorias independientes $Y_{1}, \ldots, Y_{N}$ como el número de muertes que ocurren en grupos de edad sucesivos. Por ejemplo, la Tabla 3.2 muestra datos específicos por edad para las muertes por enfermedad coronaria.  
+
+Tabla 3.2 Número de muertes por enfermedad coronaria y tamaño de la población por grupos de edad de 5 años para hombres en la región de Hunter de Nueva Gales del Sur, Australia en 1991-  
+
+
+La figura 3.2 muestra cómo la tasa de mortalidad $y_{i}/n_{i} \times 100.000$ aumenta con la edad. Tenga en cuenta que se ha utilizado una escala logarítmica en el eje vertical. En esta escala, el diagrama de dispersión es aproximadamente lineal, lo que sugiere que la asociación
+
+entre $y_{i}/n_{i}$ y el grupo de edad $i$ es aproximadamente exponencial. Por tanto, un posible modelo es
+$$
+\mathrm{E}\left(Y_{i}\right) = \mu_{i} = n_{i} e^{\theta_i} \quad; \quad Y_{i} \sim  {Po} \left(\mu_{i}\right)
+$$
+donde $i = 1$ para el grupo de edad $30-34$ años, $i=2$ por $35-39$ años, $\ldots, i = 8$ por $65-69$ años.
+
+Esto se puede escribir como un modelo lineal generalizado utilizando la función de enlace logarítmico
+$$
+g\left(\mu_{i}\right) = \log \mu_{i} = \log n_{i} + \theta_i
+$$
+que tiene el componente lineal 
+$$
+x_{i}^{T} \boldsymbol{\beta} \quad \text { con}\quad x_{i}^{T}=\left[\log n_{i} i\right] \quad \text{y}\quad \boldsymbol{\beta}=\left[\begin{array}{c}
+1 \\
+\theta
+\end{array}\right]
+$$
 
 
 # REGRESIÓN LOGÍSTICA SIMPLE
@@ -230,7 +475,7 @@ Si solo observa el valor $p$, el resultado no sorprendente es que hay un relaci�
 
 Profundizando en la salida con más detalle, nuestra ecuación de regresión logística es:
 
-$$ ln(\frac{\hat{p}}{1-\hat{p}})=-4.11156+0.10482X $$
+$$ln(\frac{\hat{p}}{1-\hat{p}})=-4.11156+0.10482X$$
 
 Suponga que queremos hacer una predicción para una mujer en esta población con un índice de masa corporal de $X= 30$. Sustituya la ecuación para obtener su logit
 
@@ -251,7 +496,7 @@ Prestando atención al parámetro de "pendiente" $\beta_1$, su estimación es $0
 
 Si esto no significa mucho para usted, entonces podemos exponencializar la pendiente para convertir el registro de la proporción de log  probabilidades en solo la proporción de probabilidades.  
 
-$$exp(\hat{\beta_1})=e^{\hat{\beta_1}}=e^{0.10428}=1.11 $$
+$$exp(\hat{\beta_1})=e^{\hat{\beta_1}}=e^{0.10428}=1.11$$
 Entonces, la razón de posibilidades es $1.11$. Esto significa que por cada aumento de 1 en el bmi, la probabilidad
 de tener diabetes tipo II aumenta en un $11\%$. Si la razón de posibilidades era exactamente 1, eso
 indicaría una probabilidad igual (es decir, la variable no estaría asociada con la
@@ -295,7 +540,7 @@ H_0:\theta_{1}=0  \hspace{1cm} \textup{versus} \hspace{1cm} H_1:\theta_{1}\not= 
 
 Observe que el estadístico $z$ dado es la estimación dividida por el error estándar y el p-valor  se basa en la distribución normal estándar.  
 
-$$z=\frac{\hat{\beta_1}}{S_{\hat{\beta_1}}}=\frac{0.10482}{0.02738}=3.849 $$
+$$z=\frac{\hat{\beta_1}}{S_{\hat{\beta_1}}}=\frac{0.10482}{0.02738}=3.849$$
 
 Existe una relación significativa entre bmi y diabetes tipo II:   
 
@@ -303,7 +548,7 @@ Wald $z=3.829$,$p=0.000129$
 
 Algunos paquetes de software darán la prueba de chi-cuadrado de Wald en su lugar, que es solo nuestra estadística al cuadrado.  
 
-$$ \chi^2=\left(\frac{\hat{\beta_1}}{{S_{\beta_1}}}\right)^2=\left(\frac{0.10482}{0.02738}\right)^2=14.656$$
+$$\chi^2=\left(\frac{\hat{\beta_1}}{{S_{\beta_1}}}\right)^2=\left(\frac{0.10482}{0.02738}\right)^2=14.656$$
 Dado que esta estadística es chi-cuadrado con $df=1$, el valor de $p$ es:   
 
 
@@ -322,9 +567,7 @@ $$\left( 0.05062,0.15794\right)$$
 
 Exponencia este intervalo para obtener un intervalo de confianza para la razón de posibilidades $\theta$  
 
-
-
-$$\left(e^{0.05062}, e^{0.05062}\right) $$
+$$\left(e^{0.05062}, e^{0.05062}\right)$$
 
 Observe que el IC completo para $\beta_1$ está por encima de cero y, de manera equivalente, el IC completo para $\theta$ es
 por encima de uno. Esto indica una relación significativa.  
@@ -345,9 +588,9 @@ Leyendo de la salida, vemos que $\chi^2=16.445$ con $df=1$, $p< 0.0001$.
 
 Observe que el estadístico de la prueba de chi cuadrado NO es igual al chi cuadrado de Wald prueba calculada anteriormente.    
 
-$$\chi^2=-2ln\left(\frac{\mathcal{L_R}}{\mathcal{L_F}}\right) $$  
+$$\chi^2=-2ln\left(\frac{\mathcal{L_R}}{\mathcal{L_F}}\right)$$  
 
-$$\chi^2=-2\left(ln\mathcal{L_R}-ln\mathcal{L_F}\right) $$
+$$\chi^2=-2\left(ln\mathcal{L_R}-ln\mathcal{L_F}\right)$$
 Hasta ahora, solo hemos ajustado el tipo de modelo completo type ~ bmi. Ajustemos el modelo reducido
 escriba ~ 1 (es decir, un modelo de solo intercepción o "nulo") y calculamos las probabilidades logarítmicas y la deviance con R.  
 
@@ -397,7 +640,7 @@ xtabs(~type+Mom,data=Pima.tr)
 
 Calculemos la razón de posibilidades(odss-ratio) de la tabla :  
 
-$$ OR=\dfrac{\frac{a}{b}}{\frac{c}{d}}=\dfrac{\frac{16}{116}}{\frac{12}{256}}=0.6437$$
+$$OR=\dfrac{\frac{a}{b}}{\frac{c}{d}}=\dfrac{\frac{16}{116}}{\frac{12}{256}}=0.6437$$
 Tomaremos el recíproco para facilitar la interpretación, $\frac{1}{OR}=\frac{1}{0.6437}=1.5536$    
 
 Las probabilidades
@@ -408,9 +651,9 @@ $33\%$ de las madres tienen el Tipo II diabetes.
 Primero, encuentre un intervalo de confianza para el logaritmo de la razón de posibilidades(logit)  
 
 $$ln(OR)\pm z\sqrt{\frac{1}{a}+\frac{1}{b}+\frac{1}{c}+\frac{1}{d} }$$
-$$ln(1.5536)\pm (1.96)\sqrt{\frac{1}{16}+\frac{1}{116}+\frac{1}{12}+\frac{1}{56}} $$
+$$ln(1.5536)\pm (1.96)\sqrt{\frac{1}{16}+\frac{1}{116}+\frac{1}{12}+\frac{1}{56}}$$
 
-$$\left( 0.4406 \pm 0.8316\right) $$
+$$\left( 0.4406 \pm 0.8316\right)$$
 $$(-0.3730, 1.2542)$$  
 
 Este intervalo de confianza contiene 0, por lo que la variable Mom no es un predictor significativo
@@ -421,7 +664,7 @@ $$ \left( e^{-0.3730} , e^{1.2542}\right) $$
 
 
 
-$$\left( 0.6887, 3.5050\right) $$  
+$$\left( 0.6887, 3.5050\right)$$  
 
 El IC incluye el valor 1 (que indica que no hay efecto para la razón de posibilidades).  
 
@@ -462,14 +705,14 @@ probabilidad de diabetes tipo II.
 
 
 
-$$ln\left(\frac{\hat{\pi}}{1-\hat{\pi}}\right)=-5.76192 + 0.09703(28) + 0.07830(40)-0.83471(1) = -0.74779 $$  
+$$ln\left(\frac{\hat{\pi}}{1-\hat{\pi}}\right)=-5.76192 + 0.09703(28) + 0.07830(40)-0.83471(1) = -0.74779$$  
 
 
 
 Su logit negativo indica menos del $50\%$ de posibilidades de diabetes. Tomando el logit inverso:  
 
 
-$$\frac{e^{-0.74779}}{1+e^{-0.74779}}=0.321 $$ 
+$$\frac{e^{-0.74779}}{1+e^{-0.74779}}=0.321$$ 
 
 
 La probabilidad es de aproximadamente el $32\%$. Ahora hazlo para una persona con las mismas estadísticas,
@@ -477,14 +720,14 @@ excepto que no sea madre.
 
 
 
-$$ ln\left(\frac{\hat{\pi}}{1-\hat{\pi}}\right)=-5.76192 + 0.09703(28) + 0.07830(40)-0.83471(0) = 0.08692$$  
+$$ln\left(\frac{\hat{\pi}}{1-\hat{\pi}}\right)=-5.76192 + 0.09703(28) + 0.07830(40)-0.83471(0) = 0.08692$$  
 
 
 Ahora el logit es positivo, por lo que la probabilidad será superior al $50\%$.   
 
 
 
-$$\frac{e^{0.08692}}{1+e^{0.08692}}=0.522 $$  
+$$\frac{e^{0.08692}}{1+e^{0.08692}}=0.522$$  
 
 
 
