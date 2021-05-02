@@ -32,6 +32,7 @@ probabilidad conjunta es
 \exp\left[\sum_{j=1}^{n}z_{j}\log\left(\frac{\pi_{j}} {1-
 \pi_{j}} \right) + \sum_{j=1}^{n}
 \log\left(1-\pi_{j}\right)\right] 
+(\#eq:eq1)
 \end{equation} que es un
 miembro de la familia exponencial.
 
@@ -43,7 +44,9 @@ aleatoria $Y$ tiene la distribución $Bin(n, \pi)$
 \begin{equation} Pr(Y = y) = \left(\begin{array}{l}
 n  
 y \end{array}\right) \pi^{y}(1- \pi)^{n-y}, \quad y = 0,1,
-\ldots, n \end{equation} Finalmente, consideramos el caso general de
+\ldots, n
+(\#eq:eq2)
+\end{equation} Finalmente, consideramos el caso general de
 $N$ variables aleatorias independientes $Y_{1}, Y_{2}, \ldots, Y_{N}$
 correspondientes al número de éxitos en $N$ diferentes subgrupos o
 estratos (en la siguiente tabla). Si
@@ -57,7 +60,7 @@ n_{i} \\
 y_{i}
 \end{array}\right]\right.
 \end{array}
-\label{eq:bin1}
+(\#eq:eq3)
 \end{equation}
  poner aqui una tabla como imagen dobson
 
@@ -267,3 +270,251 @@ $b, \left[\mathfrak{I}(b)^{-1} \right]$, se muestra en la parte inferior de la T
 $$
 D=2 \sum_{i=1}^{N}\left[y_{i} \log \left(\frac{y_{i}}{\widehat{y}_{i}}\right)+\left(n_{i}-y_{i}\right) \log \left(\frac{n-y_{i}}{n-\widehat{y}_{i}}\right)\right]
 $$
+
+Las estimaciones y sus errores estándard son 
+\begin{equation*}
+\begin{aligned}
+& b_{1} &=-60.72, & \text{ standard error } &=\sqrt{26.840}=5.18 \\
+\text{y} & b_{2} &=34.27, & \text { standard error } &=\sqrt{8.481}=2.91 \text{ . }
+\end{aligned}
+\end{equation*}
+Si el modelo es un buen ajuste de los datos, la desviación debe tener aproximadamente la distribución $\chi^{2}(6)$ porque hay $N = 8$ patrones de covariables (es decir, diferentes valores de $x_{i}$) y $p = 2$ parámetros. Pero el valor calculado de $D$ es casi el doble del valor "esperado" de 6 y es casi tan grande como el punto superior $5\%$ de la distribución $\chi^{2}(6)$, que es $12.59$ . Esto sugiere que el modelo no encaja particularmente bien.  
+
+El software estadístico para ajustar modelos lineales generalizados para respuestas dicotómicas a menudo difiere entre el caso en que los datos se agrupan como recuentos de éxitos $y$ y fracasos $n-y$ en $n$ ensayos con el mismo patrón de covariables y el caso en el que los datos son binarios $(0 , 1)$  respuestas (vea el ejemplo posterior con datos en la Tabla 7.8). Para RStudio, el modelo de regresión logística para los datos agrupados para la mortalidad de escarabajos en la Tabla $7.2$ se puede ajustar usando el siguiente comando
+
+```{r}
+y=c(6,13,18,28,52,53,61,60)
+n=c(59,60,62,56,63,59,62,60)
+x=c(1.6907,1.7242,1.7552,1.7842,1.8113,1.8369,1.8610,1.8839)
+n_y=n-y
+beetle.mat=cbind(y,n_y)
+beetle.mat
+```
+El modelo de Regresión logística se puede estimar usando el comando
+```{r}
+res.glm1=glm(beetle.mat~x, family=binomial(link="logit"))
+res.glm1
+```
+
+Los valores ajustados se obtienen de
+
+```{r}
+fitted.values(res.glm1)
+```
+son proporciones estimadas de muertes en cada grupo y, por lo tanto, los valores ajustados para
+y debe calcularse de la siguiente manera:  
+
+```{r}
+fit_p=c(fitted.values(res.glm1))
+fit_y=n*fit_p
+fit_y
+```
+Se pueden ajustar varios modelos alternativos a los datos de mortalidad de escarabajos. La
+Los resultados se muestran en la Tabla 7.4. Entre estos modelos, el modelo de valor extremo
+parece ajustarse mejor a los datos. Para R, los comandos relevantes son  
+
+```{r}
+res.glm2=glm(beetle.mat~x, family=binomial(link="probit"))
+res.glm2
+```
+
+```{r}
+fit_p1=c(fitted.values(res.glm2))
+fit_y1=n*fit_p1
+fit_y1
+```
+
+Tabla 7.4 Comparación de los números observados muertos con los valores ajustados obtenidos de
+varios modelos de dosis-respuesta para los datos de mortalidad de escarabajos. Las estadísticas de desviación son
+también dado.  
+
+| Valores Observados de Y | Modelo   Logístico | Modelo  Probit | Modelo de Valores Extremos |
+|:-----------------------:|:------------------:|:--------------:|:--------------------------:|
+|            6            |        3.46        |      3.36      |            5.59            |
+|            13           |        9.84        |      10.72     |            11.28           |
+|            18           |        22.45       |      23.48     |            20.95           |
+|            28           |        33.90       |      33.82     |            30.37           |
+|            52           |        50.10       |      49.62     |            47.78           |
+|            53           |        53.29       |      53.32     |            54.14           |
+|            61           |        59.22       |      59.66     |            61.11           |
+|            60           |        58.74       |      59.23     |            59.95           |
+|            D            |        11.23       |      10.12     |            3.45            |
+|        $b_1(s.e)$       |    -60.72(5.18)    |   34.94(2.64)  |        −39.57(3.23)        |
+|        $b_2(s.e)$       |     34.27(2.91)    | 19.73(1.48)    |         22.04(1.79)        |
+  
+  R resultados de valores extremos.  
+  
+```{r}
+res.glm3=glm(beetle.mat~x, family=binomial(link="cloglog"))
+res.glm3
+```
+```{r}
+fit_p2=c(fitted.values(res.glm3))
+fit_y2=n*fit_p2
+fit_y2
+```
+## Modelo de regresión logística general
+El modelo logístico lineal simple $\log\left[\pi_{i} / \left(1- \pi_{i}\right) \right] = \beta_{1} + \beta_{2} x_{i}$ utilizado en el ejemplo $7.3 .1$ es un caso especial del modelo de regresión logística general
+$$
+\text{logit} (\pi_{i}) = \log\left(\frac{\pi_{i}} {1- \pi_{i}} \right) = x_{i}^{T }\boldsymbol{\beta}
+$$
+donde $x_{i}$ es un vector de medidas continuas correspondientes a covariables y variables ficticias correspondientes a niveles de factor y $\boldsymbol{\beta}$ es el vector de parámetros. Este modelo es muy utilizado para analizar datos que involucran respuestas binarias o binomiales y varias variables explicativas. Proporciona una poderosa técnica análoga a la regresión múltiple y ANOVA para respuestas continuas.  
+
+
+Estimaciones de máxima verosimilitud de los parámetros $\boldsymbol{\beta}$ y, en consecuencia, de las probabilidades $\pi_{i}=g^{-1} \left(x_{i}^{T} \boldsymbol{\beta}\right)$, se obtienen maximizando la función loglikelihood  
+
+\begin{equation}
+l(\boldsymbol{\pi} ; \mathbf{y})=\sum_{i=1}^{N}\left[y_{i} \log \pi_{i}+\left(n_{i}-y_{i}\right) \log \left(1-\pi_{i}\right)+\log \left(\begin{array}{c}
+n_{i} \\
+y_{i}
+\end{array}\right)\right]
+(\#eq:eq4)
+\end{equation}  
+
+El proceso de estimación es esencialmente el mismo si los datos se agrupan como frecuencias para cada patrón de covariables (es decir, observaciones con los mismos valores de todas las variables explicativas) o cada observación se codifica como 0 o 1 y su patrón de covariables se enumera por separado. Si los datos se pueden agrupar, la respuesta $Y_{i}$, el número de "éxitos" para el patrón covariable $i$, puede modelarse mediante la distribución binomial. Si cada observación tiene un patrón variable  diferente, entonces $n_{i} = 1$ y la respuesta $Y_{i}$ es binaria. La deviance es  
+\begin{equation}
+D=2 \sum_{i=1}^{N}\left[y_{i} \log \left(\frac{y_{i}}{\widehat{y}_{i}}\right)+\left(n_{i}-y_{i}\right) \log \left(\frac{n_{i}-y_{i}}{n_{i}-\widehat{y}_{i}}\right)\right]
+(\#eq:eq5)
+\end{equation}
+  
+  
+  Esto tiene la forma
+$$
+D = 2\sum o \log\frac{o}{e}
+$$
+donde $o$ denota los "éxitos" observados $y_{i}$ y los "fracasos" $\left(n_{i} -y_{i} \right)$ de las celdas de la Tabla $7.1$ y $e$ denota el frecuencias esperadas estimadas correspondientes o valores ajustados $\widehat{y}_{i} = n_{i} \widehat{\pi}_{i}$ y $\left(n_{i} - \widehat{y} _{i} \right) = \left(n_{i} -n_{i} \widehat{\pi}_{i} \right).$ Suma
+está sobre todas las $2 \times N$ celdas de la tabla. Tenga en cuenta que $D$ no implica ningún parámetro molesto (como $\sigma^{2}$ para los datos de respuesta normal), por lo que se puede evaluar la bondad del ajuste y las hipótesis se pueden probar directamente utilizando la aproximación
+$$
+D\sim \chi^{2}(N-p)
+$$
+
+donde $p$ es el número de parámetros estimados y $N$ el número de patrones de covariables.  
+
+Los métodos de estimación y las distribuciones de muestreo utilizados para la inferencia dependen de los resultados asintóticos. Para estudios pequeños o situaciones en las que hay pocas observaciones para cada patrón de covariables, los resultados asintóticos pueden ser aproximaciones deficientes. Sin embargo, el software, como StatXact y LogXact, se ha desarrollado utilizando métodos "exactos" para que los métodos descritos en este capítulo se puedan utilizar incluso cuando los tamaños de muestra son pequeños.  
+
+### Ejemplo: anteras embriogénicas
+Los datos del Cuadro $7.5$, citado por Wood (1978), se toman de Sangwan-Norrell
+(1977). Son números $y_{jk}$ de anteras embriogénicas de la especie vegetal Datura innoxia Mill. obtenido cuando se prepararon números $n_{jk}$ de anteras bajo varias condiciones diferentes. Hay un factor cualitativo con dos
+
+|                            |     Fuerza Centrífuga(g)         |
+|-------------------|--------|----------------------|-----|-----|
+| Storage condicion |        | 40                   | 150 | 350 |
+| control           | $Y_{1k}$ | 55                   | 52  | 57  |
+|                   | $n_{1k}$ | 102                  | 99  | 108 |
+|                   |        |                      |     |     |
+| Tratamiento       | $Y_{2k}$ | 55                   | 50  | 50  |
+|                   | $n_{2k}$ | 76                   | 81  | 90  |
+  
+  
+  niveles, un tratamiento que consiste en almacenamiento a $3^{\circ}\mathrm{C}$ durante 48 horas o una condición de almacenamiento de control, y una variable explicativa continua representada por tres valores de fuerza centrífuga. Compararemos los efectos del tratamiento y el control sobre las proporciones después del ajuste (si es necesario) para la fuerza de centrifugación. Las proporciones $p_{jk} =\frac{y_{j k} }{n_{j k}}$ en los grupos de control y tratamiento se representan contra $x_{k}$, el logaritmo de la fuerza centrífuga, en la figura 7.4. Las proporciones de respuesta parecen ser más altas en el grupo de tratamiento que en el grupo de control, y al menos para el grupo tratado, la respuesta disminuye con la fuerza de centrifugación.    
+  
+
+
+Compararemos tres modelos logísticos para $\pi_{jk}$, la probabilidad de que las anteras sean embriogénicas, donde $j = 1$ para el grupo de control y $j = 2$ para el grupo de tratamiento y $x_{1} = \log_{e}40 = 3.689, x_{2} = \log_{e} 150 = 5.011$, y
+$x_{3} = \log_{e} 350 = 5.858$.  
+
+Modelo 1: logit $\pi_{j k} = \alpha_{j} + \beta_{j} x_{k}$ (es decir, diferentes intersecciones y pendientes);  
+
+Modelo 2: logit $\pi_{j k} = \alpha_{j} + \beta x_{k}$ (es decir, diferentes intersecciones pero la misma pendiente); Modelo 3: logit $\pi_{j k} = \alpha + \beta x_{k}$ (es decir, la misma intersección y pendiente). Estos modelos se ajustaron mediante el método de máxima verosimilitud. Los resultados se resumen en la Tabla $7.6$. Para probar la hipótesis nula de que la pendiente es la misma para los grupos de tratamiento y control, usamos $D_{2} -D_{1} = 2.591$. De las tablas para la distribución $\chi^{2}(1)$, el nivel de significancia está entre $0.1$ y $0.2$, por lo que podríamos concluir que los datos proporcionan poca evidencia contra la hipótesis nula de pendientes iguales. Por otro lado, la potencia de esta prueba es muy baja y tanto la Figura $7.4$ como las estimaciones para el Modelo 1 sugieren que aunque la pendiente para el grupo de control puede ser cero, la pendiente para el grupo de tratamiento es negativa. La comparación de las desviaciones de los modelos 2 y 3 proporciona una prueba de igualdad de los efectos de control y tratamiento después de un ajuste común para la fuerza de centrifugación: $D_{3} -D_{2} = 5.473$, lo que indica que los efectos de almacenamiento son diferentes . Las proporciones observadas y los valores ajustados correspondientes para los Modelos 1, 2 y 3 se muestran en la Tabla 7.7. Obviamente, el Modelo 1 se ajusta muy bien a los datos, pero esto no es sorprendente, ya que se han utilizado cuatro parámetros para describir seis puntos de datos; este "sobreajuste" no es recomendado 
+
+| Modelo 1                  | Modelo 2                 | Modelo 3          |
+|---------------------------|--------------------------|-------------------|
+| $a_1 = 0.234(0.628)$       | $a_1 = 0.877(0.487)$       | A = 1.021(0.481)  |
+| $a_2 − a_1 = 1.977(0.998)$  | $a_2 − a_1 = 0.407(0.175)$ | b = −0.148(0.096) |
+| $b_1 = −0.023(0.127)$       | b = −0.155(0.097)        |                   |
+| $b_2 − b_1 = −0.319(0.199)$ |                          |                   |
+| $D_1 = 0.028$               | $D_2 = 2.619$              | $D_3 = 8.092$       | 
+
+
+Estos resultados se pueden reproducir con R. Si los grupos de control y tratamiento se recodifican a 0 y 1, respectivamente (en una variable llamada newstor = $j-1$), y se crea un término de interacción multiplicando esta variable y el vector $x$ , entonces los modelos se pueden instalar usando los siguientes comandos:  
+
+```{r}
+library(dobson)
+data(anthers)
+head(anthers)
+print(anthers)
+```
+
+
+
+## Estadísticas de bondad de ajuste
+
+En lugar de utilizar la estimación de máxima verosimilitud, podríamos estimar los parámetros minimizando la suma ponderada de cuadrados
+$$
+\begin{array}{r}
+S_{w} = \displaystyle \sum_{i = 1}^{N} \frac{\left(y_{i} -n_{i} \pi_{i} \right)^{2}} {n_{i} \pi_{i} \left(1- \pi_{i} \right)} \\
+\text{desde} \quad  \mathrm{E} \left(Y_{i} \right) = n_{i} \pi_{i} \quad  \text{y} \quad var\left(Y_{i} \right) = n_{i} \pi_{i} \left (1- \pi_{i} \right).
+\end{array}
+$$
+Esto equivale a minimizar el estadístico chi-cuadrado de Pearson
+$$
+X^{2} = \sum \frac{(o-e)^ {2}}{e}
+$$
+donde $o$ representa las frecuencias observadas en la tabla 7.1, $e$ representa las frecuencias esperadas y la suma se encuentra en todas las celdas de $2 \times N$ de la tabla. La razón es que
+\begin{equation*}
+\begin{aligned}
+X^{2} &=\sum_{i=1}^{N} \frac{\left(y_{i}-n_{i} \pi_{i}\right)^{2}}{n_{i} \pi_{i}}+\sum_{i=1}^{N} \frac{\left[\left(n_{i}-y_{i}\right)-n_{i}\left(1-\pi_{i}\right)\right]^{2}}{n_{i}\left(1-\pi_{i}\right)} \\
+&=\sum_{i=1}^{N} \frac{\left(y_{i}-n_{i} \pi_{i}\right)^{2}}{n_{i} \pi_{i}\left(1-\pi_{i}\right)}\left(1-\pi_{i}+\pi_{i}\right)=S_{w}
+\end{aligned}
+\end{equation*}  
+
+Donde  $X^{2}$ se evalúa en las frecuencias esperadas estimadas, la estadística
+es
+\begin{equation}
+X^{2}=\sum_{i=1}^{N} \frac{\left(y_{i}-n_{i} \widehat{\pi}_{i}\right)^{2}}{n_{i} \widehat{\pi}_{i}\left(1-\widehat{\pi}_{i}\right)}
+(\#eq:eq6)
+\end{equation}
+
+EL cual es asintoticamente equivalente a la deviance en \@ref(eq:eq5),
+
+$$
+D=2 \sum_{i=1}^{N}\left[y_{i} \log \left(\frac{y_{i}}{n_{i} \widehat{\pi}_{i}}\right)+\left(n_{i}-y_{i}\right) \log \left(\frac{n_{i}-y_{i}}{n_{i}-n_{i} \widehat{\pi}_{i}}\right)\right] .
+$$
+La prueba de la relación entre $X^{2}$ y $D$ usa la expansión de la serie de Taylor de $s\log (s/t)$ aproximadamente $s = t$, a saber,
+$$
+s\log \frac{s}{t} = (s-t) + \frac{1}{2} \frac{(s-t)^{2}}{t} + \ldots
+$$
+Por lo tanto,  
+
+$$
+\begin{aligned}
+D=& 2 \sum_{i=1}^{N}\left\{\left(y_{i}-n_{i} \widehat{\pi}_{i}\right)+\frac{1}{2} \frac{\left(y_{i}-n_{i} \widehat{\pi}_{i}\right)^{2}}{n_{i} \widehat{\pi}_{i}}+\left[\left(n_{i}-y_{i}\right)-\left(n_{i}-n_{i} \widehat{\pi}_{i}\right)\right]\right.\\
+&\left.+\frac{1}{2} \frac{\left[\left(n_{i}-y_{i}\right)-\left(n_{i}-n_{i} \widehat{\pi}_{i}\right)\right]^{2}}{n_{i}-n_{i} \widehat{\pi}_{i}}+\ldots\right\} \\
+\cong & \sum_{i=1}^{N} \frac{\left(y_{i}-n_{i} \widehat{\pi}_{i}\right)^{2}}{n_{i} \widehat{\pi}_{i}\left(1-\widehat{\pi}_{i}\right)}=X^{2}
+\end{aligned}
+$$
+La distribución asintótica de $D$, bajo la hipótesis de que el modelo es correcto, es $D \sim \chi^{2}(Np)$, por lo tanto, aproximadamente $X^{2} \sim \chi^{2}(Np)$. La elección entre $D$ y $X^{2}$ depende de la adecuación de la aproximación a la distribución $\chi^{2}(N-p)$. Existe alguna evidencia que sugiere que $X^{2}$ es a menudo mejor que $D$ porque $D$ está indebidamente influenciado por frecuencias muy pequeñas (Cressie y Read 1989). Sin embargo, es probable que ambas aproximaciones sean deficientes si las frecuencias esperadas son demasiado pequeñas (por ejemplo, menos de 1).
+
+En particular, si cada observación tiene un patrón de covariables diferente, por lo que $y_{i}$ es cero o uno, entonces ni $D$ ni $X^{2}$ proporcionan una medida útil de ajuste. Esto puede suceder si las variables explicativas son continuas, por ejemplo. El enfoque más utilizado en esta situación se debe a Hosmer y Lemeshow
+La distribución asintótica de $D$, bajo la hipótesis de que el modelo es correcto, es $ D\sim\chi^{2}(Np)$, por lo tanto, aproximadamente $X^{2} \sim \chi^{2}(Np)$. La elección entre $D$ y $X^{2}$ depende de la adecuación de la aproximación a la distribución $\chi^{2}(N-p)$. Existe alguna evidencia que sugiere que $X^{2}$ es a menudo mejor que $D$ porque $D$ está indebidamente influenciado por frecuencias muy pequeñas (Cressie y Read 1989). Sin embargo, es probable que ambas aproximaciones sean deficientes si las frecuencias esperadas son demasiado pequeñas (por ejemplo, menos de 1).
+
+En particular, si cada observación tiene un patrón de covariables diferente, por lo que $y_{i}$ es cero o uno, entonces ni $D$ ni $X^{2}$ proporcionan una medida útil de ajuste. Esto puede suceder si las variables explicativas son continuas, por ejemplo. El enfoque más utilizado en esta situación se debe a Hosmer y Lemeshow
+(1980). Su idea era agrupar las observaciones en categorías sobre la base de sus probabilidades predichas. Por lo general, se utilizan alrededor de 10 grupos con aproximadamente el mismo número de observaciones en cada grupo. Los números observados de éxitos y fracasos en cada uno de los grupos $g$ se resumen como se muestra en la Tabla 7.1. Luego, el estadístico chi-cuadrado de Pearson para una tabla de contingencia de $g \times 2$  
+se calcula y se utiliza como medida de ajuste. Esta estadística de Hosmer-Lemeshow se indica con $X_{HL}^{2}$. La distribución muestral de $X_{HL}^{2}$ se ha encontrado mediante simulación en aproximadamente $\chi^{2}(g-2)$. El uso de esta estadística se ilustra en el ejemplo de la Sección $7.8$.
+
+A veces, la función de verosimilitud logarítmica para el modelo ajustado se compara con la función de verosimilitud logarítmica de un modelo mínimo, en el que los valores $\pi_{i}$ son todos iguales (en contraste con el modelo saturado que se usa para definir la desviación). Bajo el modelo mínimo $\tilde{\pi} = \left(\Sigma y_{i} \right) / \left(\Sigma n_{i} \right)$. Sea $\widehat{\pi}_{i}$ la probabilidad estimada de $Y_{i}$ bajo el modelo de interés (por lo que el valor ajustado es  $\widehat{y}_{i} = n_{i} \widehat{\pi}_{i}$. La estadística está definida por
+$$
+C = 2 [l(\widehat{\pi};y) - l (\widetilde{\pi};y)]
+$$
+donde $l$ es la función de probabilidad logarítmica dada por \@ref(eq:eq4) Por lo tanto, 
+
+$$
+C=2 \sum\left[y_{i} \log \left(\frac{\widehat{y}_{i}}{n_{i} \widetilde{\pi}_{i}}\right)+\left(n_{i}-y_{i}\right) \log \left(\frac{n_{i}-\widehat{y}_{i}}{n_{i}-n_{i} \widetilde{\pi}_{i}}\right)\right]
+$$
+De los resultados de la Sección 5.2, la distribución muestral aproximada para $C$ es $\chi^{2}(p-1)$ si todos los parámetros $p$ excepto el término de intersección $\beta_{1}$ son cero ( ver ejercicio 7.4). De lo contrario, $ C $ tendrá una distribución no central. Por tanto, $C$ es un estadístico de prueba para la hipótesis de que ninguna de las variables explicativas es necesaria para un modelo parsimonioso. $C$ a veces se denomina estadística de chi-cuadrado de razón de verosimilitud.
+
+Por analogía con $R^{2}$ para la regresión lineal múltiple (consulte la Sección 6.3.2), otra estadística que se usa a veces es
+$$
+R^{2} = \frac{l(\widetilde{\boldsymbol{\pi}};y) - l(\widehat{\boldsymbol{\pi}};y)} { l(\widetilde{\boldsymbol{\pi}};y)}
+$$
+que representa la mejora proporcional en la función logarítmica de verosimilitud debido a los términos en el modelo de interés, en comparación con el modelo mínimo. 
+
+
+De los resultados de la Sección 5.2, la distribución muestral aproximada para $C$ es $\chi^{2}(p-1)$ si todos los parámetros $p$ excepto el término de intersección $\beta_{1}$ son cero (ver ejercicio 7.4). De lo contrario, $ C $ tendrá una distribución no central. Por tanto, $C$ es un estadístico de prueba para la hipótesis de que ninguna de las variables explicativas es necesaria para un modelo parsimonioso. $C$ a veces se denomina estadística de chi-cuadrado de razón de verosimilitud.
+
+Por analogía con $R^{2}$ para la regresión lineal múltiple (consulte la Sección 6.3.2), otra estadística que se usa a veces es
+$$
+R^{2} = \frac{l(\widetilde{\boldsymbol{\pi}};y) - l (\widehat{\boldsymbol{\pi}};y)} {l(\widetilde{\boldsymbol{\pi}};y)}
+$$
+que representa la mejora proporcional en la función logarítmica de verosimilitud debido a los términos en el modelo de interés, en comparación con el modelo mínimo.
+M
