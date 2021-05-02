@@ -510,11 +510,35 @@ $$
 que representa la mejora proporcional en la función logarítmica de verosimilitud debido a los términos en el modelo de interés, en comparación con el modelo mínimo. 
 
 
-De los resultados de la Sección 5.2, la distribución muestral aproximada para $C$ es $\chi^{2}(p-1)$ si todos los parámetros $p$ excepto el término de intersección $\beta_{1}$ son cero (ver ejercicio 7.4). De lo contrario, $ C $ tendrá una distribución no central. Por tanto, $C$ es un estadístico de prueba para la hipótesis de que ninguna de las variables explicativas es necesaria para un modelo parsimonioso. $C$ a veces se denomina estadística de chi-cuadrado de razón de verosimilitud.
+De los resultados de la Sección 5.2, la distribución muestral aproximada para $C$ es $\chi^{2}(p-1)$ si todos los parámetros $p$ excepto el término de intersección $\beta_{1}$ son cero (ver ejercicio 7.4). De lo contrario, $C$ tendrá una distribución no central. Por tanto, $C$ es un estadístico de prueba para la hipótesis de que ninguna de las variables explicativas es necesaria para un modelo parsimonioso. $C$ a veces se denomina estadística de chi-cuadrado de razón de verosimilitud.
 
 Por analogía con $R^{2}$ para la regresión lineal múltiple (consulte la Sección 6.3.2), otra estadística que se usa a veces es
 $$
 R^{2} = \frac{l(\widetilde{\boldsymbol{\pi}};y) - l (\widehat{\boldsymbol{\pi}};y)} {l(\widetilde{\boldsymbol{\pi}};y)}
 $$
-que representa la mejora proporcional en la función logarítmica de verosimilitud debido a los términos en el modelo de interés, en comparación con el modelo mínimo.
-M
+que representa la mejora proporcional en la función logarítmica de verosimilitud debido a los términos en el modelo de interés, en comparación con el modelo mínimo.  
+
+El criterio de información de Akaike $AIC$ y el criterio de información de Schwartz o Bayesiano $B I C$ son otras estadísticas de bondad de ajuste basadas en la función de probabilidad logverosimititud con ajuste por el número de parámetros estimados y por la cantidad de datos. Estas estadísticas generalmente se definen de la siguiente manera:
+\begin{equation}
+\begin{array}{c}
+A I C = -2l(\widehat{\pi};y) + 2p \\
+B I C = -2 l(\widehat{\pi};y) + p\times\ln(\text{número de observaciones})
+(\#eq:eq6)
+\end{array}
+\end{equation}
+donde $p$ es el número de parámetros estimados. El software estadístico $R$ usa esta definición de $AIC$, por ejemplo. Sin embargo, las versiones utilizadas por Stata son algo diferentes:
+$$
+A I C _{\text{Stata}} = (- 2 l (\widehat{\pi};y) + 2 p) / N,
+$$
+ donde $N$ es el número de subgrupos en la Tabla $7.1$, y
+$$
+B I C_{\text{Stata}} = D-(N-p)\ln\sum_{i = 1}^{N} n_{i}
+$$
+donde $D$ es la desviación del modelo, $(N-p)$ son los grados de libertad correspondientes y $\sum_{i = 1}^{N} n_{i}$ es el número total de observaciones.
+
+Tenga en cuenta que las estadísticas (a excepción de pseudo $R^{2}$) discutidas en esta sección resumen qué tan bien se ajusta un modelo en particular a los datos. Entonces, un valor pequeño de la estadística y, por lo tanto, un valor p grande, indica que el modelo se ajusta bien. Por lo general, estas estadísticas no son apropiadas para probar hipótesis sobre los parámetros de modelos anidados, pero pueden ser particularmente útiles para comparar modelos que no están anidados.  
+
+Para el modelo logístico para el ejemplo de mortalidad de escarabajos (Sección 7.3.1), la probabilidad logarítmica del modelo sin variable explicativa es $l(\tilde{\boldsymbol{\pi}};y) = ( -167.5203-155.2002) = - 322.7205$, mientras que $l(\widehat{\boldsymbol{\pi}};y) = $
+$ (- 167.5203-18.7151) = - 186.2354$, entonces la estadística $C = 2\times (-186.2354-(- 322.7205)) = 272.970$ con un grado de libertad, lo que indica que definitivamente se necesita el parámetro de pendiente $\beta_{1}$. El pseudo $R^{2}$ valor es $2 \times (- 322.72051 - (- 186.23539)) / 2 \ times (-322.72051) = 0.4229$ indicando una razón
+sonable pero no excelente ajuste. El valor habitual para $ A I C = -2 \ times (-18.7151) +  2 \ times 2 = 41.430- $ este es el valor dado por $\mathrm {R}$, por ejemplo. Stata da $ AI C _ {\ text {Stata}} = 41.430 / 8 = 5.179$ y 
+$B I C_{\text{Stata}} = 11.2322- (8-2) \times \ln 481 =-25.823.$ Todas estas medidas muestran marcadas mejoras cuando se ajusta el modelo de valor extremo en comparación con el modelo logístico. 
