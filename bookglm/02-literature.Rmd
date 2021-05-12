@@ -441,7 +441,450 @@ x_{i}^{T} \boldsymbol{\beta} \quad \text { con}\quad x_{i}^{T}=\left[\log n_{i} 
 1 \\
 \theta
 \end{array}\right]
+$$  
+
+
+
+# Estimación
+## Introducción
+
+Este capítulo trata sobre la obtención de estimaciones puntuales e intervalos de parámetros para modelos lineales generalizados utilizando métodos basados en la máxima verosimilitud. Aunque se pueden encontrar expresiones matemáticas explícitas para estimadores en algunos casos especiales, generalmente se necesitan métodos numéricos. Normalmente, estos métodos son iterativos y se basan en el algoritmo de Newton-Raphson. Para ilustrar este principio, el capítulo comienza con un ejemplo numérico. Luego se desarrolla la teoría de la estimación para modelos lineales generalizados. Finalmente, hay otro ejemplo numérico para demostrar los métodos en detalle.    
+
+
+## Ejemplo:Tiempos de falla para recipientes a presión
+
+Los datos de la Tabla 4.1 son la vida útil (tiempos hasta la falla en horas) de los recipientes a presión de hebras de epoxi de Kevlar a un nivel de tensión de $ 70 \% $. Se dan en la tabla 29.1 del libro de conjuntos de datos de Andrews y Herzberg (1985). La figura 4.1 muestra la forma de su distribución.    
+
+
+    
+    
+
+
+
+Figura 4.1 Distribución de la vida útil de los recipientes a presión.  
+
+
+
+Un modelo comúnmente utilizado para tiempos de falla (o tiempos de supervivencia) es la distribución de Weibull que tiene la función de densidad de probabilidad
+\begin{equation}
+f (y; \lambda, \theta) = \frac {\lambda y ^ {\lambda-1}} {\theta ^ {\lambda}} \exp \left [- \left (\frac {y} {\theta} \right) ^ {\lambda} \right] 
+\label{dob41}
+\end{equation}
+
+
+donde $y> 0$ es el tiempo de falla, $\lambda$ es un parámetro que etermina la forma de la distribución y $\theta$ es un parámetro que determina la escala. La figura 4.2 es una gráfica de probabilidad de los datos de la tabla 4.1 comparados con la distribución de Weibull con $\lambda = 2$. Aunque existen discrepancias entre la distribución y los datos para algunos de los períodos más cortos, para la mayoría de las observaciones
+La distribución parece proporcionar un buen modelo para los datos. Por lo tanto, usaremos una distribución de Weibull con $\lambda = 2$ y estimaremos $\theta$.
+
+La distribución en \ref{dob41} se puede escribir como
 $$
+f(y; \theta) = \exp \left[\log \lambda + (\lambda-1) \log y-\lambda \log \theta-(y / \theta)^{\lambda} \right]
+$$
+Pertenece a la familia exponencial (3.2) con
+\begin{equation}
+  a (y) = y^{\lambda}, b(\theta) = - \theta^{-\lambda}, c(\theta) = \log \lambda- \lambda \log \theta, y  \quad d (y) = (\lambda-1) \log y \\
+  \label{dob42}
+\end{equation} 
+donde $\lambda$ es un parámetro molesto. Esto no está en la forma canónica (a menos que $\lambda = 1,$ correspondiente a la distribución exponencial) y, por lo tanto, no se puede usar directamente en la especificación de un modelo lineal generalizado. Sin embargo, es adecuado para ilustrar la estimación de parámetros para distribuciones en la familia exponencial.  
+
+
+Dejemos que $Y_{1}, \ldots, Y_{N}$ denote los datos, con $N = 49$. Si los datos provienen de una muestra aleatoria de recipientes a presión, asumimos que las $Y_{i}$ son variables aleatorias independientes. Si todos tienen la distribución de Weibull con los mismos parámetros, su distribución de probabilidad conjunta es
+$$
+f\left(y_{1}, \ldots, y_{N} ; \theta, \lambda\right)=\prod_{i=1}^{N} \frac{\lambda y_{i}^{\lambda-1}}{\theta^{\lambda}} \exp \left[-\left(\frac{y_{i}}{\theta}\right)^{\lambda}\right]
+$$
+La función logarítmica de verosimilitud es
+
+\begin{equation}
+l\left(\theta ; y_{1}, \ldots, y_{N}, \lambda\right)=\sum_{i=1}^{N}\left[\left[(\lambda-1) \log y_{i}+\log \lambda-\lambda \log \theta\right]-\left(\frac{y_{i}}{\theta}\right)^{\lambda}\right]
+\label{dob43}
+\end{equation}
+Para maximizar esta función se requiere la derivada con respecto a $\theta$. Esta es la función de puntuación
+
+\begin{equation}
+\frac{d l}{d \theta}=U=\sum_{i=1}^{N}\left[\frac{-\lambda}{\theta}+\frac{\lambda y_{i}^{\lambda}}{\theta^{\lambda+1}}\right]
+\label{dob44}
+\end{equation}
+El estimador de máxima verosimilitud $\widehat{\theta}$ es la solución de la ecuación $U(\theta) =0$. En este caso, es fácil encontrar una expresión explícita para $\widehat{\theta}$ si $\lambda$ es una constante conocida, pero para propósitos ilustrativos, obtendremos una solución numérica usando la aproximación de Newton-Raphson.  
+
+
+La figura 4.3 muestra el principio del algoritmo de Newton-Raphson. El objetivo es encontrar el valor de $x$ en el que la función $t$ cruza el eje $x$, es decir, donde $t (x) = 0.$ La pendiente de $t$ en un valor $x^{(m-1)}$ viene dado por
+\begin{equation}
+\left[\frac{d t}{d x}\right]_{x=x^{(m-1)}}=t^{\prime}\left(x^{(m-1)}\right)=\frac{t\left(x^{(m)}\right)-t\left(x^{(m-1)}\right)}{x^{(m)}-x^{(m-1)}},\label{dob45}
+\end{equation}
+donde la distancia $x^{(m)} - x^{(m-1)}$ es pequeña. Si $x^{(m)}$ es la solución requerida para que $t\left(x^{m} \right) = 0,$ entonces \ref{dob45} se puede reorganizar para dar
+
+\begin{equation}
+x^{(m)}=x^{(m-1)}-\frac{t\left(x^{(m-1)}\right)}{t^{\prime}\left(x^{(m-1)}\right)}
+\label{dob46}
+\end{equation}
+Ésta es la fórmula de Newton-Raphson para resolver $t (x) = 0.$ Comenzando con una estimación inicial $x^{(1)}$ se obtienen aproximaciones sucesivas usando \ref{dob46} hasta que el proceso iterativo converge.
+
+Para la estimación de máxima verosimilitud utilizando la función de puntuación, la ecuación de estimación equivalente a \ref{dob46} es
+\begin{equation}
+\theta^{(m)}=\theta^{(m-1)}-\frac{U^{(m-1)}}{U^{\prime(m-1)}}
+\label{dob47}
+\end{equation}
+De \ref{dob44}, para la distribucion de weibull con $\lambda=2$,
+\begin{equation}
+U=-\frac{2 \times N}{\theta}+\frac{2 \times \sum y_{i}^{2}}{\theta^{3}}
+\label{dob48}
+\end{equation}
+que se evalúa en estimaciones sucesivas $\theta^{(m)}$. La derivada de $U,$ obtenida
+diferenciando \ref{dob44}, es
+\begin{equation}
+\begin{aligned}
+\frac{d U}{d \theta} &=U^{\prime}=\sum_{i=1}^{N}\left[\frac{\lambda}{\theta^{2}}-\frac{\lambda(\lambda+1) y_{i}^{\lambda}}{\theta^{\lambda+2}}\right] \\
+&=\frac{2 \times N}{\theta^{2}}-\frac{2 \times 3 \times \sum y_{i}^{2}}{\theta^{4}}
+\end{aligned}
+\label{dob49}
+\end{equation}
+Tabla 4.2 Detalles de las iteraciones de Newton-Raphson para obtener una probabilidad máxima
+estimación del parámetro de escala para la distribución de Weibull para modelar los datos en
+Cuadro 4.1  
+
+
+$$
+\begin{array}{lrrrr}
+\text { Iteration } & \multicolumn{1}{c} {1} & \multicolumn{1}{c} {2} & \multicolumn{1}{c} {3} & \multicolumn{1}{c} {4} \\
+\hline \theta & 8805.7 & 9633.9 & 9876.4 & 9892.1 \\
+U \times 10^{6} & 2915.10 & 552.80 & 31.78 & 0.21 \\
+U^{\prime} \times 10^{6} & -3.52 & -2.28 & -2.02 & -2.00 \\
+\mathrm{E}\left(U^{\prime}\right) \times 10^{6} & -2.53 & -2.11 & -2.01 & -2.00 \\
+U / U^{\prime} & -827.98 & -242.46 & -15.73 & -0.105 \\
+U / \mathrm{E}\left(U^{\prime}\right) & -1152.21 & -261.99 & -15.81 & -0.105 \\
+\hline
+\end{array}
+$$
+    
+    
+Para la estimación de máxima verosimilitud, es común aproximar $U^{\prime}$ por su valor esperado $E\left(U^{\prime} \right).$ Para distribuciones en la familia exponencial, esto se obtiene fácilmente usando expresión (3.17). La información $\mathfrak{I}$ es
+\begin{equation}
+  \begin{aligned}
+\mathfrak{I} &=E\left(-U^{\prime}\right)=E\left[-\sum_{i=1}^{N} U_{i}^{\prime}\right]=\sum_{i=1}^{N}\left[E\left(-U_{i}^{\prime}\right)\right] \\
+&=\sum_{i=1}^{N}\left[\frac{b^{\prime \prime}(\theta) c^{\prime}(\theta)}{b^{\prime}(\theta)}-c^{\prime \prime}(\theta)\right] \\
+&=\frac{\lambda^{2} N}{\theta^{2}}
+\end{aligned}  
+\end{equation}
+donde $U_{i}$ es la puntuación para $Y_{i}$ y las expresiones para $b$  y  $c$ se dan en \ref{dob42}. Por tanto, una ecuación de estimación alternativa es
+
+\begin{equation}
+ \theta^{(m)}=\theta^{(m-1)}+\frac{U^{(m-1)}}{\mathfrak{I}^{(m-1)}}
+\label{dob411}   
+\end{equation}
+
+
+
+A esto se le llama método de puntuación(scoring Method).    
+La tabla 4.2 muestra los resultados de usar la ecuación \ref{dob47} tomando iterativamente la media de los datos de la tabla $4.1,\bar{y} = 8805.7$, como el valor inicial $\theta^{(1)};$ esta y aproximaciones posteriores se muestran en la fila superior de la Tabla 4.2. Los números de la segunda fila se obtuvieron evaluando \ref{dob48} en $\theta^{(m)}$ y los valores de los datos; se acercan a cero rápidamente. La tercera y cuarta filas, $U^{\prime}$ y $\mathrm {E} \left(U^{\prime} \right) = - \mathfrak {I},$ tienen valores similares que ilustran que cualquiera podría ser usado; esto se demuestra además por la similitud de los números en la quinta y sexta filas. La estimación final es $\theta^{(5)} = 9892.1 - (- 0.105) = 9892.2$ esta es la estimación de máxima verosimilitud $\widehat{\theta}$ para estos datos. En este valor, la función logarítmica de verosimilitud, calculada a partir de \ref{dob43}, es $l = -480.850$.    
+
+
+
+La figura 4.4 muestra la función logarítmica de verosimilitud para estos datos y la distribución de Weibull con $\lambda = 2$. El valor máximo está en $\widehat{\theta} = 9892.2.$ La curvatura de la función en la vecindad del máximo determina la confiabilidad de $\widehat{\theta}$. La curvatura de $l$ está definida por la tasa de cambio de $U,$ es decir, por $U^{\prime}$. Si $U^{\prime}$, o $\mathrm{E} \left(U^{\prime} \right)$, es pequeño, entonces $l$ es plano, de modo que $U$ es aproximadamente cero para un ancho intervalo de valores $\theta$. En este caso, $\widehat{\theta}$ no está bien determinado y su error estándar es grande. De hecho, se muestra en el Capítulo 5 que la varianza de $\widehat{\theta}$ está inversamente relacionada con $\mathfrak{I} = \mathrm {E} \left (-U^{\prime} \right)$ y el error estándar de $\widehat{\theta}$ es aproximadamente
+\begin{equation}
+\label{dob412}
+ \text { s.e. }(\widehat{\theta})=\sqrt{1 / \mathfrak{I}}   
+\end{equation}
+
+
+
+Para este ejemplo, en $\hat {\theta} = 9892.2, \mathfrak{I} = -\mathrm{E} \left(U^{\prime} \right) = 2.00 \times 10^{- 6},$ así que $(\theta) =$
+$1 /\sqrt{0.000002} = 707$. Si la distribución muestral de $\widehat{\theta}$ es aproximadamente Normal, un intervalo de confianza de $95\%$ para $\theta$ viene dado aproximadamente por  
+
+$9892\pm 1,96 \times 707,$ o (8506,11278)  
+
+Los métodos ilustrados en este ejemplo están ahora desarrollados para 
+modelos lineales generalizados.
+
+## Estimación de máxima verosimilitud
+Considere las variables aleatorias independientes $Y_{1}, \ldots, Y_{N}$ que satisfacen las propiedades de un modelo lineal generalizado. Deseamos estimar los parámetros $\boldsymbol{\beta}$ que están relacionados con los $Y_{i}$ hasta $\mathrm{E} \left(Y_{i}\right) = \mu_{i}$ y $g\left(\mu_{i}\right) = x_{i}^{T}\boldsymbol{\beta}$. Para cada $Y_{i}$, la función de probabilidad logarítmica es
+\begin{equation}
+ l_{i} = y_{i} b \left(\theta_{i} \right) + c \left(\theta_{i}\right) + d\left(y_{i}\right)
+\label{dob413}   
+\end{equation}
+
+
+\text{donde las funciones} b, c \text{y} d \text{están definidas en (3.3). También }
+\begin{equation}
+\mathrm{E}\left(Y_{i}\right)=\mu_{i}=-c^{\prime}\left(\theta_{i}\right) / b^{\prime}\left(\theta_{i}\right)
+\label{dob414}
+\end{equation}
+\begin{equation}
+var\left(Y_{i}\right)=\left[b^{\prime \prime}\left(\theta_{i}\right) c^{\prime}\left(\theta_{i}\right)-c^{\prime \prime}\left(\theta_{i}\right) b^{\prime}\left(\theta_{i}\right)\right] /\left[b^{\prime}\left(\theta_{i}\right)\right]^{3}
+\label{dob415}
+\end{equation}
+y
+\begin{equation}
+g\left(\mu_{i}\right)=\mathbf{x}_{i}^{T} \boldsymbol{\beta}=\eta_{i}
+\label{dob416}
+\end{equation}
+
+donde $\mathbf{x}_{i}$ es un vector con elementos $x_{ij}, j = 1, \ldots, p$. La función de probabilidad logarítmica para todos los $Y_{i}$ es
+
+$$
+    l=\sum_{i=1}^{N} l_{i}=\sum y_{i} b\left(\theta_{i}\right)+\sum c\left(\theta_{i}\right)+\sum d\left(y_{i}\right)
+$$
+\text{Para obtener el estimador de máxima verosimilitud para el parámetro} $\beta_{j}$ \quad \text{necesitamos}    
+
+\begin{equation}
+\frac{\partial l}{\partial \beta_{j}}=U_{j}=\sum_{i=1}^{N}\left[\frac{\partial l_{i}}{\partial \beta_{j}}\right]=\sum_{i=1}^{N}\left[\frac{\partial l_{i}}{\partial \theta_{i}} \cdot \frac{\partial \theta_{i}}{\partial \mu_{i}} \cdot \frac{\partial \mu_{i}}{\partial \beta_{j}}\right]
+\label{dob417}
+\end{equation}
+    
+    
+    
+usando la regla de la cadena para la diferenciación. Consideraremos cada término en el
+lado derecho de \ref{dob417} por separado. Primero
+
+$$
+\frac{\partial l_{i}}{\partial \theta_{i}}=y_{i} b^{\prime}\left(\theta_{i}\right)+c^{\prime}\left(\theta_{i}\right)=b^{\prime}\left(\theta_{i}\right)\left(y_{i}-\mu_{i}\right)
+$$
+
+diferenciando \ref{dob413} y sustituyendo \ref{dob414}. Sigue
+
+$$
+\frac{\partial \theta_{i}}{\partial \mu_{i}}=1 /\left(\frac{\partial \mu_{i}}{\partial \theta_{i}}\right) .
+$$
+Diferenciando \ref{dob414} se tiene:
+
+$$
+\begin{aligned}
+\frac{\partial \mu_{i}}{\partial \theta_{i}} &=\frac{-c^{\prime \prime}\left(\theta_{i}\right)}{b^{\prime}\left(\theta_{i}\right)}+\frac{c^{\prime}\left(\theta_{i}\right) b^{\prime \prime}\left(\theta_{i}\right)}{\left[b^{\prime}\left(\theta_{i}\right)\right]^{2}} \\
+&=b^{\prime}\left(\theta_{i}\right) var\left(Y_{i}\right)
+\end{aligned}
+$$
+
+De \ref{dob415}. Finalmente, de \ref{dob415}
+$$
+\frac{\partial \mu_{i}}{\partial \beta_{j}}=\frac{\partial \mu_{i}}{\partial \eta_{i}} \cdot \frac{\partial \eta_{i}}{\partial \beta_{j}}=\frac{\partial \mu_{i}}{\partial \eta_{i}} x_{i j .}
+$$
+
+Por tanto, la puntuación, dada en \ref{dob417}, es
+
+\begin{equation}
+U_{j}=\sum_{i=1}^{N}\left[\frac{\left(y_{i}-\mu_{i}\right)}{\operatorname{var}\left(Y_{i}\right)} x_{i j}\left(\frac{\partial \mu_{i}}{\partial \eta_{i}}\right)\right]
+\label{dob418}
+\end{equation}
+La matriz de varianza-covarianza de $U_{j}$ tiene términos
+$$
+\mathfrak{I}_ {j k} = E\left[U_{j} U_{k}\right]
+$$
+\text{que forman la matriz de información} $\mathfrak{I}$  desde \ref{dob418}
+\begin{equation}
+\begin{aligned}
+\mathfrak{I}_{j k} &=\mathrm{E}\left\{\sum_{i=1}^{N}\left[\frac{\left(Y_{i}-\mu_{i}\right)}{var\left(Y_{i}\right)} x_{i j}\left(\frac{\partial \mu_{i}}{\partial \eta_{i}}\right)\right] \sum_{l=1}^{N}\left[\frac{\left(Y_{l}-\mu_{l}\right)}{var\left(Y_{l}\right)} x_{l k}\left(\frac{\partial \mu_{l}}{\partial \eta_{l}}\right)\right]\right\} \\
+&=\sum_{i=1}^{N} \frac{\mathrm{E}\left[\left(Y_{i}-\mu_{i}\right)^{2}\right] x_{i j} x_{i k}}{\left[var\left(Y_{i}\right)\right]^{2}}\left(\frac{\partial \mu_{i}}{\partial \eta_{i}}\right)^{2}
+\end{aligned}  
+\label{dob419}
+\end{equation}
+porque $\mathrm {E} \left[\left(Y_{i} - \mu_{i} \right) \left(Y_{l} \mid- \mu_{l} \right) \right] = 0$ para $i \neq l$ ya que los $Y_{i}$ son independientes. Usando $\mathrm {E} \left[\left(Y_{i} -\mu_{i}\right)^{2} \right] = var\left(Y_{i}\right)$ \ref{dob419} se puede simplificar a 
+
+\begin{equation}
+\mathfrak{I}_{j k}=\sum_{i=1}^{N} \frac{x_{i j} x_{i k}}{var\left(Y_{i}\right)}\left(\frac{\partial \mu_{i}}{\partial \eta_{i}}\right)^{2}
+\label{dob420}
+\end{equation}
+La ecuación de estimación \ref{dob411} para el método de puntuación se generaliza a
+
+\begin{equation}
+\mathbf{b}^{(m)}=\mathbf{b}^{(m-1)}+\left[\mathfrak{I}^{(m-1)}\right]^{-1} \mathbf{U}^{(m-1)}
+\label{dob421}
+\end{equation}
+
+donde $b^{(m)}$ es el vector de estimaciones de los parámetros $\beta_{1}, \ldots, \beta_{p}$ en la $m$ ésima iteración. En la ecuación \ref{dob421}, $\left[\mathfrak{I}^{(m-1)} \right]^{-1}$ es la inversa de la matriz de información con elementos $\mathfrak{I}_{jk}$ dado por \ref{dob420}, y $U^{(m-1)}$ es el vector de elementos dado por \ref{dob418}, todos evaluados en $b^{(m-1)}$ Multiplicar ambos lados de la ecuación \ref{dob421} por $\mathfrak{I}^{(m-1)}$ 
+\begin{equation}
+\mathfrak{I}^{(m-1)} \mathbf{b}^{(m)}=\mathfrak{I}^{(m-1)} \mathbf{b}^{(m-1)}+\mathbf{U}^{(m-1)}
+\label{dob422}
+\end{equation}
+De \ref{dob420} puedo escribir como 
+$$
+\mathfrak{I}=\mathbf{X}^{T} \mathbf{W} \mathbf{X}
+$$
+donde $W$ es la matriz diagonal $N \times N$ con elementos
+
+\begin{equation}
+w_{i i}=\frac{1}{var\left(Y_{i}\right)}\left(\frac{\partial \mu_{i}}{\partial \eta_{i}}\right)^{2}
+\label{dob423}
+\end{equation}
+
+La expresión del lado derecho de \ref{dob422} es el vector con elementos
+
+$$
+\sum_{k=1}^{p} \sum_{i=1}^{N} \frac{x_{i j} x_{i k}}{var\left(Y_{i}\right)}\left(\frac{\partial \mu_{i}}{\partial \eta_{i}}\right)^{2} b_{k}^{(m-1)}+\sum_{i=1}^{N} \frac{\left(y_{i}-\mu_{i}\right) x_{i j}}{var\left(Y_{i}\right)}\left(\frac{\partial \mu_{i}}{\partial \eta_{i}}\right)
+$$
+
+
+
+evaluado en $b^{(m-1)};$ esto se sigue de las ecuaciones \ref{dob420} y \ref{dob418}. Por tanto, el lado derecho de la ecuación \ref{dob422} se puede escribir como
+
+$$X^{T}Wz$$
+
+\text{donde} z \text{tiene elementos}
+
+\begin{equation}
+z_{i}=\sum_{k=1}^{p} x_{i k} b_{k}^{(m-1)}+\left(y_{i}-\mu_{i}\right)\left(\frac{\partial \eta_{i}}{\partial \mu_{i}}\right)
+\label{dob424}
+\end{equation}
+con $\mu_{i}$ y $\partial \eta_{i} / \partial \mu_{i}$ evaluados en $b^{(m-1)}$.    
+
+
+La ecuación iterativa \ref{dob422} puede ser escrita como
+
+\begin{equation}
+\mathbf{X}^{T} \mathbf{W} \mathbf{X} \mathbf{b}^{(m)}=\mathbf{X}^{T} \mathbf{W} \mathbf{z}
+\label{dob425}
+\end{equation}
+
+Esta es la misma forma que las ecuaciones normales para un modelo lineal obtenido por mínimos cuadrados ponderados, excepto que tiene que resolverse iterativamente porque, en general, $\mathbf{z}$ y $W$ dependen de
+b. Por lo tanto, para los modelos lineales generalizados, los estimadores de máxima verosimilitud se obtienen mediante un procedimiento iterativo de mínimos cuadrados ponderados (Charnes et al. 1976 ).  
+
+
+La mayoría de los paquetes estadísticos que incluyen procedimientos para ajustar modelos lineales generalizados tienen un algoritmo eficiente basado en (4.25). Comienzan usando una aproximación inicial $b^{(0)}$ para evaluar $z$ y $W,$ luego (4.25) se resuelve para dar $b^{(1)}$, que a su vez se utiliza para obtener mejores aproximaciones para $z$ y $W,$ y así sucesivamente hasta lograr la convergencia adecuada. Cuando la diferencia entre aproximaciones sucesivas $b^{(m-1)}$ y $b^{(m)}$ es suficientemente pequeña, $b^{(m)}$ se toma como la estimación de máxima verosimilitud. El siguiente ejemplo ilustra el uso de este procedimiento de estimación.
+
+## Ejemplo de regresión de Poisson
+Los datos artificiales de la tabla 4.3 son recuentos $y$ observados en varios valores de una covariable $x$. Están graficados en la Figura 4.5.    
+
+
+Supongamos que las respuestas $Y_{i}$ son variables aleatorias de Poisson. En la práctica, tal suposición se basaría en fundamentos de fondo o partiendo de.
+
+
+
+observando que en la Figura 4.5 la variabilidad aumenta con $Y$. Esta observación apoya el uso de la distribución de Poisson que tiene la propiedad de que el valor esperado y la varianza de $Y_{i}$ son iguales
+
+\begin{equation}
+\mathrm{E}\left(Y_{i}\right)=\operatorname{var}\left(Y_{i}\right)
+\label{dob426}
+\end{equation}
+
+Modelemos la asociación entre $Y_{i}$ y $x_{i}$ mediante la línea recta.    
+$$
+\begin{aligned} \mathrm{E}\left(Y_{i}\right) &=\mu_{i}=\beta_{1}+\beta_{2} x_{i} \\ &=x_{i}^{T} \boldsymbol{\beta} 
+\end{aligned}
+$$
+donde,
+
+$$
+\boldsymbol{\beta}=\left[\begin{array}{l}
+\beta_{1} \\
+\beta_{2}
+\end{array}\right] \text { y } \quad \mathbf{x}_{i}=\left[\begin{array}{c}
+1 \\
+x_{i}
+\end{array}\right]
+$$
+
+para $i = 1, \ldots, N$. Por lo tanto, tomamos la función de enlace $g\left(\mu_{i}\right)$ como la función de identidad
+
+$$
+g\left(\mu_{i}\right)=\mu_{i}=x_{i}^{T} \boldsymbol{\beta}=\eta_{i}
+$$
+
+Por lo tanto $\partial \mu_{i} / \partial \eta_{i} = 1,$ que simplifica las ecuaciones \ref{dob423} y \ref{dob423}. De \ref{dob423} y \ref{dob426}
+
+$$
+w_{i i}=\frac{1}{var\left(Y_{i}\right)}=\frac{1}{\beta_{1}+\beta_{2} x_{i}}
+$$
+
+Usando la estimación $b = \left[\begin{array} {l} b_{1} \\ b_{2} \end{array} \right]$ para $\boldsymbol{\beta}$, La ecuación \ref{dob424} se convierte en
+
+$$z_{i}=b_{1}+b_{2} x_{i}+\left(y_{i}-b_{1}-b_{2} x_{i}\right)=y_{i}$$
+
+también
+
+\begin{equation*}
+\mathfrak{I}=X^{T} WX=\left[\begin{array}{cc}
+\sum_{i=1}^{N} \frac{1}{b_{1}+b_{2} x_{i}} & \sum_{i=1}^{N} \frac{x_{i}}{b_{1}+b_{2} x_{i}} \\
+\sum_{i=1}^{N} \frac{x_{i}}{b_{1}+b_{2} x_{i}} & \sum_{i=1}^{N} \frac{x_{i}^{2}}{b_{1}+b_{2} x_{i}}
+\end{array}\right]
+\end{equation*}
+
+y
+
+\begin{equation*}
+X^{T} Wz=\left[\begin{array}{c}
+\sum_{i=1}^{N} \frac{y_{i}}{b_{1}+b_{2} x_{i}} \\
+\sum_{i=1}^{N} \frac{x_{i} y_{i}}{b_{1}+b_{2} x_{i}}
+\end{array}\right]
+\end{equation*}
+    
+Las estimaciones de máxima verosimilitud se obtienen de forma iterativa a partir de las ecuaciones
+$$
+\left(X^{T}WX\right)^{(m-1)}b^{(m)}=X^{T}Wz^{(m-1)}
+$$
+
+donde el superíndice ${}^{(m-1)}$ denota evaluación en $b^{(m-1)} $.  
+
+Para estos datos, $N=9$  
+
+$$
+y=z=\left[\begin{array}{c}
+2 \\
+3 \\
+\vdots \\
+15
+\end{array}\right] \quad \text { and } \quad X=\left[\begin{array}{c}
+x_{1}^{T} \\
+x_{2}^{T} \\
+\vdots \\
+x_{9}^{T}
+\end{array}\right]=\left[\begin{array}{cc}
+1 & -1 \\
+1 & -1 \\
+\vdots & \vdots \\
+1 & 1
+\end{array}\right]
+$$
+De la Figura 4.5 se obtienen las estimaciones iniciales $b_{1}^{(1)} = 7$ y $b_{2}^{(1)} = 5$ Por lo tanto,    
+$$
+\left(X^{T} W X\right)^{(1)}=\left[\begin{array}{cc}
+1.821429 & -0.75 \\
+-0.75 & 1.25
+\end{array}\right], \quad\left(X^{T}W z\right)^{(1)}=\left[\begin{array}{c}
+9.869048 \\
+0.583333
+\end{array}\right]
+$$
+$$
+\begin{aligned}
+\text { Así } b^{(2)} &=\left[\left(X^{T} W X\right)^{(1)}\right]^{-1}\left(X^{T} Wz \right)^{(1)} \\
+&=\left[\begin{array}{cc}
+0.729167 & 0.4375 \\
+0.4375 & 1.0625
+\end{array}\right]\left[\begin{array}{l}
+9.869048 \\
+0.583333
+\end{array}\right] \\
+&=\left[\begin{array}{c}
+7.4514 \\
+4.9375
+\end{array}\right]
+\end{aligned}
+$$
+
+Este proceso iterativo se continúa hasta que converge. Los resultados se muestran en la Tabla 4.4.  
+
+
+Las estimaciones de máxima verosimilitud son $\widehat{\beta}_{1} = 7.45163$ y $\widehat{\beta}_{2} = 4.93530$. En estos valores, la inversa de la matriz de información $\mathfrak{I} = X^{T} W X$ es
+
+$$
+\mathfrak{I}^{-1}=\left[\begin{array}{ll}
+0.7817 & 0.4166 \\
+0.4166 & 1.1863
+\end{array}\right]
+$$
+
+(esta es la matriz de varianza-covarianza para $\widehat{\boldsymbol {\beta}}$ - vea la Sección 5.4). Por tanto, el error estándar estimado para $b_{1}$ es $\sqrt{0.7817} = 0.8841$ y el error estándar estimado para $b_{2}$ es $\sqrt{1.1863} = 1.0892$. Entonces, por ejemplo, un intervalo de confianza aproximado de $95\%$ para la pendiente $\beta_{2}$ es    
+
+
+
+$4.9353 \pm 1.96 \times 1.0892 \quad \text { o }\quad (2.80,7.07)$    
+
+
+
+
+
+En ambos casos se dan las estimaciones de los parámetros y sus errores estándar
+como
+
+
+$b_{1} (s. e) = 7,4516 (0,8841)  y  b_{2} (s. e) = 4,9353 (1,0892)$.
 
 
 # REGRESIÓN LOGÍSTICA SIMPLE

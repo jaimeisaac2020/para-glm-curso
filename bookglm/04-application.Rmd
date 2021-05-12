@@ -1,7 +1,7 @@
 ---
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 editor_options: 
   markdown: 
     wrap: 72
@@ -538,7 +538,6 @@ donde $D$ es la desviación del modelo, $(N-p)$ son los grados de libertad corre
 
 Tenga en cuenta que las estadísticas (a excepción de pseudo $R^{2}$) discutidas en esta sección resumen qué tan bien se ajusta un modelo en particular a los datos. Entonces, un valor pequeño de la estadística y, por lo tanto, un valor p grande, indica que el modelo se ajusta bien. Por lo general, estas estadísticas no son apropiadas para probar hipótesis sobre los parámetros de modelos anidados, pero pueden ser particularmente útiles para comparar modelos que no están anidados.  
 
-Para el modelo logístico para el ejemplo de mortalidad de escarabajos (Sección 7.3.1), la probabilidad logarítmica del modelo sin variable explicativa es $l(\tilde{\boldsymbol{\pi}};y) = ( -167.5203-155.2002) = - 322.7205$, mientras que $l(\widehat{\boldsymbol{\pi}};y) = $
-$ (- 167.5203-18.7151) = - 186.2354$, entonces la estadística $C = 2\times (-186.2354-(- 322.7205)) = 272.970$ con un grado de libertad, lo que indica que definitivamente se necesita el parámetro de pendiente $\beta_{1}$. El pseudo $R^{2}$ valor es $2 \times (- 322.72051 - (- 186.23539)) / 2 \ times (-322.72051) = 0.4229$ indicando una razón
-sonable pero no excelente ajuste. El valor habitual para $ A I C = -2 \ times (-18.7151) +  2 \ times 2 = 41.430- $ este es el valor dado por $\mathrm {R}$, por ejemplo. Stata da $ AI C _ {\ text {Stata}} = 41.430 / 8 = 5.179$ y 
+Para el modelo logístico para el ejemplo de mortalidad de escarabajos (Sección 7.3.1), la probabilidad logarítmica del modelo sin variable explicativa es $l(\tilde{\boldsymbol{\pi}};y) = ( -167.5203-155.2002) = - 322.7205$, mientras que $l(\widehat{\boldsymbol{\pi}};y) = (- 167.5203-18.7151) = - 186.2354$, entonces la estadística $C = 2\times (-186.2354-(- 322.7205)) = 272.970$ con un grado de libertad, lo que indica que definitivamente se necesita el parámetro de pendiente $\beta_{1}$. El pseudo $R^{2}$ valor es $2 \times (- 322.72051 - (- 186.23539)) / 2 \times (-322.72051) = 0.4229$ indicando una razón
+sonable pero no excelente ajuste. El valor habitual para $A I C = -2\times (-18.7151) +  2 \times 2 = 41.430-$ este es el valor dado por $\mathrm {R}$, por ejemplo. Stata da $AI C_{\text {Stata}} = 41.430 / 8 = 5.179$ y 
 $B I C_{\text{Stata}} = 11.2322- (8-2) \times \ln 481 =-25.823.$ Todas estas medidas muestran marcadas mejoras cuando se ajusta el modelo de valor extremo en comparación con el modelo logístico. 
